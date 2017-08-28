@@ -1,0 +1,13 @@
+composer.phar
+
+/vendor
+/node_modules
+/.idea
+/log
+
+
+*.lock
+
+/storage/debugbar
+
+.DS_Store
