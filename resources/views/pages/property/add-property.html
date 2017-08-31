@@ -1311,7 +1311,7 @@
             <div class="field-wrap-flexible-simple">
               <label for="tags">
                 <span onmouseover="tooltip.show('Tags are used for website property search. PMS automatically creates a tag cloud from property address, features and short description fields but if you want this property to match any additional keywords please enter them in tags field e.g. garden, pool, kensington, school etc.');" onmouseout="tooltip.hide();" class="hint-underline">Tags</span></label>
-              <textarea name="tags" id="tags" ng-model="tags" class="form-text-area-99-percent-small"></textarea>
+                <textarea name="tags" id="tags" ng-model="tags" class="form-text-area-99-percent-small"></textarea>
             </div>          
             <div class="field-wrap" style="margin-top:32px;">
               <table border="0" cellspacing="0" cellpadding="0">
@@ -2683,7 +2683,7 @@
               <td align="left"><button name="button4" type="button" id="button4" value="Previous step" onclick="showTab('photos')" class="form-top">Previous</button></td>
               <td>&nbsp;</td>
               <td align="left"><button name="button4" type="button" id="button41" value="Next step" onclick="showTab('published')" class="next">Next</button>
-              <button name="finish" id="finish3" value="Finish!" type="submit" class="finish" style="display: none;">Finish</button></td>
+              <button name="finish" id="finish3" value="Finish!" type="submit" class="finish" style="display: none;" ng-click="saveProperty()">Finish</button></td>
               </tr>
           </tbody></table>
           </div>       

@@ -101,7 +101,7 @@
                                 <a href="">Contact</a>
                             </li>
                             <li>
-                                <a href="#!/add-property">Add Property</a>
+                                <a href="#!/property">Property</a>
                             </li>
                         </ul>
                     </nav>
