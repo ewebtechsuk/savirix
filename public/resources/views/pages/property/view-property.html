@@ -1,0 +1,843 @@
+<link rel="stylesheet" href="/resources/views/css/standard/styles/logo-gnomen.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/css/standard/styles/property-page.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/css/standard/styles/quick-links.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/css/standard/styles/styles.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/css/standard/styles/top-banner.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/css/standard/styles/unit-page.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/css/standard/styles/workflow.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/lib/jscal2/jscal2.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/lib/tooltip2/style.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/lib/jquery-sortable/jquery.ui.core.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/lib/uploadify/uploadify.css" type="text/css">
+<link rel="stylesheet" href="/resources/views/lib/diary/jquery-ui.css" type="text/css">
+
+<div class="page-wrapper">
+    <div class="bread-crumbs">
+        <a href="/?mod=properties">Properties</a> /  Details  /
+    </div>
+    <div class="landlord-page-wrap">
+        <div class="property-details-wrap-top" style="overflow: visible !important;">
+            <div class="property-details-actions">
+                <ul>
+                    <li style="margin-right:5px;">
+                        <a onclick="subGalleryForm();" href="javascript:;" class="property-action16">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Property Slideshow</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/?mod=properties&amp;action=edit&amp;id=3392" class="property-action1">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0">
+                            <span>Edit Property</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/?mod=properties&amp;action=copy&amp;id=3392" class="property-action2">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0">
+                            <span>Duplicate Property</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/?mod=properties&amp;action=images&amp;id=3392" class="property-action3">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0">
+                            <span>Manage Photos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="openpopup('/?mod=todos&amp;action=add&amp;modid=1&amp;itemid=3392&amp;smode=fullscreen', 'add todo', 'width=800,height=600,scrollbars=yes'); return false;" class="property-action4">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Add a To-Do Item</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="/?mod=printer&amp;action=sl&amp;smode=fullscreen&amp;cat=properties&amp;pid=3392&amp;lid=2481" class="property-action5">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0">
+                            <span>Print Standard Letters</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="openpopup('/?mod=properties&amp;action=printer&amp;id=3392&amp;smode=fullscreen', 'newWindow', 'width=3000,height=2000,resizable=1,scrollbars=1'); return false;" title="Print" class="property-action6">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0">
+                            <span>Print Property Card</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/?mod=properties&amp;action=send_properties&amp;id=3392" title="Send Property by Email" class="property-action7">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0">
+                            <span>Send Property by Email</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="openpopup('/?mod=emailer&amp;smode=fullscreen&amp;modid=1&amp;itemid=3392&amp;tempsel=1&amp;lid=2481&amp;to=prime.trillium@gmail.com', 'print', 'width=1024,height=700,scrollbars=yes'); return false;" class="property-action18">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Email landlord</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/?mod=properties&amp;action=sms&amp;id=3392" title="SMS property" class="property-action8">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Send property by SMS</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/?mod=properties&amp;action=match&amp;id=3392" class="property-action9">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Matching Applicants</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="showTab('viewings',1)" class="property-action10">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Add a Viewing</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="showTab('offers',1)" class="property-action11">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Add an Offer</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="showTab('workorder',1)" class="property-action19">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Add Works Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/?mod=lettings&amp;action=add&amp;property=3392" class="property-action20">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Let This Property</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="openpopup('/?mod=printer&amp;action=ssl&amp;smode=fullscreen&amp;modid=1&amp;itemid=3392&amp;title=00  Station Approach , , HA0 2LA', 'SL', 'width=900, height=600, scrollbars=yes'); return false;" class="property-action21">
+                            <img src="/resources/views/image/transp.gif" width="28" height="28" border="0" title="Saved letters"><span>Saved letters</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="openpopup('/?mod=properties&amp;action=certificates&amp;smode=fullscreen&amp;id=3392','certificate','width=800,height=600,scrollbars=yes')" class="property-action13">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Certificates</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="openpopup('/?mod=properties&amp;action=history&amp;id=3392&amp;smode=fullscreen', 'newHistory', 'width=800,height=600,scrollbars=1'); return false;" class="property-action14">
+                            <img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>View History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?mod=properties&amp;action=delete&amp;id=3392" onclick="return confirm('Are you sure you want to delete?')" class="property-action15"><img src="/resources/views/image/new-layout/transp.gif" width="28" height="28" border="0"> <span>Delete</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="property-status"><img src="/resources/views/image/new-layout/status-To let.png" width="72" height="72"></div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="property-details-top-table">
+                <tbody><tr>
+                    <td width="132" align="left" valign="top" bgcolor="#e8e8e8">
+              			<span class="prop-details-image-size">
+              				<img src="http://images.gnomen-europe.com/b61f07a5edecc4cbf43de24e557ee32f/thumbnails/18965.jpg" class="property_image_details_page" border="0">
+              			</span>
+                    </td>
+                    <td align="left" valign="middle" class="property-details-top-table-td">
+                        <p class="property-title" style="padding-left:16px">
+                            <span class="property-price">Rent:  £156</span>
+                            <span class="property-type"> <span style="display:{sale_disp}"></span>
+			              	<span style="display:{let_disp}">PW</span></span><br>
+                        </p>
+                        <table border="0" cellspacing="0" cellpadding="0" class="property-details">
+                            <tbody><tr>
+                                <td width="16" align="left" valign="middle">&nbsp;</td>
+                                <td align="left" valign="middle">1</td>
+                                <td align="left" valign="middle"><img src="/resources/views/image/new-layout/property-icon1.gif" width="40" height="25"></td>
+                                <td align="left" valign="middle">1</td>
+                                <td align="left" valign="middle"><img src="/resources/views/image/new-layout/property-icon2.gif" alt="" width="40" height="25"></td>
+                                <td align="left" valign="middle">0</td>
+                                <td align="left" valign="middle"><img src="/resources/views/image/new-layout/property-icon3.gif" alt="" width="40" height="25"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <p style="padding:0; margin:5px 0;">
+                            <span class="property-title" style="padding-left:16px;">00 Station Approach, , London, HA0 2LA</span></p>
+                        <span class="property-details" style="padding-left:16px">
+                			<span class="property-details-titles">Category:</span> Residential&nbsp;&nbsp;
+                			<span class="property-details-titles">Type:</span> House share&nbsp;&nbsp;
+                			<span style="display:{let_disp};">
+                				<span class="property-details-titles">Occupant:</span>
+                				<span onmouseover="tooltip.show('N/A<br><br>');" onmouseout="tooltip.hide();" class="hint-underline">N/A</span>
+                			</span> &nbsp;&nbsp;
+                			<span class="property-details-titles">Web enquiries:</span>
+                			<a href="#" class="" onclick="window.open('/?mod=properties&amp;action=web_enquiries&amp;id=3392&amp;smode=fullscreen', 'web_enquiries','width=900,height=700,scrollbars=yes'); return false;">0 total /
+                				<strong>0 new</strong>
+                			</a> &nbsp;&nbsp;
+                			<span class="property-details-titles">See on website: N/A</span>
+                		</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table width="100%" border="0" cellspacing="8" cellpadding="0" bgcolor="#e8e8e8">
+                <tbody>
+                <tr>
+                    <td width="44">
+                        <a href="/?mod=landlords&amp;action=view&amp;id=2481" target="_blank" title="View Landlord's details. Opens a new window."><img src="/resources/views/image/new-layout/property-details-landlord-icon.gif" border="0" width="44" height="44"></a>
+                    </td>
+                    <td align="left" valign="middle">
+                        <p class="property-contacts">
+		              		<span class="property-orange">
+		              			<a href="/?mod=landlords&amp;action=view&amp;id=2481" target="_blank" title="View Landlord's details. Opens a new window.">Mr Mohammad Wembley</a>
+				           	</span>
+                            <span class="property-details-titles">Landlord</span>
+                            <span class="property-orange"><br>M:</span>
+                            <a href="#" onclick="openpopup('?mod=esms&amp;smode=fullscreen&amp;modid=2&amp;itemid=2481&amp;tempsel=1', 'esms', 'width=600,height=350,scrollbars=yes'); return false;">07398775589</a>
+                            <span class="property-orange">H:</span>
+                            <span class="property-orange">W:</span>
+                            <span class="property-orange">E:</span>
+                            <a href="#" onclick="openpopup('?mod=emailer&amp;smode=fullscreen&amp;modid=2&amp;itemid=2481&amp;tempsel=1', 'emailer', 'width=800,height=600,scrollbars=yes'); return false;">prime.trillium@gmail.com
+                            </a>
+                        </p>
+                    </td>
+                    <td align="right" valign="top">
+                        <div class="add-on-links-wrap relative" style="padding:10px 0px !important;">
+                            <div class="add-on-links-box">
+                                <table border="0" cellspacing="0" cellpadding="0">
+                                    <tbody>
+                                    <tr>
+                                        <td valign="top" align="left">
+                                            <a href="#" class="add-on-active-add-ons">View active add-ons</a>
+                                            <a href="javascript:;" class="add-on-links-box-link">Fixflo, Repair Management</a>
+                                        </td>
+                                        <td valign="top" align="left">
+                                            <a href="javascript:;" class="add-on-plus" onclick="show_add_on_div();">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-hover-link.gif" width="13" height="13" alt="">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="relative" id="add_on_div" style="display: none;">
+                                <div class="add-on-links-box-hover">
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=6" border="0" target="_blank">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=6" class="add-on-inactive" target="_blank">Rightmove/Zoopla Real-time feeds</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=7" border="0" target="_blank"><img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=7" class="add-on-inactive" target="_blank">Convey Law</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=13" border="0" target="_blank">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-tick.gif" width="18" height="12" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=13" class="add-on-active" target="_blank">Fixflo, Repair Management</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=14" border="0" target="_blank">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=14" class="add-on-inactive" target="_blank">GoCardless, Direct Debit made simple.</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=15" border="0" target="_blank">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=15" class="add-on-inactive" target="_blank">BriefYourMarket.com</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=16" border="0" target="_blank"><img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=16" class="add-on-inactive" target="_blank">Van Mildert - Tenant Referencing</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=17" border="0" target="_blank">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=17" class="add-on-inactive" target="_blank">Auto Matching Email Alerts</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=18" border="0" target="_blank">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=18" class="add-on-inactive" target="_blank">Goodlord - E-signing, Tenant Applications Made Easy</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=19" border="0" target="_blank">
+                                                <img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=19" class="add-on-inactive" target="_blank">MagicPlan - Revolutionary floorplan software</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=20" border="0" target="_blank"><img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=20" class="add-on-inactive" target="_blank">Legal for Landlords - Tenant referencing</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=21" border="0" target="_blank"><img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=21" class="add-on-inactive" target="_blank">Facebook and Twitter direct posts</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=22" border="0" target="_blank"><img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=22" class="add-on-inactive" target="_blank">InventoryBase</a>
+                                    <div class="relative">
+                                        <div class="add-on-status">
+                                            <a href="/?mod=addons&amp;action=view&amp;id=25" border="0" target="_blank"><img src="http://gallery.gnomen-europe.com/media/gallery.gnomen-europe.com/pms4/add-ons/add-on-links-info.gif" width="18" height="12" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <a href="/?mod=addons&amp;action=view&amp;id=25" class="add-on-inactive" target="_blank">InstaCheck</a>	<a href="/?mod=addons" class="add-ons-view-all" target="_blank">View all Add-ons</a>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td width="150" align="right" valign="middle">
+                        <table width="150" border="0" cellpadding="0" cellspacing="0">
+                            <tbody>
+                            <tr>
+                                <td width="150" align="right" valign="middle">
+                                    <div class="phase-prop-info-complete">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Details &amp; images ready" title="Details &amp; images ready" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-pub-web">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Published on website" title="Published on website" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-pub-portals">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Published on portals" title="Published on portals" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-inactive">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Viewings arranged/carried out" title="Viewings arranged/carried out" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-inactive">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Shortlisted" title="Applicants interested without an appointment" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-inactive">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Tenant application in progress" title="Tenant application in progress" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-inactive">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Offers made" title="Offers activities" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-inactive">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Active sale in progress" title="Sale in progress" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                    <div class="phase-inactive">
+                                        <a href="#">
+                                            <img src="/resources/views/image/transp.gif" alt="Active tenancy" title="Active tenancy" width="8" height="18" border="0">
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="app-content">
+            <a name="details"></a>
+            <ul class="landlord-tabs">
+                <li style="display:;">
+                    <a id="summary" href="javascript:;" class="details-active-tab" onclick="showTab('summary')">
+                        <span class="tab-label-summ-short">Sum</span>
+                        <span class="tab-label-summ-long">Summary</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="commsDetail" href="javascript:;" onclick="showTab('commsDetail')">
+                        <span class="tab-label-comms-short">Comms</span>
+                        <span class="tab-label-comms-long">Communications</span>
+                    </a>
+                </li>
+                <li style="display:;">
+                    <a id="description" href="javascript:;" onclick="showTab('description')">
+                        <span class="tab-label-summ-short">Det</span>
+                        <span class="tab-label-summ-long">Details</span>
+                    </a>
+                </li>
+                <li style="display:;">
+                    <a id="photos" href="javascript:;" onclick="showTab('photos')">
+                        <span class="tab-label-pics-short">Pics</span>
+                        <span class="tab-label-pics-med">Pics/EPC</span>
+                        <span class="tab-label-pics-long">Photos/EPC</span>
+                    </a>
+                </li>
+                <li style="display:;">
+                    <a id="attachments" href="javascript:;" onclick="showTab('attachments')">
+                        <span class="tab-label-attach-short">Attach</span>
+                        <span class="tab-label-attach-long">Attachments</span>
+                    </a>
+                </li>
+                <li style="display:;">
+                    <a id="viewings" href="javascript:;" onclick="showTab('viewings')">
+                        <span class="tab-label-3-stage-short">Viewings</span>
+                        <span class="tab-label-1-stage-long">Viewings </span>
+                        <span id="app_count">(0)</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="landlord-details-wrap">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="">
+                <tbody>
+                <tr>
+                    <td valign="top">
+                        <div class="summary">
+                            <div class="summary-box-left"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                <tr>
+                                    <td valign="top">
+                                        <div class="table-title-menu-right-wrapper" style="margin-top:0; padding-top:0;">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tbody><tr>
+                                                    <td><h3 class="table-title-menu-right">To-dos</h3></td>
+                                                    <td><select name="filter" id="filter" class="form-dropdown-174 todo-menu-details" onchange="filter_todo();">
+                                                        <option selected="selected" value="">Show all</option>
+                                                        <option value="overdue">Overdue</option>
+                                                        <option value="today">Today</option>
+                                                        <option value="this week">This week</option>
+                                                        <option value="within 2 weeks">Within 2 weeks</option>
+                                                        <option value="within 1 month">Within 1 month</option>
+                                                        <option value="all users">All users</option>
+                                                        <option value="my todos">My to-dos</option>
+                                                        <option value="completed">Completed</option>
+                                                        <option value="pending">Pending</option>
+                                                    </select></td>
+                                                </tr>
+                                                </tbody></table>
+                                        </div>
+                                        <div class="landlord-deatils-table-wrap table-wrap overflow-none-table" id="div_todos">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="overflow-none-table">
+                                                <tbody>
+                                                <tr id="tr_add_todo" style="display:none;">
+                                                    <td colspan="5" align="left" valign="middle">
+                                                        <table width="100%" border="0" cellspacing="0" cellpadding="10">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td><h4>Add a new to-do item</h4></td>
+                                                                            <td align="right"><a onclick="closeTR('TR_ID',TODOID)" href="javascript:;"><img src="/resources/views/image/icon-close-panel.png" alt="Manage presets" width="10" height="8" hspace="5"></a></td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><textarea name="todo_TODOID" class="form-add-textarea-99-percent-small" id="todo_TODOID" onclick="if(this.value == 'Enter your task to-do here...')this.value='';">Enter your task to-do here...</textarea></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+                                                                        <tbody><tr>
+                                                                            <td width="44%" align="left">To-do type</td>
+                                                                            <td align="left">&nbsp;</td>
+                                                                            <td width="52%" align="left">When is it due?</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="left">
+                                                                                <select name="t_type_TODOID" id="t_type_TODOID" class="form-dropdown-99-percent">
+                                                                                    <option value="to-do">To-do</option>
+                                                                                    <option value="call back">Call back</option>
+                                                                                    <option value="email">Email</option>
+                                                                                    <option value="letter">Letter or contract</option>
+                                                                                    <option value="check-in">Check-in</option>
+                                                                                    <option value="check-out">Check-out</option>
+                                                                                    <option value="-1">---------</option>
+                                                                                    <option value="landlord">Landlords/vendors</option>
+                                                                                    <option value="valuation">Valuations</option>
+                                                                                    <option value="property">Properties</option>
+                                                                                    <option value="offer">Offers</option>
+                                                                                    <option value="applicant">Applicants</option>
+                                                                                    <option value="tenant">Tenants</option>
+                                                                                    <option value="directory">Directory</option>
+                                                                                    <option value="sale">Sales</option>
+                                                                                    <option value="letting">Lettings</option>
+                                                                                    <option value="account">Accounts</option>
+                                                                                </select>
+                                                                            </td>
+                                                                            <td align="left">&nbsp;</td>
+                                                                            <td align="left">
+                                                                                <input id="due_date_TODOID" name="due_date_TODOID" type="text" value="2017-09-04" class="form-add-texfield-110" readonly="readonly">
+                                                                                <a id="due_date_TODOID-trigger" href="javascript:;">
+                                                                                    <img src="/resources/views/image/cal_icon.gif" width="16" height="16" border="0" alt="Select date">
+                                                                                </a>
+
+                                                                                <script type="text/javascript">
+                                                                                    if(document.getElementById('due_date_TODOID').value == '00-00-0000'){
+                                                                                        document.getElementById('due_date_TODOID').value = '';
+                                                                                    }
+                                                                                    Calendar.setup({
+                                                                                        trigger    : "due_date_TODOID-trigger",
+                                                                                        inputField : "due_date_TODOID",
+                                                                                        dateFormat : "%d-%m-%Y"
+                                                                                    });
+                                                                                </script>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="left">Who's responsible?</td>
+                                                                            <td align="left">&nbsp;</td>
+                                                                            <td align="left">&nbsp;</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="left">
+                                                                                <select name="user_TODOID" class="form-dropdown-99-percent" id="user_TODOID" onchange="change_text(TODOID);">
+                                                                                    <option value="139" selected="selected">user (User)</option>
+                                                                                </select>
+                                                                            </td>
+                                                                            <td align="left">&nbsp;</td>
+                                                                            <td align="left">&nbsp;</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td colspan="3" align="left">
+                                                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                                    <tbody>
+                                                                                    <tr>
+                                                                                        <td width="25" align="left" valign="middle"><input type="checkbox" name="notify_TODOID" id="notify_TODOID" value="1"></td>
+                                                                                        <td align="left" valign="middle">Notify <span id="span_user_TODOID">user</span> via email?</td>
+                                                                                    </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="left">&nbsp;</td>
+                                                                            <td align="left"><span id="loading_TODOID">&nbsp;</span></td>
+                                                                            <td align="left">
+                                                                                <input name="cancel" type="button" class="button-big-white" id="button2" value="Cancel" onclick="closeTR('TR_ID',TODOID)">&nbsp;
+                                                                                <input name="addtodo_TODOID" type="button" class="button-big-grn" id="addtodo_TODOID" value="Add" onclick="saveTodo(TODOID);">
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr id="tr_todo_7286" class="table-list-row-bg1">
+                                                    <td style="color:#D74937;" width="28" align="center">
+                                                        <input name="itemid2[]" type="checkbox" id="ch_todo_7286" value="7286" class="filecheck" onclick="updateTodo(7286,'o', 'to-do' )">
+                                                    </td>
+                                                    <td style="color:#D74937;" width="100" align="left">: 06 Jan 2016</td>
+                                                    <td style="color:#D74937;" width="36" align="center">
+                                                        <img alt="to-do" title="To-do" src="/resources/views/image/to-do-icons/to-do.png">
+                                                    </td>
+                                                    <td style="color:#D74937;" align="left">
+                                                        <div class="overflow-none">
+                                                            <a class="ctip" onmouseout="tooltip.hide();" onmouseover="tooltip.show('<strong>Todo:</strong> Floorplans<br/><strong>Due date:</strong> 06 Jan 2016<br/> <strong>Related to:</strong> <strong>Property - </strong> 00  Station Approach  0 London, HA0 2LA');" href="javascript:;">Floorplans</a>
+                                                        </div>
+                                                    </td>
+                                                    <td style="color:#D74937;" width="100" align="left">
+                                                        <a id="a_edit_7286" href="javascript:;" onclick="openpopup('/?mod=todos&amp;action=edit&amp;id=7286&amp;smode=fullscreen','Edit todo', 'width=800,height=600,scrollbars=yes')" class="action-edit">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0">
+                                                        </a>
+                                                        <a onclick="removeTodo(7286)" href="javascript:;" class="action-trash">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0">
+                                                        </a>
+                                                        <a onclick="openpopup('?mod=todos&amp;action=communication&amp;id=7286&amp;smode=fullscreen', 'COMM', 'width=800,height=600,scrollbars=yes');" href="javascript:;" class="action-communications">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0"></a>
+                                                        <a id="a_arch_7286" href="javascript:;" onclick="openpopup('/?mod=todos&amp;action=thread&amp;id=7286&amp;smode=fullscreen','Todos', 'width=800,height=600,scrollbars=yes')" class="action-history3">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr id="tr_todo_7287" class="table-list-row-bg-alt">
+                                                    <td style="color:#D74937;" width="28" align="center">
+                                                        <input name="itemid2[]" type="checkbox" id="ch_todo_7287" value="7287" class="filecheck" onclick="updateTodo(7287,'o', 'to-do' )">
+                                                    </td>
+                                                    <td style="color:#D74937;" width="100" align="left">: 06 Jan 2016</td>
+                                                    <td style="color:#D74937;" width="36" align="center">
+                                                        <img alt="to-do" title="To-do" src="/resources/views/image/to-do-icons/to-do.png">
+                                                    </td>
+                                                    <td style="color:#D74937;" align="left">
+                                                        <div class="overflow-none">
+                                                            <a class="ctip" onmouseout="tooltip.hide();" onmouseover="tooltip.show('<strong>Todo:</strong> Professional pictures<br/><strong>Due date:</strong> 06 Jan 2016<br/> <strong>Related to:</strong> <strong>Property - </strong> 00  Station Approach  0 London, HA0 2LA');" href="javascript:;">Professional pictures</a>
+                                                        </div>
+                                                    </td>
+                                                    <td style="color:#D74937;" width="100" align="left">
+                                                        <a id="a_edit_7287" href="javascript:;" onclick="openpopup('/?mod=todos&amp;action=edit&amp;id=7287&amp;smode=fullscreen','Edit todo', 'width=800,height=600,scrollbars=yes')" class="action-edit">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0">
+                                                        </a>
+                                                        <a onclick="removeTodo(7287)" href="javascript:;" class="action-trash">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0">
+                                                        </a>
+                                                        <a onclick="openpopup('?mod=todos&amp;action=communication&amp;id=7287&amp;smode=fullscreen', 'COMM', 'width=800,height=600,scrollbars=yes');" href="javascript:;" class="action-communications">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0">
+                                                        </a>
+                                                        <a id="a_arch_7287" href="javascript:;" onclick="openpopup('/?mod=todos&amp;action=thread&amp;id=7287&amp;smode=fullscreen','Todos', 'width=800,height=600,scrollbars=yes')" class="action-history3">
+                                                            <img src="/resources/views/image/icons16px/transp.gif" border="0">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="landlord-contacts to-do-panel-bottom">
+                                            <a onclick="window.open('/?mod=todos&amp;action=show_archive&amp;modid=1&amp;itemid=3392&amp;smode=fullscreen','archive todo', 'width=800,height=600,scrollbars=yes')" href="javascript:;">View archived to-dos</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <a onclick="window.open('/?mod=todos&amp;action=add&amp;modid=1&amp;itemid=3392&amp;smode=fullscreen','add todo', 'width=800,height=600,scrollbars=yes')" href="javascript:;">Add to-do</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                                <div style="margin-top:20px; display:{sale_disp}"><div class="table-title-menu-right-wrapper-blue">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                        <tr>
+                                            <td><h3 class="table-title-blue" id="h_let_total" style="margin-top:0;">Sales in progress</h3></td>
+                                            <td width="30">&nbsp;</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                    <div class="">
+                                        <div id="sale_props" class="landlord-deatils-table-wrap table-wrap table-list-padding-fix">
+                                            <div align="center"><strong>No sale in progress</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top:20px; display:{let_disp}"><div class="table-title-menu-right-wrapper-green">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                        <tr>
+                                            <td><h3 class="table-title-green" id="h_let_total" style="margin-top:0;">Active tenancies <span class="font11"> (0)</span></h3></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                    <div class="">
+                                        <div id="sale_props" class="landlord-deatils-table-wrap table-wrap table-list-padding-fix"> <div align="center"><strong>No active tenancy found</strong></div></div>
+                                    </div></div>
+                                <div class="landlord-contacts to-do-panel-bottom"><a href="javascript:;" onclick="window.open('/?mod=properties&amp;action=previous_tenancies&amp;id=3392&amp;smode=fullscreen', 'newHistory', 'width=800,height=500,scrollbars=1'); return false;">+ Show previous tenancies</a></div>
+
+                                <div style="margin-top:20px; display:none;" id="previous_tenancies"><div class="table-title-menu-right-wrapper-green"></div>
+                                    <div class=""></div>
+                                </div>
+                                <div class="landlord-details-info">Branch: Haringey Estates</div>
+                                <div class="landlord-details-info">Negotiator: user</div>
+                                <div class="landlord-details-info" style="display:none;">Internal ref: </div>
+                                <div class="landlord-details-info">ID: 3392</div>
+                                <div class="landlord-details-info">Created on: 06 Jan 2016</div>
+                                <div class="landlord-details-info">Enabled: Yes</div>
+                                <div class="landlord-details-info">Archived: No</div>
+                                <div class="landlord-details-info">Internal status:
+                                    <span class="showinternalstatusU1">--See units--</span>
+                                    <span class="showinternalstatus1">Available</span>
+                                    <span class="showinternalstatusOH1">Onhold/Occupied</span>
+                                </div>
+                            </div>
+                            <div class="summary-box-right"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                <tr>
+                                    <td valign="top"><h3 class="table-title" style="margin-top:0;">Activity summary</h3>
+                                        <div class="landlord-info-box">
+                                            <div class="landlord-deatils-activity">
+                                                <span class="font26 property-orange underline-none"><a href="#" onclick="showTab('viewings'); return false;">0</a></span> Upcoming viewings<br>
+                                                <span class="font26 property-orange underline-none"><a href="#" onclick="showTab('viewings'); return false;">0</a></span> Viewings with feedback<br>
+                                                <span class="font26 property-orange underline-none"><a href="#" onclick="showTab('viewings'); return false;">0</a></span> Viewings awaiting feedback
+                                            </div>
+
+
+
+                                            <div class="landlord-deatils-activity-right">
+                                                <span class="font26 property-orange underline-none"><a href="#" onclick="showTab('viewings'); return false;">0</a></span> People interested<br>
+                                                <span class="font26 property-orange underline-none"><a href="#" onclick="showTab('offers'); return false;">0</a></span> Total offers<br>
+                                                <span class="font26 property-orange underline-none"><a href="#" onclick="showTab('inspections'); return false;">0</a></span> Inspections ovedue</div>
+                                            <div class="clearing-div"><img src="/resources/views/image//new-layout/transp.gif" height="1" width="5"></div></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td valign="top"><h3 class="table-title" style="margin-top:0; padding-top:0;">Recent amendments</h3>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="dash-panel-wrapper-wo">
+                                            <tbody>
+                                            <tr>
+                                                <td class="new-main-panel-content overflow-none-table">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table-list-inner overflow-none-table">
+                                                        <tbody>
+                                                        <tr>
+
+                                                            <td height="26" width="80" align="left" valign="middle" class="table-list-row1-actions"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Date');">Date</div></td>
+                                                            <td height="26" width="40" align="left" valign="middle" class="table-list-row1-actions"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('User');">User</div></td>
+                                                            <td height="26" align="left" valign="middle" class="table-list-row1-actions"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Amendment');">Amendment</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg1">
+
+                                                            <td align="left" valign="middle">
+                                                                <div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('30 Aug 2017');">30 Aug 2017
+                                                                </div>
+                                                            </td>
+                                                            <td align="left" valign="middle">
+                                                                <div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('user');">user
+                                                                </div>
+                                                            </td>
+                                                            <td align="left" valign="middle">
+                                                                <div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Record edited');">Record edited</div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg-alt">
+
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('07 May 2017');">07 May 2017</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('jaber');">jaber</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Record edited');">Record edited</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg1">
+
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('08 Jan 2016');">08 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Record edited');">Record edited</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg-alt">
+
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('06 Jan 2016');">06 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Property is emailed to madhu.gu01@gmail.com');">Property is emailed to madhu.gu01@gmail.com</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg1">
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('06 Jan 2016');">06 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Property is emailed to erussell75@gmail.com');">Property is emailed to erussell75@gmail.com</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg-alt">
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('06 Jan 2016');">06 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Property is emailed to catehow@hotmail.com');">Property is emailed to catehow@hotmail.com</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg1">
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('06 Jan 2016');">06 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Property is emailed to yonsun.ryoo@gmail.com');">Property is emailed to yonsun.ryoo@gmail.com</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg-alt">
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('06 Jan 2016');">06 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Property is emailed to reann.a.pinnock@hotmail.com');">Property is emailed to reann.a.pinnock@hotmail.com</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg1">
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('06 Jan 2016');">06 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Property is emailed to ilayilay@me.com');">Property is emailed to ilayilay@me.com</div></td>
+                                                        </tr>
+                                                        <tr class="table-list-row-bg-alt">
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('06 Jan 2016');">06 Jan 2016</div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('');"></div></td>
+                                                            <td align="left" valign="middle"><div class="overflow-none" onmouseout="tooltip.hide();" onmouseover="tooltip.show('Property is emailed to girinathr@gmail.com');">Property is emailed to girinathr@gmail.com</div></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="right" class="table-list-bottom-row"><a href="javascript:;" onclick="window.open('/?mod=properties&amp;action=history&amp;id=3392&amp;smode=fullscreen', 'newHistory', 'width=800,height=600,scrollbars=1'); return false;"><img src="/resources/views/image//icons20px/history3.png" alt="History" width="26" height="20"></a></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                        <div class="commsDetail" style="display:none;"></div>
+                        <div class="description" style="display:none;"></div>
+                        <form name="propertyForm" id="propertyForm" action="" method="">
+                            <div class="photos" style="display:none;"></div>
+                            <div class="floorplan" style="display:none;"></div>
+                        </form>
+                        <div class="attachments" style="display:none;"></div>
+                        <div class="viewings" style="display:none;"></div>
+                        <div class="offers" style="display:none;"></div>
+                        <div class="inspections" style="display:none;"></div>
+                        <div class="ib_inspections" style="display:none;"></div>
+                        <div class="key" style="display:none;"></div>
+                        <div class="boards" id="boards_div" style="display:none;"> </div>
+                        <div class="workorder" style="display:none;"></div>
+                        <div class="loader" style="display:none; text-align: center;"></div>
+
+                        <div id="upload_images"></div>
+                        <div class="unit" id="property-content-bottom" style="display:none;"></div>
+                        <form action="/?mod=properties&amp;action=pgallery&amp;smode=transparent" name="GalleryForm" id="GalleryForm" method="post">
+                            <input type="hidden" name="pid[]" id="pid3392" value="3392">
+                        </form>
+                    </td>
+                    <td class="units-spacing-left0">&nbsp;</td>
+                    <td align="left" valign="top" class="property-status-table units-spacing-right0">
+                        <div class="units-hide-status-panel0"><h3 class="table-title-prop-blue">Status<span class="font11"></span></h3>
+                            <p><span onmouseover="tooltip.show('The Status is used for your website, window cards, particulars and lists. This is not visible on the portals.');" onmouseout="tooltip.hide();" class="hint-underline">Status:</span><br>
+                                <span class="property-orange">To let</span></p>
+                            <p>Portal status:<br>
+                                <span class="property-orange">Available</span></p>
+                            <p>Available from<br>
+                                <span class="property-orange">09 Jan 2016</span></p>
+
+                            <p><img src="/resources/views/image/new-layout/status-tick-Yes.png" width="9" height="12">
+                                <span onmouseover="tooltip.show('Photos, short and long descriptions are present.');" onmouseout="tooltip.hide();" class="hint-underline property-description-Yes"><a href="/?mod=properties&amp;action=edit&amp;id=3392&amp;tab=2" class="underline-none colour-grey-medium">Details &amp; photos</a></span>
+                                <span onmouseover="tooltip.show('Missing data: Photos, short or long descriptions are incomplete.');" onmouseout="tooltip.hide();" class="hint-underline property-description-NoYes"><a href="/?mod=properties&amp;action=edit&amp;id=3392&amp;tab=2" class="underline-none colour-red">Details &amp; photos</a></span>
+                            </p>
+                            <p>
+                                <img src="/resources/views/image/new-layout/status-tick-No.png" alt="" width="9" height="12">
+                                <span class="certificate-validNo hint-underline" onmouseover="tooltip.show('This property has a valid certificate listed. Click for more info.');" onmouseout="tooltip.hide();">
+								                      <a href="javascript:;" onclick="openpopup('/?mod=properties&amp;action=certificates&amp;smode=fullscreen&amp;id=3392','certificate','width=800,height=600,scrollbars=yes')" class="underline-none">
+								                      <span class="colour-grey-medium">Valid certificate</span>
+								                      </a>
+								                      </span>
+                                <span class="certificate-validNoNo hint-underline" onmouseover="tooltip.show('This property does not have a valid certificate listed. Click for more info.');" onmouseout="tooltip.hide();">
+								                      <a href="javascript:;" onclick="openpopup('/?mod=properties&amp;action=certificates&amp;smode=fullscreen&amp;id=3392','certificate','width=800,height=600,scrollbars=yes')" class="underline-none">
+								                      <span class="colour-red">No certificate</span>
+								                      </a>
+								                      </span>
+                            </p>
+                            <p><img src="/resources/views/image/new-layout/status-tick-Published.png" alt="" width="9" height="12"> <span onmouseover="tooltip.show('This property is currently set to be Published on your website.');" onmouseout="tooltip.hide();" class="hint-underline"><a href="/?mod=properties&amp;action=edit&amp;id=3392&amp;tab=6" class="underline-none">Website</a></span></p>
+                            <p><img src="/resources/views/image/new-layout/status-tick-Published.png" alt="" width="9" height="12"> <a href="/?mod=properties&amp;action=edit&amp;id=3392&amp;tab=6" class="underline-none"><span onmouseover="tooltip.show('The portal datafeeds have been set to be Published. To see which portals have been enabled, go to Edit mode.');" onmouseout="tooltip.hide();" class="hint-underline">Portals</span></a></p>
+                            <p><img src="/resources/views/image/new-layout/status-tick-Yes.png" alt="" width="9" height="12"> <span onmouseover="tooltip.show('Check the data you have prepared to send to the portals and check for any potential validation errors.');" onmouseout="tooltip.hide();" class="hint-underline"><a href="/?mod=properties&amp;action=portalpreview&amp;id=3392&amp;smode=fullscreen" target="_blank" class="colour-grey-medium underline-none">Portal data: <span class="property-Yes">Yes</span>
+								                  </a>
+								              </span>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

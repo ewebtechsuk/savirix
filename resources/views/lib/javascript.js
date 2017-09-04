@@ -821,13 +821,12 @@ function DisplayFormValues()
 
 function emailfilllookup(f,elem)
 {
-
+ debugger;
 	var str = '';
 	//elem=document.getElementById('emaillookup').elements;
 	
-	for(var i = 1; i < elem.length-1; i++)
+	for(var i = 1; i < elem.length; i++)
 	{
-
 		if(elem[i].type=='checkbox')
 		{
 			var elemntname=elem[i].name;
@@ -841,7 +840,23 @@ function emailfilllookup(f,elem)
 		}
 
 	}
+        /*	for(var i = 1; i < elem.length-1; i++)
+	{
+		if(elem[i].type=='checkbox')
+		{
+			var elemntname=elem[i].name;
 
+			if(elem[i].checked==true)
+			{
+
+				str +=elem[i].value+",";
+
+			}
+		}
+
+	}*/
+
+        
 	document.getElementById(f).value = str.replace(/,$/,'');
 
 	document.getElementById('modselectorframe').style.display = 'none';

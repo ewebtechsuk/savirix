@@ -110,7 +110,7 @@ angular
     $scope.getProperties = function() {
       $scope.properties = Properties.query();
     };
-        $scope.getProperties();
+    $scope.getProperties();
 
     $scope.createProperty = function(isValid) {
       

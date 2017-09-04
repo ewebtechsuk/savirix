@@ -1,0 +1,277 @@
+@charset "utf-8";
+/* CSS Document */
+h2.unit-page-title1{
+	font-size:14px;
+	color:#0094c9;
+	margin:0;
+	font-weight:normal;
+	padding:0;
+}
+h2.unit-page-title2{
+	font-size:20px;
+	color:#fff;
+	margin:0;
+	font-weight:normal;
+	padding:0;
+}
+a.unit-add-link{
+	font-size:14px;
+	color:#0094c9;
+	margin:0;
+	padding:0;
+	text-decoration:none;
+}
+.unit-filter{
+	font-size:14px;
+	color:#0094c9;
+	width:100%;
+	margin:8px 0 32px;
+	padding:4px 0;
+}
+
+/*-----TABLE-----*/
+.unit-table-wrap td{
+
+white-space: nowrap;
+  overflow: hidden;
+  height:12px;
+   text-overflow:ellipsis;
+}
+.unit-table-wrap .table-list-row1-inactive{
+	color:#fff;
+	font-size:12px;
+	padding:12px 8px;
+	
+}
+.unit-table-wrap .unit-table-title{
+	background:#9fa19f url(/templates/standard/images/new-layout/unit-table-bg3.gif) right no-repeat;
+}
+.unit-table-wrap .unit-table-title{
+	background:#9fa19f url(/templates/standard/images/new-layout/unit-table-bg3.gif) right no-repeat;
+}
+.unit-table-wrap .table-list-row1-inactive a{
+	color:#fff;
+	text-decoration:none;
+}
+.unit-table-wrap tr.table-list-row-bg1 td{
+	font-size:12px;
+	padding:8px 8px 9px;
+	color:#464646;
+  
+}
+.unit-table-wrap tr.table-list-row-bg-alt td{
+	font-size:12px;
+	padding:8px 8px 9px;
+	color:#464646;
+}
+.unit-table-wrap tr.table-list-row-bg1-selected td{
+	background:none;
+	font-size:12px;
+	padding:14px 8px;
+	color:#464646;
+	
+}
+.unit-table-wrap tr.table-list-row-bg1 {background: url(/templates/standard/images/new-layout/unit-table-bg.gif) right no-repeat  #FFFFFF;}
+.unit-table-wrap tr.table-list-row-bg-alt {background: url(/templates/standard/images/new-layout/unit-table-bg2.gif) right no-repeat #F0F0F0;}
+.unit-table-wrap tr.table-list-row-bg1-selected {background: url(/templates/standard/images/new-layout/unit-table-selected.gif) right;}
+
+.unit-table-wrap tr.table-list-row-bg1:hover {background: url(/templates/standard/images/new-layout/unit-table-bg4.gif) right no-repeat  #9bdaf0;}
+.unit-table-wrap tr.table-list-row-bg-alt:hover {background: url(/templates/standard/images/new-layout/unit-table-bg4.gif) right no-repeat #9bdaf0;}
+.unit-table-wrap tr.table-list-row-bg1-selected:hover {background: url(/templates/standard/images/new-layout/unit-table-selected.gif) right;}
+/*-----table-end----*/
+
+.unit-details{
+	background:#65b2ce;
+	overflow:hidden;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding:8px;
+	min-width:525px;
+	margin-top:0px;
+}
+	
+	
+
+.unit-details-actions ul{ margin:0 4px; padding:0; list-style:none; display:inline;}
+.unit-details-actions li{ margin:0 1px 0 0; padding:0; list-style:none; display:inline;}
+.unit-details-actions a{ 
+display: inline-block; 
+background-image: url(/templates/standard/images/new-layout/unit-links.gif); 
+background-repeat:no-repeat ;
+margin:0 -4px 0 0;
+}
+.unit-details-actions a span{ display:none;}
+.unit-details-actions a:hover span{
+	display:block;
+	position:absolute;
+	top:15px;
+	right:16px;
+	font-size:12px; color:#0094c9;
+}
+.unit-details-actions a:link, .unit-details-actions a:visited, .unit-details-actions a:active{
+	text-decoration:none;
+}
+.unit-details-actions a.unit-action1{ background-position:0px 0px; }
+.unit-details-actions a.unit-action2{ background-position:-28px 0; }
+.unit-details-actions a.unit-action3{ background-position:-56px 0;}
+.unit-details-actions a.unit-action4{ background-position:-84px 0;}
+.unit-details-actions a.unit-action5{ background-position:-112px 0; }
+.unit-details-actions a.unit-action6{ background-position:-140px 0;}
+.unit-details-actions a.unit-action7{ background-position:-168px 0; }
+.unit-details-actions a.unit-action8{ background-position:-196px 0;}
+.unit-details-actions a.unit-action9{ background-position:-224px 0;}
+.unit-details-actions a.unit-action10{ background-position:-252px 0;}
+.unit-details-actions a.unit-action11{ background-position:-280px 0;}
+.unit-details-actions a.unit-action12{ background-position:-308px 0;}
+.unit-details-actions a.unit-action13{ background-position:-336px 0;}
+.unit-details-actions a.unit-action14{ background-position:-364px 0;}
+.unit-details-actions a.unit-action15{ background-position:-392px 0;}
+.unit-details-actions a.unit-action16{ background-position:-420px 0;}
+.unit-details-actions a.unit-action17{ background-position:-448px 0;}
+.unit-details-actions a.unit-action18{ background-position:-476px 0;}
+.unit-details-actions a.unit-action19{ background-position:-504px 0;}
+.unit-details-actions a.unit-action20{ background-position:-532px 0; margin-right:1px;}
+
+.unit-details-actions a:hover.unit-action1{ background-position:0px -28px;}
+.unit-details-actions a:hover.unit-action2{ background-position:-28px -28px;}
+.unit-details-actions a:hover.unit-action3{ background-position:-56px -28px;}
+.unit-details-actions a:hover.unit-action4{ background-position:-84px -28px;}
+.unit-details-actions a:hover.unit-action5{ background-position:-112px -28px;}
+.unit-details-actions a:hover.unit-action6{ background-position:-140px -28px;}
+.unit-details-actions a:hover.unit-action7{ background-position:-168px -28px; }
+.unit-details-actions a:hover.unit-action8{ background-position:-196px -28px;}
+.unit-details-actions a:hover.unit-action9{ background-position:-224px -28px; }
+.unit-details-actions a:hover.unit-action10{ background-position:-252px -28px;}
+.unit-details-actions a:hover.unit-action11{ background-position:-280px -28px;}
+.unit-details-actions a:hover.unit-action12{ background-position:-308px -28px;}
+.unit-details-actions a:hover.unit-action13{ background-position:-336px -28px;}
+.unit-details-actions a:hover.unit-action14{ background-position:-364px -28px;}
+.unit-details-actions a:hover.unit-action15{ background-position:-392px -28px;}
+.unit-details-actions a:hover.unit-action16{ background-position:-420px -28px;}
+.unit-details-actions a:hover.unit-action17{ background-position:-448px -28px;}
+.unit-details-actions a:hover.unit-action18{ background-position:-476px -28px;}
+.unit-details-actions a:hover.unit-action19{ background-position:-504px -28px; }
+.unit-details-actions a:hover.unit-action20{ background-position:-532px -28px; margin-right:1px;}
+
+
+
+.unit-status-table{
+	font-size:13px;
+	margin-top:32px;
+	color:#fff;
+}
+.unit-status-table td{
+	font-size:13px;
+	color:#fff;
+}
+.unit-status{
+	font-size:13px;
+	margin-top:32px;
+	color:#4d4d4d;
+}
+.unit-status a{
+	color:#4d4d4d;
+}
+#property-content-ml #details-tabs-wrapper .tabs-ul-style{
+	margin:32px 0 0;
+	padding:0;
+}
+#property-content-ml #details-tabs-wrapper .tabs-ul-style li{
+	margin:0 5px 0 0;
+	font-size:12px;
+	list-style:none;
+	display:inline-block;
+	background-color:#fff;
+}
+#property-content-ml #details-tabs-wrapper .tabs-ul-style a{
+	padding:8px 4px;
+	font-size:12px;
+	list-style:none;
+	display:inline-block;
+	background-color:#fff;
+	text-decoration:none;
+	color:#65b2ce;
+}
+#property-content-ml #details-tabs-wrapper .tabs-ul-style a:hover{
+	background-color:#efefef;
+}
+#property-content-ml #details-tabs-wrapper .tabs-ul-style a.details-active-tab{
+	background-color:#0094C9;
+	color:#fff;
+}
+
+#property-content-ml #details-tabs-wrapper {border-bottom:none;}
+
+.unit-details-content-wrap{
+	padding:16px 8px;
+	margin:4px 0;
+	background-color:#FFF;
+}
+.unit-details-content-wrap a{
+	color:#0094C9;
+	text-decoration:none
+}
+.details-box-brown{
+	background-color:#9fa19f;
+	font-size:12px;
+	color:#4d4d4d;
+	padding:1px;
+}
+.details-box-brown a{
+	color:#0094C9;
+	margin:0;
+	padding:0;
+	text-decoration:none
+}
+.details-box-brown h3{
+	color:#4d4d4d;
+	margin:0;
+	padding:0;
+	font-weight:normal;
+	font-size:13px;
+}
+
+.unit-details-content-wrap h2{
+	color:#4d4d4d;
+	margin:0 0 8px;
+	padding:0;
+	font-weight:normal;
+	font-size:13px;
+}
+.details-box-white, .details-box-blue{
+	background-color:#efefef;
+	color:#4d4d4d;
+	font-size:12px;
+	padding:8px;
+}
+.details-box-grey{
+	background-color:#fff;
+	color:#4d4d4d;
+	font-size:12px;
+	padding:8px;
+	border:1px solid #efefef;
+}
+.details-box-grey ul{
+	margin:0 0 0 16px; padding:0;}
+	
+
+/* Hides the right column status panel thing if multilets are displayed */
+td.units-spacing-right0 {width:138px;}
+td.units-spacing-right1 {width:1px;}
+td.units-spacing-left0 {width:20px;}
+td.units-spacing-left1 {width: 1px;}
+.units-hide-status-panel0 {display:block; width:138px;}
+.units-hide-status-panel1 {display:none;}
+
+
+
+.unit-details-bubble {-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+color:#6F6F6F;
+padding:15px;
+background-color:#efefef;
+margin-top:20px;
+}
+.required{color:red;}

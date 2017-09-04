@@ -1,0 +1,25 @@
+ @media (min-width: 1000px) and (max-width: 1073px) { .top-nav1 { background:url(/templates/standard/images/new-layout/gnomen-logo3.gif) right no-repeat #d3d3d3; background-size:50px; !important}}
+ @media (min-width: 880px) and (max-width: 1000px) { .top-nav1 {background:url(/templates/standard/images/new-layout/gnomen-logo3.gif) right no-repeat #d3d3d3; background-size:50px; !important}}
+ @media (min-width: 600px) and (max-width: 880px) { .top-nav1 {background:url(/templates/standard/images/new-layout/gnomen-logo3.gif) right no-repeat #d3d3d3; background-size:50px; !important}}
+ @media (min-width: 0px) and (max-width: 600px) { .top-nav1 {position:absolute;background:url(/templates/standard/images/new-layout/gnomen-logo3.gif) right no-repeat #d3d3d3; !important}}
+ 
+  
+ /*added on 23-05-2017*/
+.lead-logo {
+    width: 55px !important;
+    margin-top: -46px !important;
+}
+.lead-logo-tablet {
+    width: 55px !important;
+    margin-top: 0px !important;
+}
+@media (min-width: 0px) and (max-width: 1610px) {
+	#top-nav2 { background-image: none !important;}
+	
+	
+	}
+@media (min-width: 1610px) and (max-width: 999999999999px) {
+.lead-logo {display:none !important}
+	
+	
+	}
