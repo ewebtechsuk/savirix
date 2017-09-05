@@ -1,4 +1,4 @@
-angular.module( 'myApp.Property' )
+angular.module( 'myApp' )
 	.factory( 'Properties' , [ '$resource' , 'config' , function ( $resource , config ) {
 		return $resource( config.api + 'property/:id' , { id : '@id' } , {
 			update : {

@@ -9,15 +9,15 @@ angular.module('ngConfig', [])
       url: '/east_frontend/#!/',
 	});
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
-	'ui.tinymce',
+var ressApp = angular.module('myApp', [
+  'ui.tinymce',
   'ngRoute',
   'ngConfig',
   "ngResource" ,
   'myApp.home',
-  'myApp.sell',
-  'myApp.version',
-  'myApp.Property'
+//  'myApp.sell',
+//  'myApp.version',
+//  'myApp.Property',
 ])
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');

@@ -1,9 +1,8 @@
-'use strict';
+
 
 angular
-    .module('myApp.Property', ['ngRoute'])
-    .controller('ViewPropertyCtrl', ['$scope', '$http', '$route', 'config', 'Properties',
-        function($scope, $http, $route, config, Properties) {
+    .module('myApp')
+    .controller('ViewPropertyCtrl', function($scope, $http, $route, config, Properties) {
             var id = $route.current.params.property_id.split(":")[1];
             $scope.getProperty = function() {
                 Properties.retrieve({id:id})
@@ -15,4 +14,4 @@ angular
             };
 
             $scope.getProperty();
-    }]);
+    });

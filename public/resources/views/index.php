@@ -53,10 +53,10 @@
 
   <!--- Controllers for every components --->
   <!-- Controllers for Property -->
+  <script src="/resources/views/js/factories/Property.js"></script>
   <script src="/resources/views/pages/property/property.js"></script>
   <!--<script src="/resources/views/pages/property/list-property.js"></script>-->
-  <script src="/resources/views/pages/property/view-property.js"></script>
-  <script src="/resources/views/js/factories/Property.js"></script>
+  <!--<script src="/resources/views/pages/property/view-property.js"></script>-->
 
   <script src="/resources/views/components/version/version.js"></script>
   <script src="/resources/views/components/version/version-directive.js"></script>

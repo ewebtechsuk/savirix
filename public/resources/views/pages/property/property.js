@@ -1,37 +1,34 @@
-'use strict';
-
 angular
-  .module('myApp.Property', ['ngRoute'])
-  .controller('PropertyCtrl', ['$scope', '$http', 'config', '$route', 'Properties', '$window', 
-    function($scope, $http, config, $route, Properties, $window) {
-    
+  .module('myApp')
+  .controller('PropertyCtrl',  function($scope, $http, config, $route, Properties, $window) {
+
     // Initialize the variable
 
     var d = new Date();
     var strDate = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
     $("#available").val(strDate);
-    
+
     $scope.host = $window.location.protocol + "//" + $window.location.host + $window.location.pathname + "#!";
-    
+
     $scope.selectAll = false;
-    
-    $scope.checkboxes = 
-      [{id: 'find_a_property', label: 'Find A Property', checked: false}, 
-      {id: 'globrix', label: 'Globrix', checked: false}, 
+
+    $scope.checkboxes =
+      [{id: 'find_a_property', label: 'Find A Property', checked: false},
+      {id: 'globrix', label: 'Globrix', checked: false},
       {id: 'gumtree', label: 'Gumtree', checked: false},
-      {id: 'home_hunter', label: 'Home Hunter', checked: false}, 
-      {id: 'homes24', label: 'Homes24', checked: false}, 
-      {id: 'look_a_property', label: 'Look 4 A Property', checked: false}, 
-      {id: 'movehut', label: 'Movehut', checked: false}, 
+      {id: 'home_hunter', label: 'Home Hunter', checked: false},
+      {id: 'homes24', label: 'Homes24', checked: false},
+      {id: 'look_a_property', label: 'Look 4 A Property', checked: false},
+      {id: 'movehut', label: 'Movehut', checked: false},
       {id: 'market', label: 'On the market (Agents mutual)', checked: false},
-      {id: 'primelocation', label: 'Primelocation', checked: false}, 
+      {id: 'primelocation', label: 'Primelocation', checked: false},
       {id: 'property_finder', label: 'Property finder', checked: false},
-      {id: 'property_index',  label: 'Property Index', checked: false}, 
-      {id: 'propertylive',  label: 'Propertylive', checked: false}, 
-      {id: 'rightmove', label: 'Rightmove', checked: false}, 
-      {id: 'rightmove_overseas',  label: 'Rightmove Overseas', checked: false}, 
-      {id: 'zoomf', label: 'Zoomf', checked: false}, 
-      {id: 'zoomf', label: 'Zoopla (Think Property)', checked: false}, 
+      {id: 'property_index',  label: 'Property Index', checked: false},
+      {id: 'propertylive',  label: 'Propertylive', checked: false},
+      {id: 'rightmove', label: 'Rightmove', checked: false},
+      {id: 'rightmove_overseas',  label: 'Rightmove Overseas', checked: false},
+      {id: 'zoomf', label: 'Zoomf', checked: false},
+      {id: 'zoomf', label: 'Zoopla (Think Property)', checked: false},
       {id: 'zoopla_overseas', label: 'Zoopla Overseas', checked: false}];
 
     $scope.cbChecked = function(){
@@ -42,7 +39,7 @@ angular
         }
       });
     }
-    
+
     $scope.toggleAll = function() {
       var bool = true;
       if ($scope.selectAll) {
@@ -52,7 +49,7 @@ angular
         v.checked = !bool;
         $scope.selectAll = !bool;
       });
-    } 
+    }
 
     $scope.available = strDate;
     $scope.for = "2";
@@ -97,15 +94,15 @@ angular
         plugins : 'advlist autolink link image lists charmap print preview',
         skin: 'lightgray',
         theme : 'modern'
-    }; 
+    };
 
     $scope.getProperty = function() {
       Services.get({id:$route.current.params.property_id})
               .$promise.then(function(data)
-      {               
+      {
           $scope.property = data;
-      });      
-    }
+      });
+    };
 
     $scope.getProperties = function() {
       $scope.properties = Properties.query();
@@ -113,12 +110,12 @@ angular
     $scope.getProperties();
 
     $scope.createProperty = function(isValid) {
-      
+
       if( ! isValid )
       {
 
-      } else {          
-          $scope.propertyData = new Properties();    
+      } else {
+          $scope.propertyData = new Properties();
           // Property Info
           $scope.propertyData.landlord = $scope.landlord;
           $scope.propertyData.for = $scope.for;
@@ -126,7 +123,7 @@ angular
           $scope.propertyData.service_type = $scope.service_type;
           $scope.propertyData.available = $scope.available;
           $scope.propertyData.furniture = $scope.furniture;
-          $scope.propertyData.pets = $scope.pets;      
+          $scope.propertyData.pets = $scope.pets;
           $scope.propertyData.smoking = $scope.smoking;
           $scope.propertyData.category = $scope.category;
           $scope.propertyData.property_type = $scope.property_type;
@@ -138,7 +135,7 @@ angular
 
           $scope.propertyData.price_rent2 = $scope.price_rent2;
           $scope.propertyData.currency2 = $scope.currency2;
-          
+
 
           $scope.propertyData.price_rent = $scope.price_rent;
           $scope.propertyData.currency = $scope.currency;
@@ -157,7 +154,7 @@ angular
           $scope.propertyData.property_no = $scope.property_no;
           $scope.propertyData.property_name = $scope.property_name;
           $scope.propertyData.add1 = $scope.add1;
-          $scope.propertyData.add2 = $scope.add2;@
+          $scope.propertyData.add2 = $scope.add2;
           $scope.propertyData.area = $scope.area;
           $scope.propertyData.county = $scope.county;
           $scope.propertyData.country = $scope.country;
@@ -222,7 +219,7 @@ angular
 
           $scope.propertyData.$save(function(data){
               $window.location.href = $scope.host + "/property";
-          });           
+          });
       }
     };
-  }]);
+  });
