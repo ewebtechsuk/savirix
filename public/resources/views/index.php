@@ -50,23 +50,20 @@
   <script type="text/javascript" src="/resources/views/lib/slick/slick.js"></script>
   <script src="/resources/views/pages/home/home.js"></script>
   <script src="/resources/views/pages/sell/sell.js"></script>
-  <script src="/resources/views/js/factories/Property.js"></script>
 
   <!--- Controllers for every components --->
   <!-- Controllers for Property -->
   <script src="/resources/views/pages/property/property.js"></script>
-  <script src="/resources/views/pages/property/list-property.js"></script>
+  <!--<script src="/resources/views/pages/property/list-property.js"></script>-->
   <script src="/resources/views/pages/property/view-property.js"></script>
+  <script src="/resources/views/js/factories/Property.js"></script>
 
-  
   <script src="/resources/views/components/version/version.js"></script>
   <script src="/resources/views/components/version/version-directive.js"></script>
   <script src="/resources/views/components/version/interpolate-filter.js"></script>
   <script src="/resources/views/lib/tooltip2/script.js" type="text/javascript"></script>
 
   <script src="/resources/views/js/main.js"></script>
-
-
 
 </head>
 <body>
@@ -203,8 +200,8 @@
                   </ul>
               </div>
           </section>
-      </footer>
-  </div>
+      </footer>  </div>
+
 
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angular/js/x.x.x/angular.min.js"></script>
