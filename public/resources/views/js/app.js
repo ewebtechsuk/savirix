@@ -3,7 +3,7 @@
 angular.module('ngConfig', [])
 	.constant('config', {
         //api : 'http://localhost:8000/api/',
-        api : 'http://13.58.142.173:8000/api/',
+        api : 'http://13.58.142.173:8080/api/',
 	    views: '/resources/views/pages/',
         url: '/east_frontend/#!/',
 	});
