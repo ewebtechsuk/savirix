@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\TokenVerifier;
 
 class Token
 {
@@ -25,7 +26,7 @@ class Token
                 return response()->json ( [ 'status'=>'error', 'error'=>['message' => 'Please Login to continue!' ]] , 403 );
         }
 
-        $token = TokenVerfier::where ( 'token' , '=' , $token )->first ();
+        $token = TokenVerifier::where ( 'token' , '=' , $token )->first ();
         if ( ! $token )
         {
             return response()->json ( [ 'status'=>'error', 'error'=>['message' => 'token is missing' ]] , 403 );
