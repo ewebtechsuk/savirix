@@ -2,21 +2,29 @@
 
 This repository contains a Laravel application.
 
-## Running Artisan commands
+## Running Artisan Commands
 
-Use Laravel's command-line tool by executing `php artisan` from the project root (the same directory that contains the `artisan` file). Examples:
+All Artisan commands must be executed from the project root where the `artisan` file lives.
+For example, to view the list of available commands run:
 
 ```bash
 php artisan list
+```
+
+You may run any other Artisan command in the same way:
+
+```bash
 php artisan migrate
 ```
 
-## Running tests
+## Running Tests
 
-Tests are written with PHPUnit. After installing dependencies via Composer, run the test suite from the project root:
+Tests are written with PHPUnit. After installing dependencies with Composer run the test suite from the project root:
+
 
 ```bash
 ./vendor/bin/phpunit
 ```
 
-If PHPUnit is installed globally you can simply run `phpunit`.
+If you have PHPUnit installed globally you can simply run `phpunit` instead.
+
