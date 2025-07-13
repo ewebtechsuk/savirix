@@ -21,8 +21,10 @@ php artisan migrate
 
 Tests are written with PHPUnit. After installing dependencies with Composer run the test suite from the project root:
 
+
 ```bash
 ./vendor/bin/phpunit
 ```
 
 If you have PHPUnit installed globally you can simply run `phpunit` instead.
+
