@@ -2,10 +2,33 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Company;
+use App\Models\Expert;
+use App\Models\TokenVerfier;
 use Closure;
+use Illuminate\Contracts\Auth\Factory as Auth;
+
 
 class Token
 {
+    /**
+     * The authentication factory instance.
+     *
+     * @var \Illuminate\Contracts\Auth\Factory
+     */
+    protected $auth;
+
+    /**
+     * Create a new middleware instance.
+     *
+     * @param  \Illuminate\Contracts\Auth\Factory  $auth
+     * @return void
+     */
+    public function __construct(Auth $auth)
+
+    {
+        $this->auth = $auth;
+    }
     /**
      * Handle an incoming request.
      *
@@ -25,7 +48,7 @@ class Token
                 return response()->json ( [ 'status'=>'error', 'error'=>['message' => 'Please Login to continue!' ]] , 403 );
         }
 
-        $token = TokenVerfier::where ( 'token' , '=' , $token )->first ();
+        $token = TokenVerifier::where ( 'token' , '=' , $token )->first ();
         if ( ! $token )
         {
             return response()->json ( [ 'status'=>'error', 'error'=>['message' => 'token is missing' ]] , 403 );
