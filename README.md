@@ -2,6 +2,9 @@
 
 This repository contains a Laravel application.
 
+The application has been updated to require **PHP 8.2** and **Laravel 11**. See
+`composer.json` for the dependency definitions.
+
 ## Running Artisan Commands
 
 All Artisan commands must be executed from the project root where the `artisan` file lives.
