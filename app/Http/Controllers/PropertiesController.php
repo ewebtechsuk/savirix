@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,28 +18,28 @@ use App\Models\PropertyDescription;
 
 class PropertiesController extends Controller
 {
-        protected $propertyData;
-        protected $propertyTypes;
-        protected $transactionTypes;
-        protected $portalStatusLabels;
-        protected $currencyLabels;
+    protected $propertyData;
+    protected $propertyTypes;
+    protected $transactionTypes;
+    protected $portalStatusLabels;
+    protected $currencyLabels;
 
-        public function __construct()
-        {
-                $this->propertyTypes = config('property.property_types');
-                $this->transactionTypes = config('property.transaction_types');
-                $this->portalStatusLabels = config('property.portal_statuses');
-                $this->currencyLabels = config('property.currencies');
-
-                $this->propertyData = [
-                        'info' => [],
-                        'features' => [],
-                        'description' => [],
-                        'moreinfo' => [],
-                        'internal' => [],
-                        'epc' => [],
-                ];
-        }
+    public function __construct()
+    {
+        $this->propertyTypes = config('property.property_types');
+        $this->transactionTypes = config('property.transaction_types');
+        $this->portalStatusLabels = config('property.portal_statuses');
+        $this->currencyLabels = config('property.currencies');
+    
+        $this->propertyData = [
+            'info' => [],
+            'features' => [],
+            'description' => [],
+            'moreinfo' => [],
+            'internal' => [],
+            'epc' => [],
+        ];
+    }
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -84,10 +85,10 @@ class PropertiesController extends Controller
 						break;
 				}
 
-                                $property->property_type_label = $this->propertyTypes[$property->property_type];
-                                $property->transaction_type = $this->transactionTypes[$property->for];
-                                $property->portal_status_label = $this->portalStatusLabels[$property->portal_status];
-                                $property->currency_label = $this->currencyLabels[$property->currency];
+                $property->property_type_label = $this->propertyTypes[$property->property_type];
+                $property->transaction_type = $this->transactionTypes[$property->for];
+                $property->portal_status_label = $this->portalStatusLabels[$property->portal_status];
+                $property->currency_label = $this->currencyLabels[$property->currency];
 
 				$new_properties[] = $property;
 			}
@@ -252,9 +253,9 @@ class PropertiesController extends Controller
 
 	protected function getProperty($id) 
 	{
-        $property = Property::find($id);
-        
-        if (!$property) 
+    $property = Property::find($id);
+    
+    if (!$property) 
        	{
        		return false;
        	} 
