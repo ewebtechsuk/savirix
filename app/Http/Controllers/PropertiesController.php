@@ -15,58 +15,30 @@ use App\Models\PropertyMoreInfo;
 use App\Models\PropertyPortals;
 use App\Models\PropertyDescription;
 
-class PropertiesController extends Controller {
+class PropertiesController extends Controller
+{
+    protected $propertyData;
+    protected $propertyTypes;
+    protected $transactionTypes;
+    protected $portalStatusLabels;
+    protected $currencyLabels;
 
-	protected $propertyData;
-	public $property_type_array = array(
-		"1" => "A1 Commercial",
-		"2" => "A3 Commercial",
-		"3" => "Apartment",
-		"4" => "Bedsit",
-		"5" => "Commercial Shop",
-		"6" => "Cottage",
-		"7" => "Flat",
-		"8" => "Flat share",
-		"9" => "Hostel",
-		"10" => "Hotel",
-		"11" => "House",
-		"12" => "House share",
-		"13" => "Maisonette",
-		"14" => "Office Space",
-		"15" => "Olympic property",
-		"16" => "Penthouse",
-		"17" => "Studio",
-		"18" => "Villa",
-		"19" => "Warehouse conversion"
-	);
-        // Mapping of transaction type ids to their labels
-        public $transaction_type = array(
-                "1" => "Sale",
-                "2" => "Let"
-        );
-	public $portal_status_label = array(
-		"1" => "Available",
-		"2" => "Under offer",
-		"3" => "Sold stc",
-		"4" => "Let agreed"
-	);
-	public $currency_label = array(
-		"1" => "£",
-		"2" => "$",
-		"3" => "€"
-	);
-
-	public function __construct() 
-	{
-		$this->propertyData = array(
-			'info' => array(),			
-			'features' => array(),
-			'description' => array(),
-			'moreinfo' => array(),
-			'internal' => array(),
-			'epc' => array(),
-		);
-	}
+    public function __construct()
+    {
+        $this->propertyTypes = config('property.property_types');
+        $this->transactionTypes = config('property.transaction_types');
+        $this->portalStatusLabels = config('property.portal_statuses');
+        $this->currencyLabels = config('property.currencies');
+    
+        $this->propertyData = [
+            'info' => [],
+            'features' => [],
+            'description' => [],
+            'moreinfo' => [],
+            'internal' => [],
+            'epc' => [],
+        ];
+    }
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -112,10 +84,10 @@ class PropertiesController extends Controller {
 						break;
 				}
 
-				$property->property_type_label = $this->property_type_array[$property->property_type];
-                                $property->transaction_type = $this->transaction_type[$property->for];
-				$property->portal_status_label = $this->portal_status_label[$property->portal_status];
-				$property->currency_label = $this->currency_label[$property->currency];
+                $property->property_type_label = $this->propertyTypes[$property->property_type];
+                $property->transaction_type = $this->transactionTypes[$property->for];
+                $property->portal_status_label = $this->portalStatusLabels[$property->portal_status];
+                $property->currency_label = $this->currencyLabels[$property->currency];
 
 				$new_properties[] = $property;
 			}
@@ -280,9 +252,9 @@ class PropertiesController extends Controller {
 
 	protected function getProperty($id) 
 	{
-        $property = Property::find($id);
-        
-        if (!$property) 
+    $property = Property::find($id);
+    
+    if (!$property) 
        	{
        		return false;
        	} 
