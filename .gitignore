@@ -3,4 +3,25 @@
 /node_modules/
 .env
 .phpunit.result.cache
+/public/storage
+/storage/*.key
+.env.*
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/storage/
+/database/*.sqlite
+/database/*.sqlite3
+/deps/
+.idea/
+.vscode/
+*.log
+*.gz
+Thumbs.db
+*.swp
+*.swo
+*.bak
+*.tmp
+*.tar.gz
 
