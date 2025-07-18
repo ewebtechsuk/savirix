@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "prod": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build"
   },
   "devDependencies": {
     "vite": "^4.4.0",
