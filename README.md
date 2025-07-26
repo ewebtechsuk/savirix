@@ -48,3 +48,4 @@ A GitHub Actions workflow runs the PHPUnit suite on every push and pull request.
    runs database migrations and adjusts directory permissions.
 
 After configuration the site will be accessible at your Hostinger domain.
+
