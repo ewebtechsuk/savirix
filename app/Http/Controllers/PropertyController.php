@@ -1,0 +1,183 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Property;
+use App\Models\PropertyFeature;
+use App\Models\PropertyMedia;
+
+class PropertyController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $query = Property::query();
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('title', 'like', "%$search%")
+                  ->orWhere('city', 'like', "%$search%")
+                  ->orWhere('type', 'like', "%$search%")
+                  ->orWhere('status', 'like', "%$search%") ;
+        }
+        $properties = $query->get();
+        return view('properties.index', compact('properties'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Request $request)
+    {
+        $landlord_id = $request->get('landlord_id');
+        // Static features list (replace with DB if you add a master table)
+        $featuresList = [
+            'Fully Furnished', 'River view', 'Shops and amenities nearby', 'Air Conditioning',
+            'Gym', 'Guest cloakroom', 'Mezzanine', 'Fitted Kitchen', 'Communal Garden',
+            'Roof Terrace', 'Balcony', 'Underground Parking', 'Driveway', 'Parking',
+            'En suite', 'Video Entry', 'Double glazing', 'Conservatory', 'Concierge',
+            'Close to public transport', 'Un-Furnished', 'Swimming Pool', '24 hour on-site security',
+            'Receptionist', 'Meeting Room and Conference Facilities'
+        ];
+        return view('properties.create', compact('landlord_id', 'featuresList'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string',
+            'postcode' => 'nullable|string',
+            'bedrooms' => 'nullable|integer|min:0',
+            'bathrooms' => 'nullable|integer|min:0',
+            'type' => 'nullable|string',
+            'status' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')->store('properties', 'public');
+        }
+        if (auth()->user() && auth()->user()->is_admin) {
+            $validated['vendor_id'] = $request->input('vendor_id');
+            $validated['landlord_id'] = $request->input('landlord_id');
+            $validated['applicant_id'] = $request->input('applicant_id');
+            $validated['notes'] = $request->input('notes');
+            if ($request->hasFile('document')) {
+                $validated['document'] = $request->file('document')->store('property_docs', 'public');
+            }
+        }
+        $property = Property::create($validated);
+        // Save features
+        $features = $request->input('features', []);
+        foreach ($features as $feature) {
+            PropertyFeature::create([
+                'property_id' => $property->id,
+                'name' => $feature,
+                'value' => 1
+            ]);
+        }
+        return redirect()->route('properties.index')->with('success', 'Property created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Property $property)
+    {
+        $property->load(['media', 'features', 'landlord']);
+        $features = $property->features()->pluck('name')->toArray();
+        return view('properties.show', compact('property', 'features'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Property $property)
+    {
+        $featuresList = [
+            'Fully Furnished', 'River view', 'Shops and amenities nearby', 'Air Conditioning',
+            'Gym', 'Guest cloakroom', 'Mezzanine', 'Fitted Kitchen', 'Communal Garden',
+            'Roof Terrace', 'Balcony', 'Underground Parking', 'Driveway', 'Parking',
+            'En suite', 'Video Entry', 'Double glazing', 'Conservatory', 'Concierge',
+            'Close to public transport', 'Un-Furnished', 'Swimming Pool', '24 hour on-site security',
+            'Receptionist', 'Meeting Room and Conference Facilities'
+        ];
+        $selectedFeatures = $property->features()->pluck('name')->toArray();
+        return view('properties.edit', compact('property', 'featuresList', 'selectedFeatures'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Property $property)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string',
+            'postcode' => 'nullable|string',
+            'bedrooms' => 'nullable|integer|min:0',
+            'bathrooms' => 'nullable|integer|min:0',
+            'type' => 'nullable|string',
+            'status' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')->store('properties', 'public');
+        }
+        if (auth()->user() && auth()->user()->is_admin) {
+            $validated['vendor_id'] = $request->input('vendor_id');
+            $validated['landlord_id'] = $request->input('landlord_id');
+            $validated['applicant_id'] = $request->input('applicant_id');
+            $validated['notes'] = $request->input('notes');
+            if ($request->hasFile('document')) {
+                $validated['document'] = $request->file('document')->store('property_docs', 'public');
+            }
+        }
+        $property->update($validated);
+        // Update features
+        $property->features()->delete();
+        $features = $request->input('features', []);
+        foreach ($features as $feature) {
+            PropertyFeature::create([
+                'property_id' => $property->id,
+                'name' => $feature,
+                'value' => 1
+            ]);
+        }
+        return redirect()->route('properties.index')->with('success', 'Property updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Property $property)
+    {
+        $property->delete();
+
+        return redirect()->route('properties.index')->with('success', 'Property deleted successfully.');
+    }
+
+    /**
+     * Assign a landlord to a property.
+     */
+    public function assignLandlord(Request $request, Property $property)
+    {
+        $request->validate([
+            'landlord_id' => 'required|exists:contacts,id',
+        ]);
+        $property->landlord_id = $request->landlord_id;
+        $property->save();
+        return redirect()->route('properties.show', $property)->with('success', 'Landlord assigned successfully.');
+    }
+}

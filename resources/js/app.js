@@ -1,12 +1,10 @@
-// resources/js/app.js
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import $ from 'jquery';
 
-console.log('App JS loaded');
+import './bootstrap';
 
-$(document).ready(function() {
-    // Example: highlight h1 on click
-    $('h1').on('click', function() {
-        $(this).css('color', '#007bff');
-    });
-});
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();

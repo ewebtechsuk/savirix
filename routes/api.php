@@ -18,9 +18,9 @@ use Illuminate\Http\Request;
 })->middleware('auth:api');*/
 
 
-Route::resource('property','PropertiesController', ['only'=>['index', 'show', 'store', 'update', 'destroy']]);
-Route::resource('landlord','LandlordsController', ['only'=>['index', 'show', 'store', 'update', 'destroy']]);
+// Route::resource('property','PropertiesController', ['only'=>['index', 'show', 'store', 'update', 'destroy']]);
+// Route::resource('landlord','LandlordsController', ['only'=>['index', 'show', 'store', 'update', 'destroy']]);
 
-Route::group(['middleware'=>'token'],function(){
-	Route::post('import-property','PropertiesController@importProperties');
-});
+// Route::group(['middleware'=>'token'],function(){
+// 	Route::post('import-property','PropertiesController@importProperties');
+// });

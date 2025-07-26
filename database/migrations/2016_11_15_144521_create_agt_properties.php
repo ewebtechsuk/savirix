@@ -13,7 +13,8 @@ class CreateAgtProperties extends Migration
      */
     public function up()
     {
-        Schema::create('properties', function(Blueprint $table)
+        // Rename table to avoid conflict with new properties table
+        Schema::create('agt_properties', function(Blueprint $table)
         {
             $table->increments('id');
             
@@ -82,6 +83,6 @@ class CreateAgtProperties extends Migration
      */
     public function down()
     {
-        Schema::drop('properties');
+        Schema::drop('agt_properties');
     }
 }

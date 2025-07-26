@@ -7,14 +7,16 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.0",
-        "laravel/ui": "^4.6"
+        "laravel/ui": "^4.6",
+        "laravel/tinker": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.21",
         "mockery/mockery": "^1.5",
         "phpunit/phpunit": "^10.5",
         "symfony/css-selector": "^6.2",
-        "symfony/dom-crawler": "^6.2"
+        "symfony/dom-crawler": "^6.2",
+        "laravel/breeze": "^2.3"
     },
     "autoload": {
         "classmap": [
@@ -25,6 +27,9 @@
         }
     },
     "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        },
         "classmap": [
             "tests/TestCase.php"
         ]
