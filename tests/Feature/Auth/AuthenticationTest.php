@@ -10,12 +10,6 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
-    }
-
     public function test_login_screen_can_be_rendered(): void
     {
         $response = $this->get('/login');
@@ -25,14 +19,11 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => now(),
-        ]);
+        $user = User::factory()->create();
 
-        $response = $this->withSession([])->post('/login', [
+        $response = $this->post('/login', [
             'email' => $user->email,
             'password' => 'password',
-            '_token' => csrf_token(),
         ]);
 
         $this->assertAuthenticated();
@@ -43,10 +34,9 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->withSession([])->post('/login', [
+        $this->post('/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
-            '_token' => csrf_token(),
         ]);
 
         $this->assertGuest();
@@ -54,13 +44,9 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_logout(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => now(),
-        ]);
+        $user = User::factory()->create();
 
-        $response = $this->withSession([])->actingAs($user)->post('/logout', [
-            '_token' => csrf_token(),
-        ]);
+        $response = $this->actingAs($user)->post('/logout');
 
         $this->assertGuest();
         $response->assertRedirect('/');

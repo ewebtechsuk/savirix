@@ -13,7 +13,12 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\AssignCompanyIds::class,
+        \App\Console\Commands\GenerateLoginToken::class,
+        \App\Console\Commands\CreateUserWithLoginToken::class,
+        \App\Console\Commands\FixAktonzTenantEmail::class,
+        \App\Console\Commands\CreateAktonzTenant::class,
+        \App\Console\Commands\FixAktonzTenantData::class,
     ];
 
     /**

@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             ContactTagGroupSeeder::class,
+            DemoDataSeeder::class, // Add demo data seeder
+            CreateSuperAdminSeeder::class,
         ]);
     }
 }

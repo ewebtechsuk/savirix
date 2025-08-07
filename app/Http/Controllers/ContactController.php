@@ -16,9 +16,21 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = Contact::orderBy('name')->paginate(20);
+        $tenant = tenant();
+        $company_id = $tenant->company_id ?? '468173';
+        $query = Contact::where('company_id', $company_id);
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhere('phone', 'like', "%$search%")
+                  ->orWhere('company', 'like', "%$search%") ;
+            });
+        }
+        $contacts = $query->get();
         return view('contacts.index', compact('contacts'));
     }
 

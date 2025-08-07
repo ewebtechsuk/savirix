@@ -21,11 +21,10 @@ class PasswordConfirmationTest extends TestCase
 
     public function test_password_can_be_confirmed(): void
     {
-        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->withSession([])->post('/confirm-password', [
+        $response = $this->actingAs($user)->post('/confirm-password', [
             'password' => 'password',
-            '_token' => csrf_token(),
         ]);
 
         $response->assertRedirect();
@@ -34,11 +33,10 @@ class PasswordConfirmationTest extends TestCase
 
     public function test_password_is_not_confirmed_with_invalid_password(): void
     {
-        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->withSession([])->post('/confirm-password', [
+        $response = $this->actingAs($user)->post('/confirm-password', [
             'password' => 'wrong-password',
-            '_token' => csrf_token(),
         ]);
 
         $response->assertSessionHasErrors();

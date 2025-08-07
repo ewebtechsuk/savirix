@@ -18,6 +18,7 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
         '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
         '09f6b20656683369174dd6fa83b7e5fb' => __DIR__ . '/..' . '/symfony/polyfill-uuid/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
@@ -26,7 +27,6 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '35a6ad97d21e794e7e22a17d806652e4' => __DIR__ . '/..' . '/nunomaduro/termwind/src/Functions.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
-        'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
         '476ca15b8d69b04665cd879be9cb4c68' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Collections/functions.php',
         '265b4faa2b3a9766332744949e83bf97' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Collections/helpers.php',
         'c7a3c339e7e14b60e06a2d7fcce9476b' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/functions.php',
@@ -38,6 +38,7 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         'c72349b1fe8d0deeedd3a52e8aa814d8' => __DIR__ . '/..' . '/mockery/mockery/library/helpers.php',
         'ce9671a430e4846b44e1c68c7611f9f5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        'f36d7ea9144e9f8ff76be0eaaff1ee80' => __DIR__ . '/..' . '/stancl/tenancy/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -85,6 +86,10 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Clock\\' => 24,
+            'Stripe\\' => 7,
+            'Stancl\\VirtualColumn\\' => 21,
+            'Stancl\\Tenancy\\' => 15,
+            'Stancl\\JobPipeline\\' => 19,
         ),
         'R' => 
         array (
@@ -142,6 +147,7 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         array (
             'Fruitcake\\Cors\\' => 15,
             'Faker\\' => 6,
+            'Facade\\IgnitionContracts\\' => 25,
         ),
         'E' => 
         array (
@@ -304,6 +310,22 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         array (
             0 => __DIR__ . '/..' . '/symfony/clock',
         ),
+        'Stripe\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
+        ),
+        'Stancl\\VirtualColumn\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stancl/virtualcolumn/src',
+        ),
+        'Stancl\\Tenancy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stancl/tenancy/src',
+        ),
+        'Stancl\\JobPipeline\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stancl/jobpipeline/src',
+        ),
         'Ramsey\\Uuid\\' => 
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
@@ -452,6 +474,10 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         array (
             0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
         ),
+        'Facade\\IgnitionContracts\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/facade/ignition-contracts/src',
+        ),
         'Egulias\\EmailValidator\\' => 
         array (
             0 => __DIR__ . '/..' . '/egulias/email-validator/src',
@@ -499,6 +525,7 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
     );
 
     public static $classMap = array (
+        'AddLoginTokenToUsersTable' => __DIR__ . '/../..' . '/database/migrations/2025_08_01_000001_add_login_token_to_users_table.php',
         'AddPhotoToPropertiesTable' => __DIR__ . '/../..' . '/database/migrations/2025_07_19_015000_add_photo_to_properties_table.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -514,14 +541,26 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         'CreateAgtPropertiesInternals' => __DIR__ . '/../..' . '/database/migrations/2016_11_15_144949_create_agt_properties_internals.php',
         'CreateAgtPropertiesMoreinfos' => __DIR__ . '/../..' . '/database/migrations/2016_11_15_144853_create_agt_properties_moreinfos.php',
         'CreateAgtPropertiesPortals' => __DIR__ . '/../..' . '/database/migrations/2016_11_18_131835_create_agt_properties_portals.php',
+        'CreateContactGroupsTable' => __DIR__ . '/../..' . '/database/migrations/2025_07_19_022625_create_contact_groups_table.php',
+        'CreateDomainsTable' => __DIR__ . '/../..' . '/database/migrations/2019_09_15_000020_create_domains_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
         'CreatePropertyMediaTable' => __DIR__ . '/../..' . '/database/migrations/2025_07_21_000001_create_property_media_table.php',
+        'CreateTenantsTable' => __DIR__ . '/../..' . '/database/migrations/2019_09_15_000010_create_tenants_table.php',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_000000_create_users_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
+        'Database\\Factories\\ApplicantFactory' => __DIR__ . '/../..' . '/database/factories/ApplicantFactory.php',
+        'Database\\Factories\\ContactFactory' => __DIR__ . '/../..' . '/database/factories/ContactFactory.php',
+        'Database\\Factories\\DiaryEventFactory' => __DIR__ . '/../..' . '/database/factories/DiaryEventFactory.php',
+        'Database\\Factories\\InspectionFactory' => __DIR__ . '/../..' . '/database/factories/InspectionFactory.php',
+        'Database\\Factories\\LandlordFactory' => __DIR__ . '/../..' . '/database/factories/LandlordFactory.php',
+        'Database\\Factories\\PropertyFactory' => __DIR__ . '/../..' . '/database/factories/PropertyFactory.php',
         'Database\\Factories\\UserFactory' => __DIR__ . '/../..' . '/database/factories/UserFactory.php',
+        'Database\\Factories\\ViewingFactory' => __DIR__ . '/../..' . '/database/factories/ViewingFactory.php',
         'Database\\Seeders\\AdminUserSeeder' => __DIR__ . '/../..' . '/database/seeders/AdminUserSeeder.php',
         'Database\\Seeders\\ContactTagGroupSeeder' => __DIR__ . '/../..' . '/database/seeders/ContactTagGroupSeeder.php',
+        'Database\\Seeders\\CreateSuperAdminSeeder' => __DIR__ . '/../..' . '/database/seeders/CreateSuperAdminSeeder.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
+        'Database\\Seeders\\DemoDataSeeder' => __DIR__ . '/../..' . '/database/seeders/DemoDataSeeder.php',
         'Database\\Seeders\\UserSeeder' => __DIR__ . '/../..' . '/database/seeds/UserSeeder.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
         'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
@@ -532,6 +571,7 @@ class ComposerStaticInit76036da3b5b55b91dbe1e1affa01bf9e
         'DateMalformedStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedStringException.php',
         'DateObjectError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateObjectError.php',
         'DateRangeError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateRangeError.php',
+        'FixTenantsDataColumnType' => __DIR__ . '/../..' . '/database/migrations/2025_08_03_000010_fix_tenants_data_column_type.php',
         'Hamcrest\\Arrays\\IsArray' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArray.php',
         'Hamcrest\\Arrays\\IsArrayContaining' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContaining.php',
         'Hamcrest\\Arrays\\IsArrayContainingInAnyOrder' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContainingInAnyOrder.php',

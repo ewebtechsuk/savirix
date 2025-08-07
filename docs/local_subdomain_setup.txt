@@ -1,0 +1,47 @@
+# Local Subdomain Setup for Stancl Tenancy (MAMP, macOS)
+
+1. Edit your hosts file:
+   sudo nano /etc/hosts
+   Add:
+   127.0.0.1   ressapp.localhost
+   127.0.0.1   aktonz.ressapp.localhost
+
+2. Edit Apache config:
+   - Open /Applications/MAMP/conf/apache/httpd.conf
+   - Uncomment:
+     Include /Applications/MAMP/conf/apache/extra/httpd-vhosts.conf
+
+3. Edit /Applications/MAMP/conf/apache/extra/httpd-vhosts.conf:
+   Add:
+   <VirtualHost *:8888>
+       ServerName ressapp.localhost
+       DocumentRoot "/Applications/MAMP/htdocs/ressapp/public"
+       <Directory "/Applications/MAMP/htdocs/ressapp/public">
+           AllowOverride All
+           Require all granted
+       </Directory>
+   </VirtualHost>
+   <VirtualHost *:8888>
+       ServerName aktonz.ressapp.localhost
+       DocumentRoot "/Applications/MAMP/htdocs/ressapp/public"
+       <Directory "/Applications/MAMP/htdocs/ressapp/public">
+           AllowOverride All
+           Require all granted
+       </Directory>
+   </VirtualHost>
+
+4. Restart MAMP servers.
+
+5. Update .env:
+   APP_URL=http://ressapp.localhost:8888
+
+6. Update config/tenancy.php:
+   'central_domains' => [
+       'ressapp.localhost',
+   ],
+
+7. Access:
+   - Central: http://ressapp.localhost:8888/
+   - Aktonz:  http://aktonz.ressapp.localhost:8888/
+
+This will enable Stancl Tenancy subdomain routing for local development.

@@ -55,5 +55,7 @@ class Kernel extends HttpKernel
         'token' => \App\Http\Middleware\Token::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'is_admin' => \App\Http\Middleware\IsAdmin::class,
+        'tenancy' => \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
     ];
 }

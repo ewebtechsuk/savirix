@@ -15,21 +15,10 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="url('/properties')" :active="request()->is('properties*')">
-                        {{ __('Properties') }}
+                    <x-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')">
+                        {{ __('Tenants') }}
                     </x-nav-link>
-                    <x-nav-link :href="url('/contacts')" :active="request()->is('contacts*')">
-                        {{ __('Contacts') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('diary')" :active="request()->routeIs('diary')">
-                        {{ __('Diary') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('accounts')" :active="request()->routeIs('accounts')">
-                        {{ __('Accounts') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('settings')" :active="request()->routeIs('settings')">
-                        {{ __('Settings') }}
-                    </x-nav-link>
+                    <!-- Removed all property, contact, diary, accounts links for landlord app -->
                 </div>
             </div>
 
@@ -49,11 +38,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        @auth
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-                        @endauth
+                        <x-dropdown-link :href="route('profile.edit')">
+                            {{ __('Profile') }}
+                        </x-dropdown-link>
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -87,20 +74,8 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="url('/properties')" :active="request()->is('properties*')">
-                {{ __('Properties') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="url('/contacts')" :active="request()->is('contacts*')">
-                {{ __('Contacts') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('diary')" :active="request()->routeIs('diary')">
-                {{ __('Diary') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('accounts')" :active="request()->routeIs('accounts')">
-                {{ __('Accounts') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('settings')" :active="request()->routeIs('settings')">
-                {{ __('Settings') }}
+            <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')">
+                {{ __('Tenants') }}
             </x-responsive-nav-link>
         </div>
 
@@ -112,11 +87,9 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                @auth
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
-                @endauth
+                <x-responsive-nav-link :href="route('profile.edit')">
+                    {{ __('Profile') }}
+                </x-responsive-nav-link>
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

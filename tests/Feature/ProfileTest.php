@@ -23,15 +23,13 @@ class ProfileTest extends TestCase
 
     public function test_profile_information_can_be_updated(): void
     {
-        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
-            ->withSession([])
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
-                '_token' => csrf_token(),
             ]);
 
         $response
@@ -47,15 +45,13 @@ class ProfileTest extends TestCase
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
     {
-        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
-            ->withSession([])
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => $user->email,
-                '_token' => csrf_token(),
             ]);
 
         $response
@@ -67,14 +63,12 @@ class ProfileTest extends TestCase
 
     public function test_user_can_delete_their_account(): void
     {
-        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
-            ->withSession([])
             ->delete('/profile', [
                 'password' => 'password',
-                '_token' => csrf_token(),
             ]);
 
         $response
@@ -87,15 +81,13 @@ class ProfileTest extends TestCase
 
     public function test_correct_password_must_be_provided_to_delete_account(): void
     {
-        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
-            ->withSession([])
             ->from('/profile')
             ->delete('/profile', [
                 'password' => 'wrong-password',
-                '_token' => csrf_token(),
             ]);
 
         $response

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\PropertyFeature;
 use App\Models\PropertyMedia;
+use Stancl\Tenancy\Facades\Tenancy;
 
 class PropertyController extends Controller
 {
@@ -14,15 +15,23 @@ class PropertyController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Property::query();
+        $tenant = tenant();
+        if (!$tenant) {
+            abort(404, 'Tenant not found.');
+        }
+        $company_id = $tenant->company_id;
+        $query = Property::where('company_id', $company_id);
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where('title', 'like', "%$search%")
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%$search%")
                   ->orWhere('city', 'like', "%$search%")
                   ->orWhere('type', 'like', "%$search%")
                   ->orWhere('status', 'like', "%$search%") ;
+            });
         }
         $properties = $query->get();
+        // Always return the view, even if $properties is empty
         return view('properties.index', compact('properties'));
     }
 
@@ -74,6 +83,10 @@ class PropertyController extends Controller
                 $validated['document'] = $request->file('document')->store('property_docs', 'public');
             }
         }
+        $tenant = tenant(); // Stancl Tenancy v3+ helper
+        if ($tenant) {
+            $validated['tenant_id'] = $tenant->id;
+        }
         $property = Property::create($validated);
         // Save features
         $features = $request->input('features', []);
@@ -92,6 +105,10 @@ class PropertyController extends Controller
      */
     public function show(Property $property)
     {
+        $tenant = tenant(); // Stancl Tenancy v3+ helper
+        if (!$tenant || $property->tenant_id !== $tenant->id) {
+            abort(404, 'Property not found for this tenant.');
+        }
         $property->load(['media', 'features', 'landlord']);
         $features = $property->features()->pluck('name')->toArray();
         return view('properties.show', compact('property', 'features'));
