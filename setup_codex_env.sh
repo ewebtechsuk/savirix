@@ -8,6 +8,7 @@ if ! command -v codex-cli >/dev/null 2>&1; then
   else
     echo "npm is required to install codex-cli but was not found." >&2
   fi
+
 fi
 
 # Set environment variables (use placeholder values if unset)
