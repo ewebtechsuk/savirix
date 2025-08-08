@@ -23,6 +23,16 @@ class DashboardController extends Controller
         return view('dashboard.index', compact('tenants'));
     }
 
+    public function store(Request $request)
+    {
+        // TODO: implement dashboard storage logic
+    }
+
+    public function destroy($id)
+    {
+        // TODO: implement dashboard deletion logic
+    }
+
     public function impersonate($tenantId)
     {
         $tenant = Tenant::findOrFail($tenantId);

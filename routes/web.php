@@ -4,6 +4,10 @@ use App\Http\Controllers\Auth\MagicLoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DiaryController;
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,9 +25,9 @@ Route::middleware('auth')->group(function () {
 });
 
 // Central dashboard routes (should NOT use tenancy middleware)
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:Admin|Landlord'])->group(function () {
     // Remove duplicate dashboard route
-    Route::post('/dashboard', [DashboardController::class, 'create'])->name('dashboard.create');
+    Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
     Route::delete('/dashboard/{id}', [DashboardController::class, 'destroy'])->name('dashboard.destroy');
     Route::get('/dashboard/impersonate/{id}', [DashboardController::class, 'impersonate'])->name('dashboard.impersonate');
 
@@ -40,7 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Tenant routes (aktonz.ressapp.com, etc.)
-Route::middleware(['auth', 'tenancy'])->group(function () {
+Route::middleware(['auth', 'tenancy', 'role:Tenant'])->group(function () {
     Route::resource('properties', PropertyController::class);
     Route::resource('contacts', ContactController::class);
     Route::resource('diary', DiaryController::class);

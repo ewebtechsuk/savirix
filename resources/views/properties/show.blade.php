@@ -68,23 +68,35 @@
                                 <div class="col"><strong>Bathrooms:</strong> {{ $property->bathrooms }}</div>
                             </div>
                             <div class="mb-2"><strong>Address:</strong> {{ $property->address }}, {{ $property->city }}, {{ $property->postcode }}</div>
+                            @if($property->latitude && $property->longitude)
+                                <div id="property-map" style="height: 300px;" class="mb-3"></div>
+                            @endif
                         </div>
                         <div class="tab-pane fade" id="media" role="tabpanel">
                             <h5>Media Gallery</h5>
-                            <div class="row g-2 mb-3">
-                                @foreach($property->media as $media)
-                                    <div class="col-4 col-md-3">
-                                        <div class="card">
-                                            <img src="{{ asset('storage/' . $media->file_path) }}" class="card-img-top" alt="Media" style="height:120px;object-fit:cover;">
-                                            <form action="{{ route('properties.media.destroy', [$property, $media]) }}" method="POST" onsubmit="return confirm('Delete this image?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
-                                            </form>
-                                        </div>
+                            @if($property->media->isNotEmpty())
+                                <div id="mediaCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        @foreach($property->media as $index => $media)
+                                            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                                <img src="{{ asset('storage/' . $media->file_path) }}" class="d-block w-100" alt="Media">
+                                            </div>
+                                        @endforeach
                                     </div>
-                                @endforeach
-                            </div>
+                                    @if($property->media->count() > 1)
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#mediaCarousel" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#mediaCarousel" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    @endif
+                                </div>
+                            @else
+                                <p class="text-muted">No media uploaded.</p>
+                            @endif
                         </div>
                         <div class="tab-pane fade" id="features" role="tabpanel">
                             <h5>Property Features</h5>
@@ -181,7 +193,15 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script>
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('property-map')) {
+        const map = L.map('property-map').setView([{{ $property->latitude }}, {{ $property->longitude }}], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        L.marker([{{ $property->latitude }}, {{ $property->longitude }}]).addTo(map);
+    }
     $('#landlord-select').select2({
         placeholder: 'Search for a landlord...',
         ajax: {
