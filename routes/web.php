@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Central dashboard routes (should NOT use tenancy middleware)
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:Admin|Landlord'])->group(function () {
     // Remove duplicate dashboard route
     Route::post('/dashboard', [DashboardController::class, 'create'])->name('dashboard.create');
     Route::delete('/dashboard/{id}', [DashboardController::class, 'destroy'])->name('dashboard.destroy');
@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Tenant routes (aktonz.ressapp.com, etc.)
-Route::middleware(['auth', 'tenancy'])->group(function () {
+Route::middleware(['auth', 'tenancy', 'role:Tenant'])->group(function () {
     Route::resource('properties', PropertyController::class);
     Route::resource('contacts', ContactController::class);
     Route::resource('diary', DiaryController::class);
