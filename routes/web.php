@@ -8,6 +8,7 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DiaryController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\InspectionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -49,6 +50,7 @@ Route::middleware(['auth', 'tenancy', 'role:Tenant'])->group(function () {
     Route::resource('contacts', ContactController::class);
     Route::resource('diary', DiaryController::class);
     Route::resource('accounts', AccountController::class);
+    Route::resource('inspections', InspectionController::class);
 });
 
 Route::get('/magic-login/{token}', [MagicLoginController::class, 'login'])->name('magic.login');
