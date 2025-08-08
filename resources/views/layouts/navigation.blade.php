@@ -15,9 +15,11 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')">
-                        {{ __('Tenants') }}
-                    </x-nav-link>
+                    @can('view tenants')
+                        <x-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')">
+                            {{ __('Tenants') }}
+                        </x-nav-link>
+                    @endcan
                     <!-- Removed all property, contact, diary, accounts links for landlord app -->
                 </div>
             </div>
@@ -74,9 +76,11 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')">
-                {{ __('Tenants') }}
-            </x-responsive-nav-link>
+            @can('view tenants')
+                <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')">
+                    {{ __('Tenants') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
