@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Jobs\SendWebhook;
+use App\Models\Webhook;
 
 class Property extends Model
 {
@@ -17,6 +19,19 @@ class Property extends Model
         'type', 'status', 'owner_id', 'price', 'address', 'title', 'landlord_id', 'vendor_id', 'applicant_id',
         'latitude', 'longitude'
     ];
+
+    protected static function booted()
+    {
+        static::created(function (Property $property) {
+            $payload = [
+                'event' => 'property.created',
+                'data' => $property->toArray(),
+            ];
+            foreach (Webhook::where('event', 'property.created')->get() as $webhook) {
+                SendWebhook::dispatch($webhook->url, $payload);
+            }
+        });
+    }
 
     // Relationships
     public function vendor()
@@ -40,4 +55,3 @@ class Property extends Model
         return $this->hasMany(PropertyFeature::class);
     }
 }
-
