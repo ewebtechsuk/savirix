@@ -1,11 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,4 +33,21 @@ Route::middleware([
         Route::get('verification/callback', [VerificationController::class, 'callback'])->name('verification.callback');
         Route::get('verification/status', [VerificationController::class, 'status'])->name('verification.status');
     });
+
+    Route::get('/tenancies/{tenancy}/payments/create', [PaymentController::class, 'create'])
+        ->name('payments.create');
+    Route::post('/tenancies/{tenancy}/payments', [PaymentController::class, 'store'])
+        ->name('payments.store');
 });
+
+Route::post('/stripe/webhook', [PaymentController::class, 'webhook'])->name('stripe.webhook');
+
+use App\Http\Controllers\TenantDashboardController;
+
+Route::middleware(['web', 'auth:tenant'])
+    ->prefix('tenant')
+    ->name('tenant.')
+    ->group(function () {
+        Route::get('/dashboard', [TenantDashboardController::class, 'index'])
+            ->name('dashboard');
+    });

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('webhooks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenancy_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 12, 2);
-            $table->string('status')->default('pending');
-            $table->string('stripe_reference')->nullable();
+            $table->string('url');
+            $table->string('event');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('webhooks');
     }
 };
