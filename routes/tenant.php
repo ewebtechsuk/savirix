@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -36,3 +34,13 @@ Route::middleware([
 });
 
 Route::post('/stripe/webhook', [PaymentController::class, 'webhook'])->name('stripe.webhook');
+
+use App\Http\Controllers\TenantDashboardController;
+
+Route::middleware(['web', 'auth:tenant'])
+    ->prefix('tenant')
+    ->name('tenant.')
+    ->group(function () {
+        Route::get('/dashboard', [TenantDashboardController::class, 'index'])
+            ->name('dashboard');
+    });
