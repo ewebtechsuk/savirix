@@ -38,16 +38,64 @@ A GitHub Actions workflow runs the PHPUnit suite on every push and pull request.
 The static frontend located in `frontend/` is automatically published to GitHub Pages using the workflow in `.github/workflows/pages.yml`.
 Push changes to `main` and visit the repository's Pages environment to view the site.
 
-## Setting up in the Codex environment
+## Development Environment
 
-To initialize the project when working in Codex or any fresh development container:
+Enhanced setup workflow:
 
-1. Ensure the container has internet access to install dependencies.
-2. From the project root make the setup script executable (if it isn't already) and run it:
-   ```bash
-   chmod +x setup.sh
-   ./setup.sh
-   ```
+### Dev Container (optional)
+If using VS Code Dev Containers or GitHub Codespaces, the provided devcontainer will:
+- Install PHP, Node.js, and MySQL
+- Run `./setup.sh --db-wait --seed`
+- Serve the app on port 8000
 
-The script installs Composer and Node dependencies, copies `.env.example` to `.env` if necessary, generates an application key, runs database migrations and clears caches.
-After it finishes you can run tests or start the application with `php artisan serve`.
+### Local Setup
+Requirements: PHP (compatible with project), Composer, Node (npm/yarn/pnpm), and a MySQL database (or update DB_* in .env).
+
+Commands:
+```bash
+./setup.sh --db-wait --seed
+# or
+make init
+```
+
+Re-run safely at any time; the script is idempotent.
+
+### setup.sh Flags
+| Flag | Description |
+|------|-------------|
+| `--db-wait` | Wait for database readiness |
+| `--db-timeout=SECONDS` | Override wait timeout (default 90) |
+| `--seed` | Seed after migrate |
+| `--refresh-db` | Use migrate:fresh |
+| `--skip-migrate` | Skip all migrations |
+| `--skip-npm` | Skip npm install |
+| `--skip-composer` | Skip composer install |
+| `--optimize` | Run artisan optimize |
+| `--verbose` | Extra debug output |
+| `--help` | Show help |
+
+Examples:
+```bash
+./setup.sh --db-wait --seed
+./setup.sh --refresh-db --seed
+./setup.sh --skip-npm --skip-migrate
+./setup.sh --db-wait --db-timeout=150 --optimize
+```
+
+### Makefile Targets
+Run `make help` to list all targets.
+Common:
+- `make init`
+- `make dev`
+- `make migrate` / `make fresh` / `make seed`
+- `make test` / `make test-parallel`
+- `make pint`
+- `make node-dev` / `make node-build`
+
+### Troubleshooting
+| Issue | Resolution |
+|-------|------------|
+| DB wait timeout | Increase `--db-timeout` |
+| Permission denied on setup.sh | `chmod +x setup.sh` |
+| DB auth errors | Check DB_* values in `.env` |
+| Node version mismatch | Align local Node version with project requirements |
