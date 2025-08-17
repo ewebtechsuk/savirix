@@ -56,7 +56,7 @@ function findAndReplaceSecondsPerHour($directory = '.') {
 
 // Main execution
 if (php_sapi_name() === 'cli') {
-    echo "Searching for 3600 usages...\n";
+    echo "Searching for DateTimeInterface::SECONDS_PER_HOUR usages...\n";
     
     $startDir = dirname(__FILE__) . '/..';
     list($filesChanged, $totalReplacements) = findAndReplaceSecondsPerHour($startDir);
@@ -65,9 +65,9 @@ if (php_sapi_name() === 'cli') {
         echo "\nSummary:\n";
         echo "- Files changed: {$filesChanged}\n";
         echo "- Total replacements: {$totalReplacements}\n";
-        echo "- All instances of 3600 replaced with 3600\n";
+        echo "- All instances of DateTimeInterface::SECONDS_PER_HOUR replaced with 3600\n";
     } else {
-        echo "No instances of 3600 found.\n";
+        echo "No instances of DateTimeInterface::SECONDS_PER_HOUR found.\n";
         echo "This means either:\n";
         echo "1. The fix has already been applied\n";
         echo "2. The constant is not currently used in the codebase\n";
