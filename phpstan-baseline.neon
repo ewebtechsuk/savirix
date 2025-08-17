@@ -1,0 +1,2 @@
+parameters:
+	baseline: phpstan-baseline.neon

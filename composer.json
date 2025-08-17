@@ -21,9 +21,9 @@
         "symfony/css-selector": "^6.2",
         "symfony/dom-crawler": "^6.2",
         "laravel/breeze": "^2.3",
-        "phpstan/phpstan": "^1.10",
-        "nunomaduro/larastan": "^2.0",
-        "laravel/pint": "^1.15"
+        "phpstan/phpstan": "*",
+        "nunomaduro/larastan": "*",
+        "laravel/pint": "*"
     },
     "autoload": {
         "classmap": [
