@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-copilot/fix-724684db-2ed1-4977-97ef-dd4112dd5283',
         'version' => 'dev-copilot/fix-724684db-2ed1-4977-97ef-dd4112dd5283',
-        'reference' => '706c7e8c66ae0542b1806e79ce61681f0cf2dbec',
+        'reference' => '3c9cb7a6bd1bae2cb9d7e8389c007ec4973f24a6',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -388,7 +388,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-copilot/fix-724684db-2ed1-4977-97ef-dd4112dd5283',
             'version' => 'dev-copilot/fix-724684db-2ed1-4977-97ef-dd4112dd5283',
-            'reference' => '706c7e8c66ae0542b1806e79ce61681f0cf2dbec',
+            'reference' => '3c9cb7a6bd1bae2cb9d7e8389c007ec4973f24a6',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
