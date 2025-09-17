@@ -27,6 +27,7 @@ $composerAlreadyLoaded = class_exists(\Composer\Autoload\ClassLoader::class, fal
 // install fresh dependencies, such as the CI sandbox used for kata exercises.
 $polyfills = __DIR__.'/polyfills.php';
 
+
 if (file_exists($polyfills)) {
     require $polyfills;
 }
