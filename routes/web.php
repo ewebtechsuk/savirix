@@ -18,9 +18,7 @@ Route::get('/', function () {
 });
 
 // Single dashboard route for route('dashboard')
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 
 // Central app routes (localhost:8888/)
