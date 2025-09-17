@@ -71,3 +71,6 @@ Route::middleware(['auth', 'tenancy', 'role:Tenant'])->group(function () {
 
 Route::get('/magic-login/{token}', [MagicLoginController::class, 'login'])->name('magic.login');
 
+require __DIR__.'/auth.php';
+
+

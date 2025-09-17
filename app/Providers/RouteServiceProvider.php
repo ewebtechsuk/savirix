@@ -16,22 +16,13 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
-            Route::middleware('web')
-                ->group(base_path('routes/auth.php'));
+            foreach (['landlord', 'tenant', 'agent'] as $context) {
+                $path = base_path("routes/{$context}.php");
 
-            if (file_exists(base_path('routes/landlord.php'))) {
-                Route::middleware('web')
-                    ->group(base_path('routes/landlord.php'));
-            }
+                if (file_exists($path)) {
+                    Route::middleware('web')->group($path);
+                }
 
-            if (file_exists(base_path('routes/tenant.php'))) {
-                Route::middleware('web')
-                    ->group(base_path('routes/tenant.php'));
-            }
-
-            if (file_exists(base_path('routes/agent.php'))) {
-                Route::middleware('web')
-                    ->group(base_path('routes/agent.php'));
             }
 
             Route::middleware('api')
