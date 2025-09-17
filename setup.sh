@@ -45,6 +45,7 @@ enable_offline_mode() {
 }
 JSON
   warn "Offline mode provides limited artisan functionality until a full composer install succeeds."
+
 }
 
 while [[ $# -gt 0 ]]; do
@@ -90,6 +91,7 @@ if [[ "$OFFLINE_MODE" == "true" ]]; then
   elif [[ "$SKIP_MIGRATE" == "false" ]]; then
     warn "Offline mode cannot run database migrations; skipping"
     SKIP_MIGRATE=true
+
   fi
 fi
 
