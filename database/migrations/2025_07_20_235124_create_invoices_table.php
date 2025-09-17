@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('number')->unique();
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->unsignedBigInteger('contact_id')->nullable();
             $table->unsignedBigInteger('property_id')->nullable();
             $table->decimal('amount', 12, 2);
