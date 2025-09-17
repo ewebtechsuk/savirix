@@ -6,8 +6,5 @@ rm -rf vendor
 # Clear Composer cache
 composer clear-cache
 
-# Install dependencies fresh
-composer install
-
-# Run the existing setup script to finish app setup
+# Run the existing setup script to reinstall dependencies via the lockfile
 ./setup.sh
