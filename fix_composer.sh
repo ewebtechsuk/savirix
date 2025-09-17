@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Remove vendor and lock file to ensure a clean state
-rm -rf vendor composer.lock
+# Remove the vendor directory to ensure a clean state while keeping the lockfile
+rm -rf vendor
 
 # Clear Composer cache
 composer clear-cache
