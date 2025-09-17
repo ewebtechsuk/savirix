@@ -15,7 +15,7 @@ class DiaryEventFactory extends Factory
         return [
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->sentence(8),
-            'date' => $start,
+            'date' => $start->format('Y-m-d'),
             'start' => $start,
             'type' => $this->faker->randomElement(['appointment', 'viewing', 'inspection']),
             'created_at' => now(),
