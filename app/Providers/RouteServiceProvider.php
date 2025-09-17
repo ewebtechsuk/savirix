@@ -22,6 +22,7 @@ class RouteServiceProvider extends ServiceProvider
                 if (file_exists($path)) {
                     Route::middleware('web')->group($path);
                 }
+
             }
 
             Route::middleware('api')

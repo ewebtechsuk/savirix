@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (! Schema::hasColumn('diary_events', 'date')) {
-            Schema::table('diary_events', function (Blueprint $table) {
-                $table->dateTime('date')->nullable()->after('description');
+        if (! Schema::hasColumn('invoices', 'date')) {
+            Schema::table('invoices', function (Blueprint $table) {
+                $table->date('date')->nullable()->after('number');
             });
         }
     }
+
     public function down(): void
     {
-        if (Schema::hasColumn('diary_events', 'date')) {
-            Schema::table('diary_events', function (Blueprint $table) {
+        if (Schema::hasColumn('invoices', 'date')) {
+            Schema::table('invoices', function (Blueprint $table) {
                 $table->dropColumn('date');
             });
         }
