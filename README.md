@@ -58,6 +58,12 @@ The workflow fails fast with a clear error message when any required secret is m
 before an upload attempt. Double-check that the resolved server host points to the correct Hostinger instance; an empty or
 placeholder hostname causes the FTP action to abort with `getaddrinfo ENOTFOUND`.
 
+- **FTP/FTPS** deployments run through [`SamKirkland/FTP-Deploy-Action`](https://github.com/SamKirkland/FTP-Deploy-Action), which
+  keeps a `.ftp-deploy-sync-state.json` file on the server to synchronise only changed files between runs.
+- **SFTP** deployments automatically stage a scrubbed copy of the repository (matching the FTP exclude rules) and upload it with
+  [`appleboy/scp-action`](https://github.com/appleboy/scp-action). Because SFTP uploads cannot reference the sync state file,
+  deletions need to be handled manually on the server if files are removed from version control.
+
 > **Tip:** Non-sensitive settings such as host, protocol, or target directory may be stored in GitHub Actions _variables_ as well
 > as secrets—the workflow checks both contexts. Keep credentials (username/password) in secrets for security. Regardless of
 > where you store the values, trim whitespace and use `ftp`, `ftps`, or `sftp` for the protocol. The deploy step normalises

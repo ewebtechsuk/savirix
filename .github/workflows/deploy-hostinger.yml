@@ -7,6 +7,8 @@ on:
 
 env:
   FTP_SYNC_STATE: .ftp-deploy-sync-state.json
+  SFTP_PAYLOAD_DIR: .deploy-sftp
+
 
 jobs:
   deploy:
@@ -141,7 +143,32 @@ jobs:
           rm -rf node_modules
           find storage -type f -name '*.log' -delete || true
 
-      - name: Deploy to Hostinger
+      - name: Stage upload payload for SFTP deployments
+        if: ${{ steps.deploy_config.outputs.protocol == 'sftp' }}
+        run: |
+          rm -rf "$SFTP_PAYLOAD_DIR"
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.gitignore' \
+            --exclude='.github/' \
+            --exclude='.devcontainer/' \
+            --exclude='node_modules/' \
+            --exclude='storage/logs/' \
+            --exclude='storage/framework/cache/data/' \
+            --exclude='storage/framework/sessions/' \
+            --exclude='storage/framework/testing/' \
+            --exclude='tests/' \
+            --exclude='docs/' \
+            --exclude='offline/' \
+            --exclude='framework/' \
+            --exclude='vendor/bin/' \
+            --exclude='deps/' \
+            --exclude='deps.tar.gz' \
+            --exclude="$FTP_SYNC_STATE" \
+            ./ "$SFTP_PAYLOAD_DIR/"
+
+      - name: Deploy to Hostinger (FTP/FTPS)
+        if: ${{ steps.deploy_config.outputs.protocol != 'sftp' }}
 
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
@@ -172,3 +199,16 @@ jobs:
             **/deps.tar.gz
           state-name: ${{ env.FTP_SYNC_STATE }}
           log-level: minimal
+
+      - name: Deploy to Hostinger (SFTP)
+        if: ${{ steps.deploy_config.outputs.protocol == 'sftp' }}
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ steps.deploy_config.outputs.host }}
+          username: ${{ steps.deploy_config.outputs.username }}
+          password: ${{ steps.deploy_config.outputs.password }}
+          port: ${{ steps.deploy_config.outputs.port }}
+          source: ${{ format('{0}/', env.SFTP_PAYLOAD_DIR) }}
+          target: ${{ steps.deploy_config.outputs.server_dir }}
+          overwrite: true
+
