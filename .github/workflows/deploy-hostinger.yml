@@ -47,6 +47,7 @@ jobs:
             missing+=("HOSTINGER_FTP_TARGET_DIR or FTP_TARGET_DIR")
           fi
 
+
           if [ "${#missing[@]}" -ne 0 ]; then
             printf '::error::Missing required deployment secrets: %s\n' "${missing[*]}"
             exit 1
@@ -56,6 +57,7 @@ jobs:
           protocol="$(printf '%s' "$protocol" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           protocol="${protocol%%://*}"
           protocol="${protocol%%:*}"
+
 
           if [ -z "$protocol" ]; then
             protocol="ftps"
@@ -111,6 +113,7 @@ jobs:
           FTP_PROTOCOL: ${{ secrets.FTP_PROTOCOL || vars.FTP_PROTOCOL }}
           FTP_PORT: ${{ secrets.FTP_PORT || vars.FTP_PORT }}
 
+
       - name: Set up PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
@@ -139,6 +142,7 @@ jobs:
           find storage -type f -name '*.log' -delete || true
 
       - name: Deploy to Hostinger
+
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
           server: ${{ steps.deploy_config.outputs.host }}
@@ -148,6 +152,7 @@ jobs:
           port: ${{ steps.deploy_config.outputs.port }}
           server-dir: ${{ steps.deploy_config.outputs.server_dir }}
           local-dir: ./
+
           exclude: |
             **/.git*/**
             **/.gitignore
