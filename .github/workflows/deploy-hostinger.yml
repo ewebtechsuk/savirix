@@ -98,7 +98,8 @@ jobs:
           protocol: ${{ steps.protocol.outputs.value }}
           port: ${{ steps.port.outputs.value }}
           server-dir: ${{ secrets.HOSTINGER_FTP_TARGET_DIR }}
-          local-dir: .
+          local-dir: ./
+
           exclude: |
             **/.git*/**
             **/.gitignore
