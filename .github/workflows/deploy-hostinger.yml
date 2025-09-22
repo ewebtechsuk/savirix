@@ -9,6 +9,7 @@ env:
   FTP_SYNC_STATE: .ftp-deploy-sync-state.json
   SFTP_PAYLOAD_DIR: .deploy-sftp
 
+
 jobs:
   deploy:
     name: Upload application to Hostinger
@@ -48,6 +49,7 @@ jobs:
             missing+=("HOSTINGER_FTP_TARGET_DIR or FTP_TARGET_DIR")
           fi
 
+
           if [ "${#missing[@]}" -ne 0 ]; then
             printf '::error::Missing required deployment secrets: %s\n' "${missing[*]}"
             exit 1
@@ -57,6 +59,7 @@ jobs:
           protocol="$(printf '%s' "$protocol" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           protocol="${protocol%%://*}"
           protocol="${protocol%%:*}"
+
 
           if [ -z "$protocol" ]; then
             protocol="ftps"
@@ -112,6 +115,7 @@ jobs:
           FTP_PROTOCOL: ${{ secrets.FTP_PROTOCOL || vars.FTP_PROTOCOL }}
           FTP_PORT: ${{ secrets.FTP_PORT || vars.FTP_PORT }}
 
+
       - name: Set up PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
@@ -165,6 +169,7 @@ jobs:
 
       - name: Deploy to Hostinger (FTP/FTPS)
         if: ${{ steps.deploy_config.outputs.protocol != 'sftp' }}
+
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
           server: ${{ steps.deploy_config.outputs.host }}
@@ -174,6 +179,7 @@ jobs:
           port: ${{ steps.deploy_config.outputs.port }}
           server-dir: ${{ steps.deploy_config.outputs.server_dir }}
           local-dir: ./
+
           exclude: |
             **/.git*/**
             **/.gitignore
@@ -205,3 +211,4 @@ jobs:
           source: ${{ format('{0}/', env.SFTP_PAYLOAD_DIR) }}
           target: ${{ steps.deploy_config.outputs.server_dir }}
           overwrite: true
+

@@ -53,6 +53,7 @@ column may be used):
 | `HOSTINGER_FTP_PORT` **or** `FTP_PORT` | ❌ | Override the default port (`21`). The workflow falls back to `22` when the protocol is set to SFTP. |
 | `HOSTINGER_FTP_PROTOCOL` **or** `FTP_PROTOCOL` | ❌ | Transfer protocol (`ftps` by default). Accepts `ftp`, `ftps`, or `sftp` (case-insensitive). |
 
+
 The workflow fails fast with a clear error message when any required secret is missing so you can correct the configuration
 before an upload attempt. Double-check that the resolved server host points to the correct Hostinger instance; an empty or
 placeholder hostname causes the FTP action to abort with `getaddrinfo ENOTFOUND`.
@@ -67,6 +68,7 @@ placeholder hostname causes the FTP action to abort with `getaddrinfo ENOTFOUND`
 > as secrets—the workflow checks both contexts. Keep credentials (username/password) in secrets for security. Regardless of
 > where you store the values, trim whitespace and use `ftp`, `ftps`, or `sftp` for the protocol. The deploy step normalises
 > inputs like `SFTP://` automatically.
+
 
 After the workflow finishes, the state file `.ftp-deploy-sync-state.json` stored on the server keeps future deployments fast by
 syncing only changed files. Clean up any old log files or caches in `storage/` directly on the server if required—the workflow
