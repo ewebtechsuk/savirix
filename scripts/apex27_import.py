@@ -500,8 +500,9 @@ def post_records(
     timeout: float,
     dry_run: bool,
     continue_on_error: bool,
-) -> List[dict]:
+) -> tuple[List[dict], int]:
     results: List[dict] = []
+    failures = 0
     for index, record in enumerate(records, start=1):
         LOGGER.debug("Processing record %s for %s", index, endpoint)
         if dry_run:
@@ -517,6 +518,7 @@ def post_records(
             )
             if continue_on_error:
                 LOGGER.error(message)
+                failures += 1
                 continue
             raise ImportError(message)
         try:
@@ -527,17 +529,38 @@ def post_records(
         LOGGER.info(
             "Created record %s at %s (status %s)", index, endpoint, response.status_code
         )
-    return results
+    return results, failures
+
+
+def _coerce_int(value: object) -> Optional[int]:
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        if value.is_integer():
+            return int(value)
+        return None
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return None
+        try:
+            return int(text)
+        except ValueError:
+            return None
+    return None
 
 
 def extract_created_id(created: dict) -> Optional[int]:
     if not isinstance(created, dict):
         return None
-    if "id" in created and isinstance(created.get("id"), int):
-        return created.get("id")
+    direct = _coerce_int(created.get("id")) if "id" in created else None
+    if direct is not None:
+        return direct
     data = created.get("data") if isinstance(created.get("data"), dict) else None
-    if isinstance(data, dict) and isinstance(data.get("id"), int):
-        return data.get("id")
+    if isinstance(data, dict):
+        nested = _coerce_int(data.get("id"))
+        if nested is not None:
+            return nested
     return None
 
 
@@ -687,12 +710,25 @@ def process_import(args: argparse.Namespace) -> None:
     property_ids: Dict[str, Optional[int]] = {}
     tenancy_ids: Dict[str, Optional[int]] = {}
 
+    success_counts = {
+        "contacts": 0,
+        "properties": 0,
+        "tenancies": 0,
+        "payments": 0,
+    }
+    failure_counts = {
+        "contacts": 0,
+        "properties": 0,
+        "tenancies": 0,
+        "payments": 0,
+    }
+
     if contacts:
         contact_payloads = [
             {k: v for k, v in record.items() if k != "external_id"}
             for record in contacts
         ]
-        contact_results = post_records(
+        contact_results, contact_failures = post_records(
             session,
             args.base_url,
             "/api/contacts",
@@ -702,6 +738,8 @@ def process_import(args: argparse.Namespace) -> None:
             args.continue_on_error,
         )
         map_external_ids(contacts, contact_results, contact_ids, allow_missing=args.dry_run)
+        success_counts["contacts"] = len(contact_results)
+        failure_counts["contacts"] = contact_failures
     else:
         LOGGER.info("No contacts supplied; tenancy/contact relationships may fail if required")
 
@@ -710,12 +748,11 @@ def process_import(args: argparse.Namespace) -> None:
         for record in properties
     ]
 
-    property_results = post_records(
+    property_results, property_failures = post_records(
         session,
         args.base_url,
         "/api/properties",
         property_payloads,
-
         args.timeout,
         args.dry_run,
         args.continue_on_error,
@@ -726,6 +763,8 @@ def process_import(args: argparse.Namespace) -> None:
         property_ids,
         allow_missing=args.dry_run,
     )
+    success_counts["properties"] = len(property_results)
+    failure_counts["properties"] = property_failures
 
     tenancy_payloads = [
         enrich_tenancy_payload(
@@ -737,12 +776,11 @@ def process_import(args: argparse.Namespace) -> None:
         for record in tenancies
     ]
 
-    tenancy_results = post_records(
+    tenancy_results, tenancy_failures = post_records(
         session,
         args.base_url,
         "/api/tenancies",
         tenancy_payloads,
-
         args.timeout,
         args.dry_run,
         args.continue_on_error,
@@ -753,6 +791,8 @@ def process_import(args: argparse.Namespace) -> None:
         tenancy_ids,
         allow_missing=args.dry_run,
     )
+    success_counts["tenancies"] = len(tenancy_results)
+    failure_counts["tenancies"] = tenancy_failures
 
     payment_payloads = [
         enrich_payment_payload(
@@ -763,18 +803,66 @@ def process_import(args: argparse.Namespace) -> None:
         for record in payments
     ]
 
-    post_records(
+    payment_results, payment_failures = post_records(
         session,
         args.base_url,
         "/api/payments",
         payment_payloads,
-
         args.timeout,
         args.dry_run,
         args.continue_on_error,
     )
 
-    LOGGER.info("Import completed successfully")
+    success_counts["payments"] = len(payment_results)
+    failure_counts["payments"] = payment_failures
+
+    totals = {
+        "contacts": len(contacts),
+        "properties": len(properties),
+        "tenancies": len(tenancies),
+        "payments": len(payments),
+    }
+
+    summary_parts = []
+    for name in ("contacts", "properties", "tenancies", "payments"):
+        successes = success_counts[name]
+        total = totals[name]
+        failures = failure_counts[name]
+        if failures:
+            summary_parts.append(
+                f"{name}: {successes}/{total} (failed {failures})"
+            )
+        else:
+            summary_parts.append(f"{name}: {successes}/{total}")
+
+    processed_total = sum(success_counts.values())
+    expected_total = sum(totals.values())
+    failed_total = sum(failure_counts.values())
+
+    if args.dry_run:
+        LOGGER.info("[DRY RUN] Validation summary -> %s", ", ".join(summary_parts))
+        LOGGER.info(
+            "[DRY RUN] Total records validated: %s",
+            expected_total,
+        )
+        LOGGER.info("[DRY RUN] No API requests were sent")
+        return
+
+    if failed_total:
+        LOGGER.warning(
+            "Import completed with %s failed request%s",
+            failed_total,
+            "s" if failed_total != 1 else "",
+        )
+    else:
+        LOGGER.info("Import completed successfully")
+
+    LOGGER.info("Summary -> %s", ", ".join(summary_parts))
+    LOGGER.info(
+        "Total records processed: %s/%s",
+        processed_total,
+        expected_total,
+    )
 
 
 def main(argv: Optional[List[str]] = None) -> int:
