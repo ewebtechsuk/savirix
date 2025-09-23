@@ -13,6 +13,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MaintenanceRequestController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     $landingPage = base_path('frontend/index.html');
@@ -26,7 +27,8 @@ Route::get('/', function () {
 });
 
 Route::get('/assets/{path}', function (string $path) {
-    if (str_contains($path, '..')) {
+    if (Str::contains($path, '..')) {
+
         abort(404);
     }
 
@@ -40,7 +42,8 @@ Route::get('/assets/{path}', function (string $path) {
 })->where('path', '.*');
 
 Route::get('/{page}.html', function (string $page) {
-    if (str_contains($page, '/')) {
+    if (Str::contains($page, '/')) {
+
         abort(404);
     }
 
