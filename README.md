@@ -28,6 +28,8 @@ Tests are written with PHPUnit. After installing dependencies with Composer run 
 
 If you have PHPUnit installed globally you can simply run `phpunit` instead.
 
+> **Note:** `./setup.sh` now downloads a project-local `composer.phar` automatically when Composer isn't available on your PATH, so you can bootstrap the dependencies even in minimal environments.
+
 
 ### Continuous Integration
 

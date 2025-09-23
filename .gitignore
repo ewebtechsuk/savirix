@@ -1,4 +1,5 @@
 .DS_Store
+/composer.phar
 /vendor/*
 !/vendor/bin/
 !/vendor/bin/phpunit
