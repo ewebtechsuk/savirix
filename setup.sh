@@ -25,6 +25,7 @@ SKIP_NPM=false
 OPTIMIZE=false
 OFFLINE_MODE=false
 OFFLINE_SENTINEL="bootstrap/cache/offline.json"
+COMPOSER_BIN=()
 
 print_help() {
   sed -n '1,60p' "$0" | grep -E '^#' | sed 's/^# *//'
@@ -32,6 +33,13 @@ print_help() {
 
 log() { echo -e "[setup] $*"; }
 warn() { echo -e "[setup][warn] $*" >&2; }
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+composer_log() { log "$@"; }
+composer_warn() { warn "$@"; }
+
+source "${SCRIPT_DIR}/scripts/lib/composer.sh"
 
 enable_offline_mode() {
   OFFLINE_MODE=true
@@ -74,8 +82,9 @@ if [[ -f composer.json ]]; then
   if [[ -d vendor ]]; then
     log "Composer dependencies (vendor/) already present"
   else
+    ensure_composer
     log "Installing Composer dependencies"
-    if composer install --no-interaction --prefer-dist --no-progress; then
+    if "${COMPOSER_BIN[@]}" install --no-interaction --prefer-dist --no-progress; then
       :
     else
       enable_offline_mode
