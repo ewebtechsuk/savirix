@@ -28,6 +28,7 @@ Route::get('/', function () {
 
 Route::get('/assets/{path}', function (string $path) {
     if (Str::contains($path, '..')) {
+
         abort(404);
     }
 
@@ -42,6 +43,7 @@ Route::get('/assets/{path}', function (string $path) {
 
 Route::get('/{page}.html', function (string $page) {
     if (Str::contains($page, '/')) {
+
         abort(404);
     }
 
