@@ -18,8 +18,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Resolve deployment configuration
         id: deploy_config
@@ -138,8 +136,26 @@ jobs:
           extensions: mbstring, bcmath, intl, pdo_mysql
           coverage: none
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache
+            vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
       - name: Install Composer dependencies
-        run: composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
+        env:
+          COMPOSER_CACHE_DIR: ~/.composer/cache
+        run: |
+          composer install \
+            --no-dev \
+            --prefer-dist \
+            --no-progress \
+            --no-interaction \
+            --optimize-autoloader
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -157,6 +173,17 @@ jobs:
         run: |
           rm -rf node_modules
           find storage -type f -name '*.log' -delete || true
+
+      - name: Remove stale FTP temporary files
+        if: ${{ steps.deploy_config.outputs.protocol != 'sftp' }}
+        env:
+          FTP_CLEANUP_HOST: ${{ steps.deploy_config.outputs.host }}
+          FTP_CLEANUP_USERNAME: ${{ steps.deploy_config.outputs.username }}
+          FTP_CLEANUP_PASSWORD: ${{ steps.deploy_config.outputs.password }}
+          FTP_CLEANUP_PROTOCOL: ${{ steps.deploy_config.outputs.protocol }}
+          FTP_CLEANUP_PORT: ${{ steps.deploy_config.outputs.port }}
+          FTP_CLEANUP_TARGET: ${{ steps.deploy_config.outputs.server_dir }}
+        run: python3 scripts/cleanup_ftp_temp_files.py
 
       - name: Stage upload payload for SFTP deployments
         if: ${{ steps.deploy_config.outputs.protocol == 'sftp' }}
