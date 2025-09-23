@@ -25,6 +25,7 @@ SKIP_NPM=false
 OPTIMIZE=false
 OFFLINE_MODE=false
 OFFLINE_SENTINEL="bootstrap/cache/offline.json"
+COMPOSER_BIN=()
 
 print_help() {
   sed -n '1,60p' "$0" | grep -E '^#' | sed 's/^# *//'
@@ -32,6 +33,81 @@ print_help() {
 
 log() { echo -e "[setup] $*"; }
 warn() { echo -e "[setup][warn] $*" >&2; }
+
+ensure_composer() {
+  if command -v composer >/dev/null 2>&1; then
+    COMPOSER_BIN=(composer)
+    return
+  fi
+
+  if [[ -f composer.phar ]]; then
+    COMPOSER_BIN=(php composer.phar)
+    return
+  fi
+
+  if ! command -v php >/dev/null 2>&1; then
+    warn "PHP is required to bootstrap Composer but was not found."
+    exit 1
+  fi
+
+  log "Composer executable not found; downloading local composer.phar"
+
+  local installer
+  installer="$(mktemp)"
+
+  local signature
+  if command -v curl >/dev/null 2>&1; then
+    if ! signature="$(curl -sS https://composer.github.io/installer.sig)"; then
+      warn "Failed to download Composer installer signature."
+      rm -f "$installer"
+      exit 1
+    fi
+    if ! curl -sS https://getcomposer.org/installer -o "$installer"; then
+      warn "Failed to download Composer installer script."
+      rm -f "$installer"
+      exit 1
+    fi
+  else
+    if ! signature="$(php -r "echo trim(file_get_contents('https://composer.github.io/installer.sig'));")"; then
+      warn "Failed to retrieve Composer installer signature."
+      rm -f "$installer"
+      exit 1
+    fi
+    if ! php -r "copy('https://getcomposer.org/installer', '$installer');"; then
+      warn "Failed to download Composer installer script."
+      rm -f "$installer"
+      exit 1
+    fi
+  fi
+
+  if [[ -z "$signature" ]]; then
+    warn "Composer installer signature was empty."
+    rm -f "$installer"
+    exit 1
+  fi
+
+  local actual
+  if ! actual="$(php -r "echo hash_file('sha384', '$installer');")"; then
+    warn "Unable to calculate Composer installer checksum."
+    rm -f "$installer"
+    exit 1
+  fi
+
+  if [[ "$actual" != "$signature" ]]; then
+    warn "Composer installer signature mismatch; aborting."
+    rm -f "$installer"
+    exit 1
+  fi
+
+  if ! php "$installer" --install-dir=. --filename=composer.phar >/dev/null; then
+    warn "Composer installer failed."
+    rm -f "$installer"
+    exit 1
+  fi
+
+  rm -f "$installer"
+  COMPOSER_BIN=(php composer.phar)
+}
 
 enable_offline_mode() {
   OFFLINE_MODE=true
@@ -74,8 +150,9 @@ if [[ -f composer.json ]]; then
   if [[ -d vendor ]]; then
     log "Composer dependencies (vendor/) already present"
   else
+    ensure_composer
     log "Installing Composer dependencies"
-    if composer install --no-interaction --prefer-dist --no-progress; then
+    if "${COMPOSER_BIN[@]}" install --no-interaction --prefer-dist --no-progress; then
       :
     else
       enable_offline_mode
