@@ -530,14 +530,35 @@ def post_records(
     return results
 
 
+def _coerce_int(value: object) -> Optional[int]:
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        if value.is_integer():
+            return int(value)
+        return None
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return None
+        try:
+            return int(text)
+        except ValueError:
+            return None
+    return None
+
+
 def extract_created_id(created: dict) -> Optional[int]:
     if not isinstance(created, dict):
         return None
-    if "id" in created and isinstance(created.get("id"), int):
-        return created.get("id")
+    direct = _coerce_int(created.get("id")) if "id" in created else None
+    if direct is not None:
+        return direct
     data = created.get("data") if isinstance(created.get("data"), dict) else None
-    if isinstance(data, dict) and isinstance(data.get("id"), int):
-        return data.get("id")
+    if isinstance(data, dict):
+        nested = _coerce_int(data.get("id"))
+        if nested is not None:
+            return nested
     return None
 
 
@@ -687,6 +708,13 @@ def process_import(args: argparse.Namespace) -> None:
     property_ids: Dict[str, Optional[int]] = {}
     tenancy_ids: Dict[str, Optional[int]] = {}
 
+    success_counts = {
+        "contacts": 0,
+        "properties": 0,
+        "tenancies": 0,
+        "payments": 0,
+    }
+
     if contacts:
         contact_payloads = [
             {k: v for k, v in record.items() if k != "external_id"}
@@ -702,6 +730,7 @@ def process_import(args: argparse.Namespace) -> None:
             args.continue_on_error,
         )
         map_external_ids(contacts, contact_results, contact_ids, allow_missing=args.dry_run)
+        success_counts["contacts"] = len(contact_results)
     else:
         LOGGER.info("No contacts supplied; tenancy/contact relationships may fail if required")
 
@@ -726,6 +755,7 @@ def process_import(args: argparse.Namespace) -> None:
         property_ids,
         allow_missing=args.dry_run,
     )
+    success_counts["properties"] = len(property_results)
 
     tenancy_payloads = [
         enrich_tenancy_payload(
@@ -753,6 +783,7 @@ def process_import(args: argparse.Namespace) -> None:
         tenancy_ids,
         allow_missing=args.dry_run,
     )
+    success_counts["tenancies"] = len(tenancy_results)
 
     payment_payloads = [
         enrich_payment_payload(
@@ -763,7 +794,7 @@ def process_import(args: argparse.Namespace) -> None:
         for record in payments
     ]
 
-    post_records(
+    payment_results = post_records(
         session,
         args.base_url,
         "/api/payments",
@@ -774,7 +805,26 @@ def process_import(args: argparse.Namespace) -> None:
         args.continue_on_error,
     )
 
+    success_counts["payments"] = len(payment_results)
+
+    totals = {
+        "contacts": len(contacts),
+        "properties": len(properties),
+        "tenancies": len(tenancies),
+        "payments": len(payments),
+    }
+
+    summary_parts = [
+        f"{name}: {success_counts[name]}/{totals[name]}"
+        for name in ("contacts", "properties", "tenancies", "payments")
+    ]
+
+    processed_total = sum(success_counts.values())
+    expected_total = sum(totals.values())
+
     LOGGER.info("Import completed successfully")
+    LOGGER.info("Summary -> %s", ", ".join(summary_parts))
+    LOGGER.info("Total records processed: %s/%s", processed_total, expected_total)
 
 
 def main(argv: Optional[List[str]] = None) -> int:
