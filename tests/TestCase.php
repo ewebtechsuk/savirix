@@ -54,9 +54,15 @@ abstract class TestCase extends BaseTestCase
 
     private function bootTenancyDatabase(): void
     {
-        $depsAutoload = dirname(__DIR__) . '/deps/vendor/autoload.php';
-        if (file_exists($depsAutoload)) {
-            require_once $depsAutoload;
+        $autoloaders = [
+            dirname(__DIR__) . '/vendor/autoload.php',
+            dirname(__DIR__) . '/deps/vendor/autoload.php',
+        ];
+
+        foreach ($autoloaders as $autoload) {
+            if (file_exists($autoload)) {
+                require_once $autoload;
+            }
         }
 
         if (!static::$capsule) {
@@ -109,6 +115,13 @@ abstract class TestCase extends BaseTestCase
         $connection = static::$capsule->getConnection();
         $connection->table('domains')->delete();
         $connection->table('tenants')->delete();
+
+        if (!class_exists(TenantSeeder::class)) {
+            $tenantSeederPath = dirname(__DIR__) . '/database/seeders/TenantSeeder.php';
+            if (file_exists($tenantSeederPath)) {
+                require_once $tenantSeederPath;
+            }
+        }
 
         $seeder = new TenantSeeder();
         $seeder->run();
