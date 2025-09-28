@@ -10,14 +10,14 @@ class DashboardTest extends TestCase
     public function testLoginPageLoads(): void
     {
         $response = $this->get('/login');
-        $this->assertStatus($response, 200);
-        $this->assertSee($response, 'Login');
+        $response->assertStatus(200)
+            ->assertSee('Login');
     }
 
     public function testDashboardRequiresAuthentication(): void
     {
         $response = $this->get('/dashboard');
-        $this->assertRedirect($response, '/login');
+        $response->assertRedirect('/login');
     }
 
     public function testAuthenticatedUserCanSeeDashboard(): void
@@ -29,7 +29,7 @@ class DashboardTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get('/dashboard');
-        $this->assertStatus($response, 200);
-        $this->assertSee($response, 'Dashboard');
+        $response->assertStatus(200)
+            ->assertSee('Dashboard');
     }
 }
