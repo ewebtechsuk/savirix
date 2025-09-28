@@ -16,6 +16,7 @@ class AddLoginTokenToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropUnique('users_login_token_unique');
             $table->dropColumn('login_token');
         });
     }

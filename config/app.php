@@ -166,6 +166,7 @@ return [
          */
 
         Stancl\Tenancy\TenancyServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
         /*
          * Application Service Providers...

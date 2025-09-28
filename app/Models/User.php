@@ -2,36 +2,39 @@
 
 namespace App\Models;
 
-class User
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
 {
-    private static int $nextId = 1;
-    /** @var array<int, User> */
-    private static array $store = [];
+    use HasApiTokens, HasFactory, Notifiable;
 
-    public int $id;
-    public string $name;
-    public string $email;
-    public string $password;
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $guarded = [];
 
-    private function __construct(array $attributes)
-    {
-        $this->id = $attributes['id'];
-        $this->name = $attributes['name'];
-        $this->email = $attributes['email'];
-        $this->password = $attributes['password'];
-    }
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-    public static function create(array $attributes): self
-    {
-        $record = [
-            'id' => self::$nextId++,
-            'name' => $attributes['name'] ?? 'User',
-            'email' => $attributes['email'] ?? 'user@example.com',
-            'password' => $attributes['password'] ?? '',
-        ];
-
-        $user = new self($record);
-        self::$store[$user->id] = $user;
-        return $user;
-    }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 }

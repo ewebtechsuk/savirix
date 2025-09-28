@@ -20,14 +20,10 @@ use App\Http\Controllers\PaymentController;
 
 Route::middleware([
     'web',
-    InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
+    InitializeTenancyByDomain::class,
     'role:Tenant'
 ])->group(function () {
-    Route::get('/', function () {
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-    });
-
     Route::prefix('onboarding')->group(function () {
         Route::get('verification/start', [VerificationController::class, 'start'])->name('verification.start');
         Route::get('verification/callback', [VerificationController::class, 'callback'])->name('verification.callback');
@@ -42,12 +38,12 @@ Route::middleware([
 
 Route::post('/stripe/webhook', [PaymentController::class, 'webhook'])->name('stripe.webhook');
 
-use App\Http\Controllers\TenantDashboardController;
+use App\Http\Controllers\TenantPortalController;
 
-Route::middleware(['web', 'auth:tenant'])
-    ->prefix('tenant')
+Route::prefix('tenant')
+    ->middleware(['web', 'tenant'])
     ->name('tenant.')
     ->group(function () {
-        Route::get('/dashboard', [TenantDashboardController::class, 'index'])
+        Route::get('/dashboard', [TenantPortalController::class, 'dashboard'])
             ->name('dashboard');
     });

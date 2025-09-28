@@ -6,6 +6,7 @@
 /node_modules/
 .env
 .phpunit.result.cache
+/.phpunit.cache/
 /public/storage
 /storage/*.key
 .env.*
