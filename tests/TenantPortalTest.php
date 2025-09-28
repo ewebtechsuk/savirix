@@ -2,36 +2,68 @@
 
 namespace Tests;
 
+use App\Models\Tenant;
+use App\Models\User;
+
 class TenantPortalTest extends TestCase
 {
-    public function test_frontend_landing_page_is_served(): void
+    public function testTenantLoginPageLoadsSuccessfully(): void
     {
-        $response = $this->get('/');
+        $response = $this->get('/tenant/login');
 
-        $response->assertOk();
-        $response->assertSee('Modern Estate Agency Software');
+        $this->assertStatus($response, 200);
+        $this->assertSee($response, 'Tenant Login');
     }
 
-    public function test_static_pricing_page_is_accessible(): void
+    public function testTenantDashboardRequiresAuthentication(): void
     {
-        $response = $this->get('/pricing.html');
+        $response = $this->get('/tenant/dashboard');
 
-        $response->assertOk();
-        $response->assertSee('Pricing', false);
+        $this->assertRedirect($response, '/tenant/login');
     }
 
-    public function test_frontend_asset_route_serves_files(): void
+    public function testTenantDashboardWelcomesAuthenticatedUser(): void
     {
-        $response = $this->get('/assets/style.css');
+        $user = User::create([
+            'name' => 'Aktonz Tenant',
+            'email' => 'tenant@aktonz.com',
+            'password' => 'secret',
+        ]);
 
-        $response->assertOk();
-        $response->assertSee('font-family', false);
+        $response = $this->actingAs($user)->get('/tenant/dashboard');
+
+        $this->assertStatus($response, 200);
+        $this->assertSee($response, 'Tenant Dashboard');
+        $this->assertSee($response, 'Aktonz Tenant');
     }
 
-    public function test_requesting_unknown_static_page_returns_not_found(): void
+    public function testTenantDirectoryListsKnownTenants(): void
     {
-        $response = $this->get('/unknown-page.html');
+        $response = $this->get('/tenant/list');
 
-        $response->assertNotFound();
+        $this->assertStatus($response, 200);
+        $this->assertSee($response, 'Tenant Directory');
+        $this->assertSee($response, 'Aktonz');
+        $this->assertSee($response, 'aktonz.darkorange-chinchilla-918430.hostingersite.com');
+    }
+
+    protected function createOffice(array $overrides = []): Tenant
+    {
+        $factory = Tenant::factory();
+
+        if (isset($overrides['packages'])) {
+            $packages = $overrides['packages'];
+            unset($overrides['packages']);
+        } else {
+            $packages = ['ListHub'];
+        }
+
+        $tenant = $factory->create($overrides);
+
+        foreach ($packages as $package) {
+            $tenant->packages()->create(['name' => $package]);
+        }
+
+        return $tenant->fresh();
     }
 }

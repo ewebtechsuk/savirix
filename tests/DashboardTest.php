@@ -3,33 +3,33 @@
 namespace Tests;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardTest extends TestCase
 {
-    public function test_login_page_loads(): void
+    public function testLoginPageLoads(): void
     {
         $response = $this->get('/login');
-
-        $response->assertOk();
-        $response->assertSee('Log in');
+        $this->assertStatus($response, 200);
+        $this->assertSee($response, 'Login');
     }
 
-    public function test_dashboard_requires_authentication(): void
+    public function testDashboardRequiresAuthentication(): void
     {
         $response = $this->get('/dashboard');
-
-        $response->assertRedirect(route('login'));
+        $this->assertRedirect($response, '/login');
     }
 
-    public function test_authenticated_user_can_see_dashboard(): void
+    public function testAuthenticatedUserCanSeeDashboard(): void
     {
-        $user = User::factory()->make([
-            'email_verified_at' => now(),
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => Hash::make('password'),
         ]);
 
         $response = $this->actingAs($user)->get('/dashboard');
-
-        $response->assertOk();
-        $response->assertSee("You're logged in!", false);
+        $this->assertStatus($response, 200);
+        $this->assertSee($response, 'Dashboard');
     }
 }
