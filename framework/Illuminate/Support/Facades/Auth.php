@@ -3,7 +3,10 @@
 namespace Illuminate\Support\Facades;
 
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use InvalidArgumentException;
 
 class Auth
 {
@@ -17,7 +20,16 @@ class Auth
         $name ??= self::$defaultGuard;
 
         if (!isset(self::$guards[$name])) {
-            self::$guards[$name] = new AuthGuard();
+            $guardConfig = config("auth.guards.$name");
+
+            if ($guardConfig === null) {
+                throw new InvalidArgumentException("Auth guard [$name] is not defined.");
+            }
+
+            $providerName = $guardConfig['provider'] ?? null;
+            $providerConfig = $providerName ? config("auth.providers.$providerName") : null;
+
+            self::$guards[$name] = new AuthGuard($providerConfig ?? []);
         }
 
         return self::$guards[$name];
@@ -33,7 +45,7 @@ class Auth
         return self::guard()->check();
     }
 
-    public static function user(): ?User
+    public static function user(): ?Model
     {
         return self::guard()->user();
     }
@@ -43,7 +55,7 @@ class Auth
         return self::guard()->id();
     }
 
-    public static function login(User $user, bool $remember = false): void
+    public static function login(Authenticatable|Model $user, bool $remember = false): void
     {
         self::guard()->login($user, $remember);
     }
@@ -61,25 +73,46 @@ class Auth
 
 class AuthGuard
 {
-    private ?User $user = null;
+    /** @var array<string, mixed> */
+    private array $providerConfig;
+
+    private ?Model $user = null;
+
+    /**
+     * @param  array<string, mixed>  $providerConfig
+     */
+    public function __construct(array $providerConfig = [])
+    {
+        $this->providerConfig = $providerConfig;
+    }
 
     public function check(): bool
     {
         return $this->user !== null;
     }
 
-    public function user(): ?User
+    public function user(): ?Model
     {
         return $this->user;
     }
 
     public function id(): ?int
     {
-        return $this->user?->id;
+        return $this->user?->getKey();
     }
 
-    public function login(User $user, bool $remember = false): void
+    public function login(Authenticatable|Model $user, bool $remember = false): void
     {
+        if (! $user instanceof Model) {
+            $resolved = $this->resolveModelInstance($user);
+
+            if (! $resolved) {
+                throw new InvalidArgumentException('Unable to resolve guard user instance for login.');
+            }
+
+            $user = $resolved;
+        }
+
         $this->user = $user;
     }
 
@@ -90,20 +123,15 @@ class AuthGuard
 
     public function attempt(array $credentials, bool $remember = false): bool
     {
-        $email = $credentials['email'] ?? null;
-        $password = $credentials['password'] ?? null;
-
-        if ($email === null || $password === null) {
-            return false;
-        }
-
-        $user = User::findByEmail($email);
+        $user = $this->retrieveByCredentials($credentials);
 
         if (! $user) {
             return false;
         }
 
-        if (! Hash::check($password, $user->password)) {
+        $password = $credentials['password'] ?? null;
+
+        if ($password === null || ! $this->validateCredentials($user, $password)) {
             return false;
         }
 
@@ -114,19 +142,62 @@ class AuthGuard
 
     public function validate(array $credentials): bool
     {
-        $email = $credentials['email'] ?? null;
-        $password = $credentials['password'] ?? null;
-
-        if ($email === null || $password === null) {
-            return false;
-        }
-
-        $user = User::findByEmail($email);
+        $user = $this->retrieveByCredentials($credentials);
 
         if (! $user) {
             return false;
         }
 
-        return Hash::check($password, $user->password);
+        $password = $credentials['password'] ?? null;
+
+        return $password !== null && $this->validateCredentials($user, $password);
+    }
+
+    private function validateCredentials(Model $user, string $password): bool
+    {
+        $passwordField = $this->providerConfig['password_field'] ?? 'password';
+        $stored = $user->getAttribute($passwordField);
+
+        if ($stored === null) {
+            return false;
+        }
+
+        return Hash::check($password, (string) $stored);
+    }
+
+    private function retrieveByCredentials(array $credentials): ?Model
+    {
+        $emailField = $this->providerConfig['email_field'] ?? 'email';
+
+        $value = $credentials[$emailField] ?? $credentials['email'] ?? null;
+
+        if ($value === null) {
+            return null;
+        }
+
+        $modelClass = $this->providerConfig['model'] ?? User::class;
+
+        if (! is_subclass_of($modelClass, Model::class)) {
+            throw new InvalidArgumentException("Auth provider model [$modelClass] must extend " . Model::class . '.');
+        }
+
+        /** @var Model $model */
+        return $modelClass::query()->where($emailField, $value)->first();
+    }
+
+    private function resolveModelInstance(Authenticatable $user): ?Model
+    {
+        $modelClass = $this->providerConfig['model'] ?? User::class;
+
+        if (is_subclass_of($modelClass, Model::class) && method_exists($user, 'getAuthIdentifier')) {
+            $identifier = $user->getAuthIdentifier();
+
+            /** @var Model|null $model */
+            $model = $modelClass::query()->find($identifier);
+
+            return $model;
+        }
+
+        return null;
     }
 }

@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AuthApiController extends Controller
 {
@@ -15,11 +14,16 @@ class AuthApiController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        $user = User::where('email', $credentials['email'])->first();
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+        if (! Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-        $token = $user->createToken('api-token')->plainTextToken;
+        $user = Auth::user();
+        $token = $user?->createToken('api-token')->plainTextToken;
+
+        if (! $token) {
+            return response()->json(['message' => 'Unable to generate API token'], 500);
+        }
+
         return response()->json(['token' => $token]);
     }
 }
