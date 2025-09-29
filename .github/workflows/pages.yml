@@ -31,6 +31,8 @@ jobs:
         run: npm ci
       - name: Build frontend assets
         run: npm run build
+      - name: Verify marketing fallback page
+        run: test -f dist/404.html
       - name: Upload frontend artifact
         uses: actions/upload-pages-artifact@v3
         if: ${{ hashFiles('dist/**') != '' }}
