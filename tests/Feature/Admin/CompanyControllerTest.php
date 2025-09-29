@@ -7,10 +7,10 @@ use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Services\TenantProvisioner;
+use App\Services\TenantProvisioningResult;
 use App\Support\SubdomainNormalizer;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Stancl\Tenancy\Database\Models\Domain;
 use Tests\TestCase;
@@ -152,6 +152,60 @@ class CompanyControllerTest extends TestCase
         $this->assertNotNull($companyId);
         $this->assertNotSame('123456', (string) $companyId);
         $this->assertNotEmpty((string) $companyId);
+    }
+
+    public function test_store_provisions_tenant_and_flashes_result_details(): void
+    {
+        $existingTenant = Tenant::factory()->create([
+            'id' => 'existing',
+            'slug' => 'existing',
+            'name' => 'Existing Tenant',
+        ]);
+
+        $provisioner = $this->app->make(TenantProvisioner::class);
+
+        Domain::create([
+            'domain' => $provisioner->buildTenantDomain('existing'),
+            'tenant_id' => $existingTenant->id,
+        ]);
+
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $this->withoutMiddleware([
+            RoleMiddleware::class,
+            VerifyCsrfToken::class,
+        ]);
+
+        URL::shouldReceive('setRequest')->byDefault()->andReturnNull();
+        URL::shouldReceive('getRequest')->byDefault()->andReturn($this->app->make('request'));
+        URL::shouldReceive('route')->andReturn('/admin/companies');
+        URL::shouldReceive('to')->andReturn('/admin/companies');
+
+        $response = $this->post('/admin/companies', [
+            'name' => 'Fresh Company',
+            'subdomain' => 'fresh-company',
+        ]);
+
+        $response->assertRedirect('/admin/companies');
+        $response->assertSessionHas('success');
+        $response->assertSessionHas('provisioning.result.status', TenantProvisioningResult::STATUS_SUCCESS);
+
+        $expectedDomain = $provisioner->buildTenantDomain('fresh-company');
+        $response->assertSessionHas('provisioning.domains.0', $expectedDomain);
+
+        $tenant = Tenant::query()->findOrFail('fresh-company');
+
+        $this->assertNotNull($tenant->company_id);
+
+        tenancy()->initialize($tenant);
+
+        try {
+            $this->assertDatabaseHas('users', ['email' => 'admin@ressapp.com']);
+        } finally {
+            tenancy()->end();
+        }
     }
 
     public function test_update_rejects_subdomains_with_invalid_characters(): void
