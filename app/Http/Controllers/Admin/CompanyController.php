@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Rules\Subdomain as SubdomainRule;
 use App\Services\TenantProvisioner;
-use App\Support\CompanyIdGenerator;
+use App\Services\TenantProvisioningResult;
 use App\Support\SubdomainNormalizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,23 +59,54 @@ class CompanyController extends Controller
                     }
                 },
             ],
+            'data' => 'nullable|array',
+            'user' => 'nullable|array',
+            'user.name' => 'required_with:user|string|max:255',
+            'user.email' => 'required_with:user|email',
+            'user.password' => 'required_with:user|string|min:8',
         ]);
 
-        $domain = $this->tenantProvisioner->buildTenantDomain($validated['subdomain']);
-
-        $company_id = CompanyIdGenerator::generate();
-
-        $tenant = Tenant::create([
-            'id' => $validated['subdomain'],
-        ]);
-
-        $tenant->forceFill([
+        $payload = [
+            'subdomain' => $validated['subdomain'],
             'name' => $validated['name'],
-            'company_id' => $company_id,
-        ])->save();
-        $tenant->domains()->create(['domain' => $domain]);
+        ];
 
-        return redirect()->route('admin.companies.index')->with('success', 'Company created successfully.');
+        if (array_key_exists('data', $validated) && is_array($validated['data'])) {
+            $payload['data'] = $validated['data'];
+        }
+
+        if (array_key_exists('user', $validated) && is_array($validated['user'])) {
+            $payload['user'] = $validated['user'];
+        }
+
+        $result = $this->tenantProvisioner->provision($payload);
+
+        $tenant = $result->tenant();
+
+        if ($tenant !== null && $result->status() !== TenantProvisioningResult::STATUS_ROLLED_BACK) {
+            $tenant->refresh();
+            $tenant->load('domains');
+        }
+
+        $flashPayload = [
+            'result' => $result->toArray(),
+            'tenant' => $tenant?->toArray(),
+            'domains' => $tenant?->domains->pluck('domain')->all(),
+        ];
+
+        if ($result->status() === TenantProvisioningResult::STATUS_ROLLED_BACK) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['provisioning' => $result->errors()])
+                ->with($result->flashLevel(), $result->message())
+                ->with('provisioning', $flashPayload);
+        }
+
+        return redirect()
+            ->route('admin.companies.index')
+            ->with($result->flashLevel(), $result->message())
+            ->with('provisioning', $flashPayload);
     }
 
     public function edit($id)
