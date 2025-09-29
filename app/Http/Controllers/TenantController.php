@@ -2,12 +2,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tenant;
+use App\Services\TenantProvisioner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class TenantController extends Controller
 {
+    public function __construct(private readonly TenantProvisioner $tenantProvisioner)
+    {
+    }
+
     public function index()
     {
         $tenants = Tenant::all();
@@ -38,49 +42,23 @@ class TenantController extends Controller
     {
         Log::info('Tenant store request', $request->all());
 
-        $request->validate([
+        $validated = $request->validate([
             'subdomain' => 'required|string|max:255|unique:domains,domain',
             'data' => 'nullable|array',
             'user' => 'nullable|array',
         ]);
-        do {
-            $company_id = random_int(100000, 999999);
-        } while (Tenant::where('data->company_id', $company_id)->exists());
-        $data = $request->input('data', []);
-        if (!is_array($data)) {
-            $data = [];
-        }
-        $data['company_id'] = $company_id;
-        // fallback for name
-        if (!isset($data['company_name']) && isset($request->name)) {
-            $data['company_name'] = $request->name;
-        }
-        if (!isset($data['name']) && isset($request->name)) {
-            $data['name'] = $request->name;
-        }
-        $tenant = Tenant::create([
-            'id' => $request->subdomain,
-            'data' => $data,
+        $result = $this->tenantProvisioner->provision([
+            'subdomain' => $validated['subdomain'],
+            'data' => $request->input('data', []),
+            'user' => $request->input('user', []),
+            'name' => $request->input('name'),
+            'company_name' => $request->input('company_name'),
         ]);
 
-        $tenant->domains()->create([
-            'domain' => $this->buildTenantDomain((string) $request->input('subdomain', '')),
-        ]);
-        // Create initial user if provided
-        if ($request->has('user.name') && $request->has('user.email') && $request->has('user.password')) {
-            try {
-                tenancy()->initialize($tenant);
-                $userModel = config('auth.providers.users.model');
-                $userModel::create([
-                    'name' => $request->input('user.name'),
-                    'email' => $request->input('user.email'),
-                    'password' => bcrypt($request->input('user.password')),
-                ]);
-            } catch (\Exception $e) {
-                // Ignore user creation errors for now
-            }
-        }
-        return redirect()->route('tenants.index')->with('success', 'Tenant created successfully.');
+        return redirect()
+            ->route('tenants.index')
+            ->with($result->flashLevel(), $result->message() !== '' ? $result->message() : 'Tenant provisioning completed.')
+            ->with('provisioning', $result->toArray());
     }
 
     public function edit($id)
@@ -124,7 +102,7 @@ class TenantController extends Controller
         $tenant->save();
         $tenant->refresh(); // Ensure latest data is loaded
         if ($request->filled('subdomain')) {
-            $domain = $this->buildTenantDomain((string) $request->input('subdomain', ''));
+            $domain = $this->tenantProvisioner->buildTenantDomain((string) $request->input('subdomain', ''));
 
             if ($tenant->domains()->exists()) {
                 $tenant->domains()->update(['domain' => $domain]);
@@ -166,44 +144,4 @@ class TenantController extends Controller
         return back()->with('success', 'User added successfully.');
 }
 
-    private function buildTenantDomain(string $subdomain): string
-    {
-        $subdomain = trim($subdomain);
-
-        if ($subdomain === '') {
-            return $this->centralHost();
-        }
-
-        $host = $this->centralHost();
-
-        return Str::of($subdomain)->trim('.')->append('.' . $host);
-    }
-
-    private function centralHost(): string
-    {
-        $appUrl = config('app.url');
-        $host = parse_url($appUrl ?: '', PHP_URL_HOST);
-
-        if (is_string($host) && $host !== '') {
-            return $host;
-        }
-
-        $centralDomains = collect(config('tenancy.central_domains', []));
-
-        $nonIpDomain = $centralDomains->first(function ($domain) {
-            return is_string($domain) && !filter_var($domain, FILTER_VALIDATE_IP);
-        });
-
-        if (is_string($nonIpDomain) && $nonIpDomain !== '') {
-            return $nonIpDomain;
-        }
-
-        $first = $centralDomains->first();
-
-        if (is_string($first) && $first !== '') {
-            return $first;
-        }
-
-        return 'localhost';
-    }
 }
