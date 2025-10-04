@@ -25,16 +25,19 @@
                     >
                         Open backup login (app.ressapp.com)
                     </a>
+                    <a
+                        class="tenant-login__alt"
+                        :href="fallbackUrl"
+                        target="_blank"
+                        rel="noopener"
+                        @click="trackLogin('fallback')"
+                    >
+                        Open backup login (app.ressapp.com)
+                    </a>
                 </div>
                 <p class="tenant-login__bookmark">
                     Bookmark the backup login at <code>{{ fallbackHost }}</code> so you can still sign in if the primary Aktonz
                     domain is unavailable.
-                        {{ link.label }}
-                    </a>
-                </div>
-                <p class="tenant-login__bookmark">
-                    Bookmark <code>https://{{ primaryHost }}/login</code> for fast access. If the primary domain is
-                    unavailable, you can also use <code>https://{{ fallbackHost }}/login</code>.
                 </p>
                 <ul class="tenant-login__tips">
                     <li>Use a modern browser such as Chrome, Edge, or Safari for the best experience.</li>
@@ -61,22 +64,6 @@ import { inject, onMounted } from 'vue';
 const analytics = inject('analytics');
 const sessionId = inject('marketingSession');
 
-const primaryHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
-const fallbackHost = 'aktonz.ressapp.com';
-
-const loginLinks = [
-    {
-        id: 'primary',
-        label: 'Open Aktonz login',
-        href: `https://${primaryHost}/login`,
-    },
-    {
-        id: 'fallback',
-        label: 'Try aktonz.ressapp.com login',
-        href: `https://${fallbackHost}/login`,
-        alt: true,
-    },
-];
 const loginHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
 const fallbackHost = 'app.ressapp.com';
 const loginUrl = `https://${loginHost}/login`;
