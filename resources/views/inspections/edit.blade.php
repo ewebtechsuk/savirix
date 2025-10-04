@@ -3,7 +3,10 @@
 @section('content')
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">{{ $inspection->exists ? 'Edit' : 'Create' }} Inspection</h1>
-    <form method="POST" enctype="multipart/form-data" action="{{ $inspection->exists ? route('inspections.update', $inspection) : route('inspections.store') }}" class="space-y-4">
+    @php
+        $inspectionRoutePrefix = request()->routeIs('agent.*') ? 'agent.inspections' : 'inspections';
+    @endphp
+    <form method="POST" enctype="multipart/form-data" action="{{ $inspection->exists ? route($inspectionRoutePrefix.'.update', $inspection) : route($inspectionRoutePrefix.'.store') }}" class="space-y-4">
         @csrf
         @if($inspection->exists)
             @method('PUT')
