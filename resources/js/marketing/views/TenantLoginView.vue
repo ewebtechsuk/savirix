@@ -36,6 +36,12 @@
                         rel="noopener"
                         @click="trackLogin(link.id)"
                     >
+                        Open backup login (app.ressapp.com)
+                    </a>
+                </div>
+                <p class="tenant-login__bookmark">
+                    Bookmark the backup login at <code>{{ fallbackHost }}</code> so you can still sign in if the primary Aktonz
+                    domain is unavailable.
                         {{ link.label }}
                     </a>
                 </div>
@@ -85,6 +91,9 @@ const loginLinks = [
     },
 ];
 const loginHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
+const fallbackHost = 'app.ressapp.com';
+const loginUrl = `https://${loginHost}/login`;
+const fallbackUrl = `https://${fallbackHost}/login`;
 const fallbackHost = 'aktonz.ressapp.com';
 
 const loginLinks = [
