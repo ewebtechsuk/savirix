@@ -31,6 +31,7 @@ jobs:
           NODE_ENV: development
           npm_config_production: 'false'
         run: npm ci
+        run: npm ci --include=dev
       - name: Build frontend assets
         env:
           NODE_ENV: production

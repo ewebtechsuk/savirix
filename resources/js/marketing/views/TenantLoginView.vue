@@ -15,13 +15,15 @@
                 </p>
                 <div class="tenant-login__links">
                     <a
-                        class="primary"
-                        :href="loginUrl"
+                        v-for="link in loginLinks"
+                        :key="link.id"
+                        :href="link.href"
+                        :class="link.alt ? 'tenant-login__alt' : 'primary'"
                         target="_blank"
                         rel="noopener"
-                        @click="trackLogin('primary')"
+                        @click="trackLogin(link.id)"
                     >
-                        Open Aktonz login
+                        Open backup login (app.ressapp.com)
                     </a>
                     <a
                         class="tenant-login__alt"
@@ -66,6 +68,22 @@ const loginHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
 const fallbackHost = 'app.ressapp.com';
 const loginUrl = `https://${loginHost}/login`;
 const fallbackUrl = `https://${fallbackHost}/login`;
+const fallbackHost = 'aktonz.ressapp.com';
+
+const loginLinks = [
+    {
+        id: 'primary',
+        label: 'Open Aktonz login',
+        className: 'primary',
+        href: `https://${primaryHost}/login`,
+    },
+    {
+        id: 'fallback',
+        label: 'Try ressapp.com login',
+        className: 'tenant-login__alt',
+        href: `https://${fallbackHost}/login`,
+    },
+];
 
 function trackLogin(target) {
     analytics?.track(
