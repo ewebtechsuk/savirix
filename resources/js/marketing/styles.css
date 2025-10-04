@@ -71,6 +71,7 @@ body.marketing-body {
 
 .header-ctas .primary,
 .hero-ctas .primary,
+.tenant-login__links .primary,
 .lead-form button,
 .trial-form button {
     background: linear-gradient(135deg, #38bdf8, #0ea5e9);
@@ -85,6 +86,7 @@ body.marketing-body {
 
 .header-ctas .primary:hover,
 .hero-ctas .primary:hover,
+.tenant-login__links .primary:hover,
 .lead-form button:hover,
 .trial-form button:hover {
     transform: translateY(-2px);
@@ -432,5 +434,147 @@ textarea {
     .app-footer__inner {
         flex-direction: column;
         gap: 1.5rem;
+    }
+}
+
+.tenant-login {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 3rem;
+    color: #0f172a;
+}
+
+.tenant-login__hero {
+    text-align: center;
+    color: #f8fafc;
+    margin-bottom: 2.5rem;
+}
+
+.tenant-login__eyebrow {
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: #38bdf8;
+    margin-bottom: 1rem;
+}
+
+.tenant-login__hero h1 {
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    margin-bottom: 1rem;
+}
+
+.tenant-login__hero p {
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+    color: rgba(226, 232, 240, 0.9);
+}
+
+.tenant-login__card {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12);
+}
+
+.tenant-login__card-body {
+    padding: clamp(1.75rem, 4vw, 2.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.tenant-login__card-body h2 {
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.tenant-login__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tenant-login__links .primary {
+    text-decoration: none;
+    text-align: center;
+    min-width: 200px;
+}
+
+.tenant-login__alt {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 600;
+    background: rgba(15, 23, 42, 0.08);
+    color: #0f172a;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.tenant-login__alt:hover {
+    background: rgba(15, 23, 42, 0.12);
+    transform: translateY(-2px);
+}
+
+.tenant-login__bookmark {
+    margin: 0;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.tenant-login__bookmark code {
+    background: rgba(148, 163, 184, 0.2);
+    color: #0f172a;
+    padding: 0.2rem 0.45rem;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.tenant-login__tips {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #475569;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.tenant-login__support {
+    margin-top: 3rem;
+    background: rgba(15, 23, 42, 0.04);
+    border-radius: 1rem;
+    padding: 2rem;
+    color: #0f172a;
+}
+
+.tenant-login__support h2 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.tenant-login__support a {
+    color: #0ea5e9;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.tenant-login__support a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+    .tenant-login {
+        padding-top: 3rem;
+    }
+
+    .tenant-login__links {
+        flex-direction: column;
+    }
+
+    .tenant-login__links .primary,
+    .tenant-login__alt {
+        width: 100%;
     }
 }

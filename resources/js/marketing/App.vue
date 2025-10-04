@@ -11,6 +11,7 @@
                     <button class="nav-link" type="button" @click="scrollTo('pricing')">Pricing</button>
                 </nav>
                 <div class="header-ctas">
+                    <router-link class="secondary" to="/aktonz/login" @click="trackNav('header_tenant_login')">Tenant login</router-link>
                     <router-link class="secondary" to="/signup" @click="trackNav('header_login')">Start trial</router-link>
                     <button class="primary" type="button" @click="goToDemo">Book a demo</button>
                 </div>
@@ -28,6 +29,7 @@
                 <div class="footer-links">
                     <router-link to="/" @click="trackNav('footer_home')">Home</router-link>
                     <router-link to="/signup" @click="trackNav('footer_signup')">Start trial</router-link>
+                    <router-link to="/aktonz/login" @click="trackNav('footer_tenant_login')">Tenant login</router-link>
                     <a href="mailto:sales@ressapp.com" @click="trackNav('footer_email')">Contact</a>
                 </div>
             </div>
