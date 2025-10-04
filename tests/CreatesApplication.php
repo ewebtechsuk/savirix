@@ -53,6 +53,7 @@ trait CreatesApplication
             'database/migrations/2025_07_19_000000_add_email_verified_at_to_users_table.php',
             'database/migrations/2025_07_29_000001_add_is_admin_to_users_table.php',
             'database/migrations/2025_08_01_000001_add_login_token_to_users_table.php',
+            'database/migrations/2025_07_29_150000_create_inspections_table.php',
         ];
 
         foreach ($migrations as $migrationPath) {
