@@ -18,21 +18,12 @@
                         v-for="link in loginLinks"
                         :key="link.id"
                         :href="link.href"
-                        :class="link.alt ? 'tenant-login__alt' : 'primary'"
+                        :class="link.className"
                         target="_blank"
                         rel="noopener"
                         @click="trackLogin(link.id)"
                     >
-                        Open backup login (app.ressapp.com)
-                    </a>
-                    <a
-                        class="tenant-login__alt"
-                        :href="fallbackUrl"
-                        target="_blank"
-                        rel="noopener"
-                        @click="trackLogin('fallback')"
-                    >
-                        Open backup login (app.ressapp.com)
+                        {{ link.label }}
                     </a>
                 </div>
                 <p class="tenant-login__bookmark">
@@ -64,11 +55,9 @@ import { inject, onMounted } from 'vue';
 const analytics = inject('analytics');
 const sessionId = inject('marketingSession');
 
-const loginHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
-const fallbackHost = 'app.ressapp.com';
-const loginUrl = `https://${loginHost}/login`;
-const fallbackUrl = `https://${fallbackHost}/login`;
-const fallbackHost = 'aktonz.ressapp.com';
+const primaryHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
+const tenantFallbackHost = 'aktonz.ressapp.com';
+const globalFallbackHost = 'app.ressapp.com';
 
 const loginLinks = [
     {
@@ -78,12 +67,20 @@ const loginLinks = [
         href: `https://${primaryHost}/login`,
     },
     {
-        id: 'fallback',
+        id: 'tenant-fallback',
         label: 'Try ressapp.com login',
         className: 'tenant-login__alt',
-        href: `https://${fallbackHost}/login`,
+        href: `https://${tenantFallbackHost}/login`,
+    },
+    {
+        id: 'global-fallback',
+        label: 'Open backup login (app.ressapp.com)',
+        className: 'tenant-login__alt',
+        href: `https://${globalFallbackHost}/login`,
     },
 ];
+
+const fallbackHost = globalFallbackHost;
 
 function trackLogin(target) {
     analytics?.track(
