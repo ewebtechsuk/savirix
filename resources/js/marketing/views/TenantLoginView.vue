@@ -70,13 +70,13 @@ const loginLinks = [
     },
     {
         id: 'fallback',
-        label: `Open backup login (${fallbackHost})`,
+        label: `Open backup login (${tenantFallbackHost})`,
         className: 'tenant-login__alt',
         href: `https://${tenantFallbackHost}/login`,
     },
     {
         id: 'global-fallback',
-        label: 'Open backup login (app.ressapp.com)',
+        label: `Open backup login (${globalFallbackHost})`,
         className: 'tenant-login__alt',
         href: `https://${globalFallbackHost}/login`,
     },
