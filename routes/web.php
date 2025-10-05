@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:Admin|Landlord']], func
 // Tenant routes (aktonz.ressapp.com, etc.)
 Route::group(['middleware' => ['auth', 'tenancy', 'role:Tenant']], function () {
     Route::resource('properties', PropertyController::class);
+    Route::post('contacts/bulk', [ContactController::class, 'bulk'])->name('contacts.bulk');
     Route::resource('contacts', ContactController::class);
     Route::resource('diary', DiaryController::class);
     Route::resource('accounts', AccountController::class);

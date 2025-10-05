@@ -151,7 +151,10 @@
                             @foreach($property->media as $media)
                                 <div class="col-4 col-md-3">
                                     <div class="card">
-                                        <img src="{{ asset('storage/' . $media->file_path) }}" class="card-img-top" alt="Media" style="height:120px;object-fit:cover;">
+                                        <img src="{{ Storage::disk($media->disk ?? 'public')->url($media->file_path) }}" class="card-img-top" alt="Media" style="height:120px;object-fit:cover;">
+                                        @if($media->is_primary)
+                                            <span class="badge bg-primary position-absolute m-2">Primary</span>
+                                        @endif
                                         <form action="{{ route('properties.media.destroy', [$property, $media]) }}" method="POST" onsubmit="return confirm('Delete this image?')">
                                             @csrf
                                             @method('DELETE')
@@ -164,6 +167,12 @@
                         <div class="mb-3">
                             <label for="media" class="form-label">Add Images</label>
                             <input type="file" name="media[]" multiple class="form-control" accept="image/*">
+                            <small class="form-text text-muted">Upload new images to append to the gallery.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Primary Media Index</label>
+                            <input type="number" name="primary_media" class="form-control" value="0" min="0">
+                            <small class="form-text text-muted">0 refers to the cover photo, 1 to the first new upload.</small>
                         </div>
                         <div class="mb-3">
                             <label for="features" class="form-label">Property Features</label>
@@ -171,8 +180,21 @@
                                 @foreach($featuresList as $feature)
                                     <div class="col-6 col-md-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="features[]" value="{{ $feature }}" id="feature_{{ md5($feature) }}" @if(in_array($feature, $selectedFeatures)) checked @endif>
-                                            <label class="form-check-label" for="feature_{{ md5($feature) }}">{{ $feature }}</label>
+                                            <input class="form-check-input" type="checkbox" name="features[]" value="{{ $feature->id }}" id="feature_{{ $feature->id }}" @if(in_array($feature->id, $selectedFeatures)) checked @endif>
+                                            <label class="form-check-label" for="feature_{{ $feature->id }}">{{ $feature->name }}</label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Syndication Channels</label>
+                            <div class="row">
+                                @foreach($channels as $channel)
+                                    <div class="col-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="channels[]" value="{{ $channel->id }}" id="channel_{{ $channel->id }}" @if(in_array($channel->id, $selectedChannels)) checked @endif>
+                                            <label class="form-check-label" for="channel_{{ $channel->id }}">{{ $channel->name }}</label>
                                         </div>
                                     </div>
                                 @endforeach

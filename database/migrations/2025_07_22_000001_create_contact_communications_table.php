@@ -11,6 +11,13 @@ return new class extends Migration {
             $table->foreignId('contact_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->text('communication');
+            $table->string('channel')->default('internal');
+            $table->string('subject')->nullable();
+            $table->string('provider')->nullable();
+            $table->string('provider_message_id')->nullable();
+            $table->string('status')->default('pending');
+            $table->timestamp('delivered_at')->nullable();
+            $table->json('meta')->nullable();
             $table->timestamps();
         });
     }

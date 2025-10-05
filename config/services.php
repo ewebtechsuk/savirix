@@ -70,6 +70,13 @@ return [
 
     ],
 
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+        'endpoint' => env('TWILIO_ENDPOINT', 'https://api.twilio.com/2010-04-01/Accounts/'.env('TWILIO_SID').'/Messages.json'),
+    ],
+
     'onfido' => [
         'api_token' => env('ONFIDO_API_TOKEN'),
         'webhook_secret' => env('ONFIDO_WEBHOOK_SECRET'),

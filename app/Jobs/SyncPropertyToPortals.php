@@ -8,7 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
+use App\Services\Portals\PortalPublisherManager;
+use Illuminate\Support\Facades\App;
 
 class SyncPropertyToPortals implements ShouldQueue
 {
@@ -20,16 +21,19 @@ class SyncPropertyToPortals implements ShouldQueue
 
     public function handle(): void
     {
-        $data = $this->property->toArray();
+        /** @var PortalPublisherManager $manager */
+        $manager = App::make(PortalPublisherManager::class);
 
-        foreach (['rightmove', 'zoopla'] as $portal) {
-            $config = config("services.$portal");
-            if (! empty($config['endpoint'])) {
-                Http::withHeaders([
-                    'X-API-KEY' => $config['api_key'] ?? null,
-                    'X-API-SECRET' => $config['api_secret'] ?? null,
-                ])->post($config['endpoint'], $data);
-            }
+        $this->property->loadMissing(['media', 'features.catalog', 'channels']);
+
+        foreach ($this->property->channels as $channel) {
+            $result = $manager->publish($this->property, $channel);
+
+            $this->property->channels()->updateExistingPivot($channel->id, [
+                'status' => $result->success ? 'synced' : 'failed',
+                'payload' => json_encode($result->meta),
+                'last_synced_at' => now(),
+            ]);
         }
     }
 }

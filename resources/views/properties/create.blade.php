@@ -93,6 +93,12 @@
                         <div class="mb-3">
                             <label for="media" class="form-label">Media Gallery</label>
                             <input type="file" name="media[]" multiple class="form-control" accept="image/*">
+                            <small class="form-text text-muted">Upload additional images for the property gallery.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Primary Media Index</label>
+                            <input type="number" name="primary_media" class="form-control" value="0" min="0">
+                            <small class="form-text text-muted">0 refers to the cover photo, 1 refers to the first gallery upload, and so on.</small>
                         </div>
                         <div class="mb-3">
                             <label for="features" class="form-label">Property Features</label>
@@ -100,8 +106,21 @@
                                 @foreach($featuresList as $feature)
                                     <div class="col-6 col-md-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="features[]" value="{{ $feature }}" id="feature_{{ md5($feature) }}">
-                                            <label class="form-check-label" for="feature_{{ md5($feature) }}">{{ $feature }}</label>
+                                            <input class="form-check-input" type="checkbox" name="features[]" value="{{ $feature->id }}" id="feature_{{ $feature->id }}">
+                                            <label class="form-check-label" for="feature_{{ $feature->id }}">{{ $feature->name }}</label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Syndication Channels</label>
+                            <div class="row">
+                                @foreach($channels as $channel)
+                                    <div class="col-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="channels[]" value="{{ $channel->id }}" id="channel_{{ $channel->id }}">
+                                            <label class="form-check-label" for="channel_{{ $channel->id }}">{{ $channel->name }}</label>
                                         </div>
                                     </div>
                                 @endforeach

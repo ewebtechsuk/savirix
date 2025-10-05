@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\PropertyFeature;
-use App\Models\PropertyMedia;
-use Illuminate\Support\Facades\Storage;
+use App\Models\PropertyFeatureCatalog;
+use App\Models\PropertyChannel;
+use App\Jobs\SyncPropertyToPortals;
+use App\Services\Media\PropertyMediaGallery;
+use Illuminate\Support\Facades\DB;
 use Stancl\Tenancy\Facades\Tenancy;
 use Illuminate\Support\Facades\Http;
 
@@ -56,16 +59,10 @@ class PropertyController extends Controller
     public function create(Request $request)
     {
         $landlord_id = $request->get('landlord_id');
-        // Static features list (replace with DB if you add a master table)
-        $featuresList = [
-            'Fully Furnished', 'River view', 'Shops and amenities nearby', 'Air Conditioning',
-            'Gym', 'Guest cloakroom', 'Mezzanine', 'Fitted Kitchen', 'Communal Garden',
-            'Roof Terrace', 'Balcony', 'Underground Parking', 'Driveway', 'Parking',
-            'En suite', 'Video Entry', 'Double glazing', 'Conservatory', 'Concierge',
-            'Close to public transport', 'Un-Furnished', 'Swimming Pool', '24 hour on-site security',
-            'Receptionist', 'Meeting Room and Conference Facilities'
-        ];
-        return view('properties.create', compact('landlord_id', 'featuresList'));
+        $featuresList = PropertyFeatureCatalog::orderBy('name')->get();
+        $channels = PropertyChannel::where('is_active', true)->orderBy('name')->get();
+
+        return view('properties.create', compact('landlord_id', 'featuresList', 'channels'));
     }
 
     /**
@@ -86,12 +83,29 @@ class PropertyController extends Controller
             'status' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'media.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
+            'media_captions.*' => 'nullable|string|max:255',
             'publish_to_portal' => 'boolean',
             'send_marketing_campaign' => 'boolean',
+            'features' => 'array',
+            'features.*' => 'integer|exists:property_feature_catalogs,id',
+            'channels' => 'array',
+            'channels.*' => 'integer|exists:property_channels,id',
+            'primary_media' => 'nullable|integer',
         ]);
+
+        $selectedChannels = $request->input('channels', []);
+        $mediaFiles = [];
+        $captions = $request->input('media_captions', []);
+        $primaryMediaIndex = $request->input('primary_media');
+
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('properties', 'public');
+            $mediaFiles[] = $request->file('photo');
+            $primaryMediaIndex = $primaryMediaIndex ?? 0;
         }
+        if ($request->hasFile('media')) {
+            $mediaFiles = array_merge($mediaFiles, $request->file('media'));
+        }
+
         if (auth()->user() && auth()->user()->is_admin) {
             $validated['vendor_id'] = $request->input('vendor_id');
             $validated['landlord_id'] = $request->input('landlord_id');
@@ -115,30 +129,38 @@ class PropertyController extends Controller
                 $validated['longitude'] = $coords['lng'];
             }
         }
-        $property = Property::create($validated);
+        $property = null;
 
-        if ($request->hasFile('media')) {
-            $order = $property->media()->max('order') ?? 0;
-            foreach ($request->file('media') as $file) {
-                $order++;
-                $path = Storage::disk('public')->putFile('property_media', $file);
-                $property->media()->create([
-                    'file_path' => $path,
-                    'type' => $file->getClientMimeType(),
-                    'order' => $order,
-                ]);
+        DB::transaction(function () use (&$property, $validated, $request, $mediaFiles, $captions, $primaryMediaIndex, $selectedChannels) {
+            $features = $request->input('features', []);
+
+            $property = Property::create($validated);
+
+            /** @var PropertyMediaGallery $gallery */
+            $gallery = app(PropertyMediaGallery::class);
+            $gallery->attach($property, $mediaFiles, $captions, $primaryMediaIndex);
+
+            if (! empty($features)) {
+                $catalog = PropertyFeatureCatalog::whereIn('id', $features)->get();
+                foreach ($catalog as $feature) {
+                    $property->features()->create([
+                        'feature_catalog_id' => $feature->id,
+                        'name' => $feature->name,
+                        'value' => 1,
+                    ]);
+                }
             }
+
+            if (! empty($selectedChannels)) {
+                $syncData = collect($selectedChannels)->mapWithKeys(fn ($id) => [$id => ['status' => 'pending']]);
+                $property->channels()->sync($syncData->all());
+            }
+        });
+
+        if ($property && ! empty($selectedChannels)) {
+            SyncPropertyToPortals::dispatch($property->fresh(['channels']));
         }
 
-        // Save features
-        $features = $request->input('features', []);
-        foreach ($features as $feature) {
-            PropertyFeature::create([
-                'property_id' => $property->id,
-                'name' => $feature,
-                'value' => 1
-            ]);
-        }
         return redirect()->route('properties.index')->with('success', 'Property created successfully.');
     }
 
@@ -161,16 +183,12 @@ class PropertyController extends Controller
      */
     public function edit(Property $property)
     {
-        $featuresList = [
-            'Fully Furnished', 'River view', 'Shops and amenities nearby', 'Air Conditioning',
-            'Gym', 'Guest cloakroom', 'Mezzanine', 'Fitted Kitchen', 'Communal Garden',
-            'Roof Terrace', 'Balcony', 'Underground Parking', 'Driveway', 'Parking',
-            'En suite', 'Video Entry', 'Double glazing', 'Conservatory', 'Concierge',
-            'Close to public transport', 'Un-Furnished', 'Swimming Pool', '24 hour on-site security',
-            'Receptionist', 'Meeting Room and Conference Facilities'
-        ];
-        $selectedFeatures = $property->features()->pluck('name')->toArray();
-        return view('properties.edit', compact('property', 'featuresList', 'selectedFeatures'));
+        $featuresList = PropertyFeatureCatalog::orderBy('name')->get();
+        $selectedFeatures = $property->features()->pluck('feature_catalog_id')->toArray();
+        $channels = PropertyChannel::where('is_active', true)->orderBy('name')->get();
+        $selectedChannels = $property->channels()->pluck('property_channel_id')->toArray();
+
+        return view('properties.edit', compact('property', 'featuresList', 'selectedFeatures', 'channels', 'selectedChannels'));
     }
 
     /**
@@ -191,11 +209,27 @@ class PropertyController extends Controller
             'status' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'media.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
+            'media_captions.*' => 'nullable|string|max:255',
             'publish_to_portal' => 'boolean',
             'send_marketing_campaign' => 'boolean',
+            'features' => 'array',
+            'features.*' => 'integer|exists:property_feature_catalogs,id',
+            'channels' => 'array',
+            'channels.*' => 'integer|exists:property_channels,id',
+            'primary_media' => 'nullable|integer',
         ]);
+
+        $selectedChannels = $request->input('channels', []);
+        $mediaFiles = [];
+        $captions = $request->input('media_captions', []);
+        $primaryMediaIndex = $request->input('primary_media');
+
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('properties', 'public');
+            $mediaFiles[] = $request->file('photo');
+            $primaryMediaIndex = $primaryMediaIndex ?? 0;
+        }
+        if ($request->hasFile('media')) {
+            $mediaFiles = array_merge($mediaFiles, $request->file('media'));
         }
         if (auth()->user() && auth()->user()->is_admin) {
             $validated['vendor_id'] = $request->input('vendor_id');
@@ -215,31 +249,36 @@ class PropertyController extends Controller
                 $validated['longitude'] = $coords['lng'];
             }
         }
-        $property->update($validated);
+        DB::transaction(function () use ($property, $validated, $request, $mediaFiles, $captions, $primaryMediaIndex, $selectedChannels) {
+            $property->update($validated);
 
-        if ($request->hasFile('media')) {
-            $order = $property->media()->max('order') ?? 0;
-            foreach ($request->file('media') as $file) {
-                $order++;
-                $path = Storage::disk('public')->putFile('property_media', $file);
-                $property->media()->create([
-                    'file_path' => $path,
-                    'type' => $file->getClientMimeType(),
-                    'order' => $order,
-                ]);
+            if (! empty($mediaFiles)) {
+                /** @var PropertyMediaGallery $gallery */
+                $gallery = app(PropertyMediaGallery::class);
+                $gallery->attach($property, $mediaFiles, $captions, $primaryMediaIndex);
             }
+
+            $property->features()->delete();
+            $features = $request->input('features', []);
+            if (! empty($features)) {
+                $catalog = PropertyFeatureCatalog::whereIn('id', $features)->get();
+                foreach ($catalog as $feature) {
+                    $property->features()->create([
+                        'feature_catalog_id' => $feature->id,
+                        'name' => $feature->name,
+                        'value' => 1,
+                    ]);
+                }
+            }
+
+            $syncData = collect($selectedChannels)->mapWithKeys(fn ($id) => [$id => ['status' => 'pending']]);
+            $property->channels()->sync($syncData->all());
+        });
+
+        if (! empty($selectedChannels)) {
+            SyncPropertyToPortals::dispatch($property->fresh(['channels']));
         }
 
-        // Update features
-        $property->features()->delete();
-        $features = $request->input('features', []);
-        foreach ($features as $feature) {
-            PropertyFeature::create([
-                'property_id' => $property->id,
-                'name' => $feature,
-                'value' => 1
-            ]);
-        }
         return redirect()->route('properties.index')->with('success', 'Property updated successfully.');
     }
 
