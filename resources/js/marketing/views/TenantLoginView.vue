@@ -55,20 +55,19 @@ import { inject, onMounted } from 'vue';
 const analytics = inject('analytics');
 const sessionId = inject('marketingSession');
 
-const primaryHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
-const tenantFallbackHost = 'aktonz.ressapp.com';
-const globalFallbackHost = 'app.ressapp.com';
+const loginHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
+const fallbackHost = 'app.ressapp.com';
 
 const loginLinks = [
     {
         id: 'primary',
         label: 'Open Aktonz login',
         className: 'primary',
-        href: `https://${primaryHost}/login`,
+        href: `https://${loginHost}/login`,
     },
     {
-        id: 'tenant-fallback',
-        label: 'Try ressapp.com login',
+        id: 'fallback',
+        label: `Open backup login (${fallbackHost})`,
         className: 'tenant-login__alt',
         href: `https://${tenantFallbackHost}/login`,
     },
