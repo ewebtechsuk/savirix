@@ -56,7 +56,10 @@ const analytics = inject('analytics');
 const sessionId = inject('marketingSession');
 
 const loginHost = 'aktonz.darkorange-chinchilla-918430.hostingersite.com';
-const fallbackHost = 'app.ressapp.com';
+const fallbackHost =
+    typeof globalThis !== 'undefined' && typeof globalThis.globalFallbackHost === 'string'
+        ? globalThis.globalFallbackHost
+        : 'app.ressapp.com';
 
 const loginLinks = [
     {
@@ -78,8 +81,6 @@ const loginLinks = [
         href: `https://${globalFallbackHost}/login`,
     },
 ];
-
-const fallbackHost = globalFallbackHost;
 
 function trackLogin(target) {
     analytics?.track(
