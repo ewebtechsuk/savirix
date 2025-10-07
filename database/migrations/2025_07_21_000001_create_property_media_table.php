@@ -18,7 +18,11 @@ class CreatePropertyMediaTable extends Migration
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
             $table->string('file_path');
             $table->string('type');
+            $table->string('disk')->default('public');
             $table->unsignedInteger('order')->default(0);
+            $table->string('caption')->nullable();
+            $table->boolean('is_primary')->default(false);
+            $table->json('conversions')->nullable();
             $table->timestamps();
         });
     }

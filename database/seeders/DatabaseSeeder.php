@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             DemoDataSeeder::class, // Add demo data seeder
             CreateSuperAdminSeeder::class,
             TenantPortalUserSeeder::class,
+            PropertyFeatureCatalogSeeder::class,
+            PropertyChannelSeeder::class,
         ]);
     }
 }

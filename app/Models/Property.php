@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use App\Models\PropertyChannel;
 
 class Property extends Model
 {
@@ -90,7 +92,17 @@ class Property extends Model
      */
     public function features(): HasMany
     {
-        return $this->hasMany(PropertyFeature::class);
+        return $this->hasMany(PropertyFeature::class)->with('catalog');
+    }
+
+    /**
+     * Channels the property is syndicated to.
+     */
+    public function channels()
+    {
+        return $this->belongsToMany(PropertyChannel::class, 'property_channel_property')
+            ->withPivot(['status', 'payload', 'last_synced_at'])
+            ->withTimestamps();
     }
 
     /**

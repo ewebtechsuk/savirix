@@ -9,7 +9,7 @@ use App\Models\ContactNote;
 use App\Models\ContactCommunication;
 use App\Models\ContactViewing;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendContactCommunication;
 
 class ContactController extends Controller
 {
@@ -28,6 +28,12 @@ class ContactController extends Controller
                   ->orWhere('email', 'like', "%$search%")
                   ->orWhere('phone', 'like', "%$search%")
                   ->orWhere('company', 'like', "%$search%") ;
+            });
+        }
+        if ($request->filled('tags')) {
+            $tags = array_filter((array) $request->input('tags'));
+            $query->whereHas('tags', function ($q) use ($tags) {
+                $q->whereIn('tags.id', $tags);
             });
         }
         $contacts = $query->get();
@@ -133,10 +139,27 @@ class ContactController extends Controller
     {
         $action = $request->input('action');
         $ids = $request->input('contacts', []);
-        if (!$action || empty($ids)) {
+        $segmentTags = array_filter((array) $request->input('segment_tags', []));
+
+        if (! $action || (empty($ids) && empty($segmentTags))) {
             return back()->with('error', 'No action or contacts selected.');
         }
-        $contacts = Contact::whereIn('id', $ids)->get();
+
+        if (! empty($segmentTags) && empty($ids)) {
+            $contacts = Contact::whereHas('tags', function ($q) use ($segmentTags) {
+                $q->whereIn('tags.id', $segmentTags);
+            })->get();
+        } else {
+            $contacts = Contact::whereIn('id', $ids)->when(! empty($segmentTags), function ($q) use ($segmentTags) {
+                $q->whereHas('tags', function ($query) use ($segmentTags) {
+                    $query->whereIn('tags.id', $segmentTags);
+                });
+            })->get();
+        }
+
+        if ($contacts->isEmpty()) {
+            return back()->with('error', 'No contacts matched the selected criteria.');
+        }
         if ($action === 'delete') {
             foreach ($contacts as $contact) {
                 $contact->delete();
@@ -155,22 +178,23 @@ class ContactController extends Controller
             $body = $request->input('body', 'This is a bulk message.');
             foreach ($contacts as $contact) {
                 if ($contact->email) {
-                    Mail::raw($body, function ($message) use ($contact, $subject) {
-                        $message->to($contact->email)->subject($subject);
-                    });
+                    SendContactCommunication::dispatch($contact, 'email', [
+                        'subject' => $subject,
+                        'body' => $body,
+                    ], auth()->id());
                 }
             }
-            return back()->with('success', 'Bulk email sent.');
+            return back()->with('success', 'Bulk email queued.');
         } elseif ($action === 'sms') {
             $smsBody = $request->input('sms_body', 'This is a bulk SMS.');
-            // Example: integrate with Twilio or other SMS provider here
             foreach ($contacts as $contact) {
                 if ($contact->phone) {
-                    // Replace with real SMS sending logic
-                    // SmsService::send($contact->phone, $smsBody);
+                    SendContactCommunication::dispatch($contact, 'sms', [
+                        'body' => $smsBody,
+                    ], auth()->id());
                 }
             }
-            return back()->with('success', 'Bulk SMS sent (mocked).');
+            return back()->with('success', 'Bulk SMS queued.');
         }
         return back()->with('error', 'Invalid action.');
     }
@@ -201,6 +225,9 @@ class ContactController extends Controller
         $contact->communications()->create([
             'communication' => $request->communication,
             'user_id' => auth()->id(),
+            'channel' => 'internal',
+            'status' => 'logged',
+            'delivered_at' => now(),
         ]);
         return redirect()->route('contacts.show', $contact)->with('success', 'Communication added.');
     }
