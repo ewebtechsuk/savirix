@@ -7,10 +7,12 @@ When your deployment shows a generic HTTP 500 error it usually means that PHP hi
 ```bash
 php artisan tail
 # or
+./scripts/tail_laravel_log.sh 200
+# or
 cat storage/logs/laravel.log | tail -n 100
 ```
 
-The stack trace written to `storage/logs/laravel.log` will tell you exactly which exception is being thrown. Always start by reproducing the failure and checking the most recent log entry.
+The stack trace written to `storage/logs/laravel.log` will tell you exactly which exception is being thrown. Always start by reproducing the failure and checking the most recent log entry, then share the relevant snippet when asking for help.
 
 ## 2. Verify Composer dependencies
 
