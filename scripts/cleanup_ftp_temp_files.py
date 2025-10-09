@@ -27,7 +27,16 @@ class CleanupError(RuntimeError):
 def env(name: str, default: str | None = None) -> str:
     value = os.environ.get(f"{ENV_PREFIX}{name}")
     if value is not None:
-        return value
+        stripped = value.strip()
+        if stripped:
+            return stripped
+        # Treat empty strings as missing so we either fall back to defaults
+        # or raise a useful error instead of passing "" further downstream.
+        if default is not None:
+            return default
+        raise CleanupError(
+            f"Missing required environment variable {ENV_PREFIX}{name}"
+        )
     if default is not None:
         return default
     raise CleanupError(f"Missing required environment variable {ENV_PREFIX}{name}")
