@@ -32,3 +32,17 @@ The Hostinger FTP Accounts screen (see the example screenshot the team shared) c
 - **Directory** (defaults to `public_html/`) → `HOSTINGER_FTP_TARGET_DIR`.
 
 If you plan to use SFTP instead of FTP/FTPS, enable SSH access in hPanel and create an SFTP account first. The deployment workflow already understands the `HOSTINGER_FTP_PROTOCOL=sftp` combination, but the cleanup script is skipped for SFTP uploads because Hostinger does not leave `.in.*` temp files when using SFTP.
+
+### Screenshot-to-secret checklist
+
+If you have the hPanel FTP details open (like in the screenshot the team shared), you can copy each field straight into GitHub:
+
+1. Open your repository on GitHub and navigate to **Settings → Secrets and variables → Actions → New repository secret**.
+2. Add a secret named **`HOSTINGER_FTP_HOST`** using the value from the **FTP Hostname** field (for example `darkorange-chinchilla-918430.hostingersite.com`). Make sure you copy *only* the host—remove any `ftp://` prefix.
+3. Add **`HOSTINGER_FTP_USERNAME`** with the username shown in the FTP list (`u1234567`, etc.).
+4. Add **`HOSTINGER_FTP_PASSWORD`**. If you do not have it, click **Change password** in hPanel, set a new password, and paste that fresh value into the secret immediately.
+5. Add **`HOSTINGER_FTP_TARGET_DIR`** with the **Directory**/root path from hPanel (`public_html/`, `domains/example.com/public_html/`, etc.). Keep the trailing `/` so uploads land in the correct folder.
+6. Add **`HOSTINGER_FTP_PROTOCOL`** and set it to `ftps` unless Hostinger instructed you to use plain FTP (`ftp`) or you specifically configured SFTP access (`sftp`).
+7. (Optional) Add **`HOSTINGER_FTP_PORT`** if Hostinger support gave you a non-standard port. Otherwise leave it unset so the workflow falls back to `21` for FTP/FTPS or `22` for SFTP.
+
+After you add each secret, rerun the **Deploy to Hostinger** workflow. The `Resolve deployment configuration` job will surface any remaining missing values; when all four required secrets are present (`HOSTINGER_FTP_HOST`, `HOSTINGER_FTP_USERNAME`, `HOSTINGER_FTP_PASSWORD`, and `HOSTINGER_FTP_TARGET_DIR`), the deploy job proceeds and the cleanup step connects successfully.
