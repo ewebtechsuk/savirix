@@ -23,7 +23,9 @@ ENV_HINTS = {
     "HOST": (
         "Populate the repository secret HOSTINGER_FTP_HOST (or FTP_SERVER) "
         "with the FTP hostname shown in Hostinger's hPanel under Websites → "
-        "Manage → FTP Accounts."
+        "Manage → FTP Accounts. Copy just the host (for example, "
+        "`darkorange-chinchilla-918430.hostingersite.com`) without the "
+        "`ftp://` prefix."
     ),
     "USERNAME": (
         "Populate HOSTINGER_FTP_USERNAME (or FTP_USERNAME) with the FTP "
@@ -102,6 +104,21 @@ def join_remote(base: str, name: str) -> str:
         cleaned = name.lstrip("/")
         return f"/{cleaned}" if cleaned else "/"
     return f"{base}/{name}" if name else base
+
+
+def normalise_host(raw_host: str) -> str:
+    host = raw_host.strip()
+    if not host:
+        return host
+    lowered = host.lower()
+    for prefix in ("ftp://", "ftps://", "sftp://"):
+        if lowered.startswith(prefix):
+            host = host[len(prefix) :]
+            break
+    host = host.strip()
+    while host.endswith("/"):
+        host = host[:-1]
+    return host
 
 
 @contextmanager
@@ -188,7 +205,11 @@ def cleanup_directory(ftp: ftplib.FTP) -> int:
 
 def connect() -> ftplib.FTP:
     protocol = env("PROTOCOL", "ftp").strip().lower()
-    host = env("HOST")
+    host = normalise_host(env("HOST"))
+    if not host:
+        raise CleanupError(
+            "FTP hostname cannot be empty after removing any ftp:// prefix."
+        )
     username = env("USERNAME")
     password = env("PASSWORD")
     port = int(env("PORT", "21"))
