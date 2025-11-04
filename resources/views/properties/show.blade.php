@@ -175,15 +175,22 @@
                             <ul class="list-group">
                                 @forelse($property->documents as $document)
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        {{ $document->name }}
+                                        <span>
+                                            {{ $document->name }}
+                                            @if($document->signed_at)
+                                                <span class="badge bg-success ms-2">Signed</span>
+                                            @elseif($document->signature_request_id)
+                                                <span class="badge bg-warning text-dark ms-2">Pending signature</span>
+                                            @endif
+                                        </span>
                                         <span>
                                             <a href="{{ route('documents.download', $document) }}" class="btn btn-sm btn-outline-secondary">Download</a>
                                             <form action="{{ route('documents.sign', $document) }}" method="POST" class="d-inline">
                                                 @csrf
-                                                <button class="btn btn-sm btn-outline-primary">Sign</button>
+                                                <button class="btn btn-sm btn-outline-primary" @if($document->signature_request_id && !$document->signed_at) disabled @endif>Send for signature</button>
                                             </form>
                                             @if($document->signed_at)
-                                                <span class="badge bg-success ms-1">Signed</span>
+                                                <a href="{{ route('documents.downloadSigned', $document) }}" class="btn btn-sm btn-success ms-1">Download signed</a>
                                             @endif
                                         </span>
                                     </li>

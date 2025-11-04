@@ -19,8 +19,8 @@ class Document extends Model
         'signed_at',
     ];
 
-    protected $dates = [
-        'signed_at',
+    protected $casts = [
+        'signed_at' => 'datetime',
     ];
 
     public function documentable(): MorphTo

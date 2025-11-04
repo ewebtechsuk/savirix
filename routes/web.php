@@ -102,6 +102,7 @@ Route::group(['middleware' => ['auth', 'tenancy', 'role:Tenant']], function () {
     Route::post('/documents/upload', [DocumentController::class, 'upload'])->name('documents.upload');
     Route::post('/documents/{document}/sign', [DocumentController::class, 'sign'])->name('documents.sign');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/documents/{document}/download/signed', [DocumentController::class, 'downloadSigned'])->name('documents.downloadSigned');
     Route::get('maintenance/create', [MaintenanceRequestController::class, 'create'])->name('maintenance.create');
     Route::post('maintenance', [MaintenanceRequestController::class, 'store'])->name('maintenance.store');
 });

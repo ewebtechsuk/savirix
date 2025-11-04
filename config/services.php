@@ -42,6 +42,7 @@ return [
 
     'hellosign' => [
         'key' => env('HELLOSIGN_API_KEY'),
+        'endpoint' => env('HELLOSIGN_ENDPOINT', 'https://api.hellosign.com'),
     ],
 
     'rightmove' => [
