@@ -108,10 +108,6 @@ jobs:
             missing+=("HOSTINGER_FTP_USERNAME/HOSTINGER_FTP_USER or FTP_USERNAME/FTP_USER")
           fi
 
-          if [ -z "$pass" ]; then
-            missing+=("HOSTINGER_FTP_PASSWORD/HOSTINGER_FTP_PASS or FTP_PASSWORD/FTP_PASS")
-          fi
-
           if [ -z "$target" ]; then
             missing+=("HOSTINGER_FTP_TARGET_DIR or FTP_TARGET_DIR")
           fi
@@ -365,9 +361,7 @@ jobs:
         with:
           host: ${{ secrets.HOSTINGER_FTP_HOST }}
           username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
-          # Use ONE of the following auth methods:
-          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
-          # key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
           port: ${{ secrets.HOSTINGER_FTP_PORT || '65002' }} # must be 65002 for Hostinger SFTP
           script_stop: true
           envs: HOSTINGER_TARGET_DIR
@@ -382,9 +376,8 @@ jobs:
         with:
           host: ${{ secrets.HOSTINGER_FTP_HOST }}
           username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
-          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-          # Remove or comment out any `password:` field when using key auth
-          port: ${{ secrets.HOSTINGER_FTP_PORT }}      # this should be 65002
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_FTP_PORT }}
           source: .deploy-***
           target: ${{ secrets.HOSTINGER_FTP_TARGET_DIR }}
           overwrite: true
