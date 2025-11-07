@@ -100,3 +100,21 @@ jobs:
               move_contents "$TARGET/dist" "$TARGET"
               rmdir "$TARGET/dist"
             fi
+
+            LEGACY_FILES=(
+              "$TARGET/index.php"
+              "$TARGET/server.php"
+              "$TARGET/web.config"
+            )
+
+            for FILE in "${LEGACY_FILES[@]}"; do
+              if [ -f "$FILE" ]; then
+                rm -f "$FILE"
+              fi
+            done
+
+            if [ -f "$TARGET/.htaccess" ]; then
+              grep -q 'RewriteRule ^ index.html' "$TARGET/.htaccess" || rm -f "$TARGET/.htaccess"
+            fi
+
+            ls -la "$TARGET"
