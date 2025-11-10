@@ -1,0 +1,58 @@
+name: Deploy static frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install dependencies
+        env:
+          NODE_ENV: development
+          npm_config_production: 'false'
+        run: npm ci
+      - name: Build frontend assets
+        env:
+          NODE_ENV: production
+        run: npm run build
+      - name: Verify marketing fallback page
+        run: test -f dist/404.html
+      - name: Upload frontend artifact
+        uses: actions/upload-pages-artifact@v3
+        if: ${{ hashFiles('dist/**') != '' }}
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

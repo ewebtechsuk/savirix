@@ -1,0 +1,111 @@
+@-webkit-keyframes overviewTitle {
+	0% { margin-left: 400px; }
+	100% { margin-left: 0; }
+}
+@-moz-keyframes overviewTitle {
+	0% { margin-left: 400px; }
+	100% { margin-left: 0; }
+}
+@-o-keyframes overviewTitle {
+	0% { margin-left: 400px; }
+	100% { margin-left: 0; }
+}
+@keyframes overviewTitle {
+	0% { margin-left: 400px; }
+	100% { margin-left: 0; }
+}
+@-webkit-keyframes overviewContent {
+	0% { margin-left: -200px; }
+	100% { margin-left: 0; }
+}
+@-moz-keyframes overviewContent {
+	0% { margin-left: -200px; }
+	100% { margin-left: 0; }
+}
+@-o-keyframes overviewContent {
+	0% { margin-left: -200px; }
+	100% { margin-left: 0; }
+}
+@keyframes overviewContent {
+	0% { margin-left: -200px; }
+	100% { margin-left: 0; }
+}
+.masthead-section {
+	padding-top: 100px;
+	height: 440px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+	.overview-title {
+		font-size: 4.3em;
+		font-family: 'open_sansregular';
+		color: #fff;
+		margin-bottom: 20px;
+		white-space: pre;
+	}
+	.overview-content {
+		h2 {
+			font-size: 2.5em;
+			font-family: 'open_sansregular';
+			color: #fff;
+			margin-bottom: 30px;
+			white-space: pre;
+		}
+		li {
+			font-size: 16px;
+			font-family: 'open_sansregular';
+			color: #fff;
+			margin-bottom: 12px;
+			padding-left: 29px;
+			position: relative;
+			i {
+				width: 21px;
+				height: 21px;
+				position: absolute;
+				left: 0;
+				top: 0;
+				background-repeat: no-repeat;
+				background-image: url('../image/icons-1.png');
+			}
+			.price {
+				background-position: left top 2px;
+			}
+			.award {
+				background-position: left top -118px;
+			}
+			.house {
+				background-position: left top -158px;
+			}
+		}
+		a {
+			font-size: 2em;
+			font-family: 'open_sansregular';
+			color: #fff;
+			border: 1px solid #fff;
+			padding: 5px 30px;
+			display: inline-block;
+			-webkit-transition: all 0.3s ease;
+			-moz-transition: all 0.3s ease;
+			-o-transition: all 0.3s ease;
+			transition: all 0.3s ease;
+			&:hover {
+				color: #666666;
+				background-color: #fff;
+			}
+		}
+	}
+	&.animate {
+		.overview-title {
+			-webkit-animation: overviewTitle 1s ease-out;
+			-moz-animation: overviewTitle 1s ease-out;
+			-o-animation: overviewTitle 1s ease-out;
+			animation: overviewTitle 1s ease-out;
+		}
+		.overview-content {
+			-webkit-animation: overviewContent 1s ease-out;
+			-moz-animation: overviewContent 1s ease-out;
+			-o-animation: overviewContent 1s ease-out;
+			animation: overviewContent 1s ease-out;
+		}
+	}
+}

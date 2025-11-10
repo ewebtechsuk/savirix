@@ -1,0 +1,37 @@
+.workflow-title-padding { padding: 5px; border-top-width: 1px; border-top-style: solid; border-top-color: #d0d0d0; border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; border-right-color: #d0d0d0; border-bottom-color: #d0d0d0; }
+.workflow-panel-wrapper { background-color: #f5f5f5; padding-bottom:40px;  position:fixed; bottom:0; right:0; left:0; z-index:100;}
+#workflow-panel-minimised-wrapper {position:fixed; bottom:-10px; right:0; left:0; z-index:999; overflow:hidden; white-space:nowrap; height: 40px; padding-top:20px;}
+.workflow-maximised-item {float:left; background-color:#FFF;  border-top:1px solid #d0d0d0; border-right:1px solid #d0d0d0; text-overflow: ellipsis;}
+.workflow-maximised-item-name {padding:0 0 0 10px;}
+.workflow-maximised-item-name a {text-decoration:none; display:block; color: #5d5c5d;}
+.workflow-maximised-item-close {padding:0 10px 0 10px;}
+.workflow-maximised-item-logo {padding:0 0 0 10px;}
+
+
+.workflow-maximised-titlebar {background-color: #dedede;}
+
+.workflow-items-box { padding: 5px; border-right-width: 1px; border-right-style: dotted; border-right-color: #d9d9d9; }
+.workflow-items-box ul {padding:0; margin:0;}
+.workflow-items-box ul li{padding:0 0 0 15px; margin:0;}
+.workflow-item-todo a{ text-decoration: line-through; color: #5d5c5d; }
+.workflow-item-todonotdoneyet a { text-decoration: none; color: #5d5c5d; }
+.workflow-item-overdue a{ text-decoration: none; color: #fdb813; }
+.workflow-item-inactive a{ text-decoration: none; color: #dedede; }
+
+li.workflow-item-todo { background-image: url(../images/workflow-alldone.gif); list-style-type: none; background-repeat: no-repeat; background-position: 0px 0px; }
+li.workflow-item-todonotdoneyet { background-image: url(../images/workflow-notdone.gif); list-style-type: none; background-repeat: no-repeat; background-position: 0px 0px; }
+li.workflow-item-overdue { background-image: url(../images/workflow-overdue.gif); list-style-type: none; background-repeat: no-repeat; background-position: 0px 0px; }
+li.workflow-item-inactive { list-style-type: none;}
+
+.table-inner-blue-titlerow {background-color: #0094c9; color:#FFF;}
+
+.workflow-maximised-item-logo img{
+margin-top:-10px;
+}
+
+.workflow-active-state-bar {border-right: 1px solid #ececec; padding: 0 8px 0 8px;}
+.wf-active-tab-ll, .wf-active-tab-ten, .wf-active-tab-app {padding-left: 10px;}
+
+.wf-active-tab-ll img, .wf-active-tab-ten img, .wf-active-tab-app img{
+margin-top:-10px;
+}

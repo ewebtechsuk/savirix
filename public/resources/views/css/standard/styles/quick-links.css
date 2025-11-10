@@ -1,0 +1,93 @@
+@charset "utf-8";
+/* CSS Document */
+#page-content-wrapper{position:relative;}
+
+
+
+.bread-crumbs{position:absolute; top:5px; right:16px; font-size:10px; color:#9fa19f;}
+.bread-crumbs a{color:#6ed13d; text-decoration:none;}
+.bread-crumbs a:hover{text-decoration: underline;}
+.bread-crumbs-devs{position:absolute; top:-20px; right:16px; font-size:10px; color:#9fa19f;}
+.bread-crumbs-devs a{color:#6ed13d; text-decoration:none;}
+.bread-crumbs-devs a:hover{text-decoration: underline;}
+
+
+.bread-crumbs-accounts{position:absolute; top:162px; right:16px; font-size:10px; color:#9fa19f;}
+.bread-crumbs-accounts a{color:#605ca8; text-decoration:none;}
+.bread-crumbs-accounts a:hover{text-decoration: underline;}
+
+.bread-crumbs-accounts-2 {position:absolute; top:5px; right:16px; font-size:10px; color:#9fa19f;}
+.bread-crumbs-accounts-2 a{color:#605ca8; text-decoration:none;}
+.bread-crumbs-accounts-2 a:hover{text-decoration: underline;}
+
+
+/*--quick-links--*/
+.quick-links{background-color:#d3d3d3; border-right:1px solid #b7b7b7; border-top:1px solid #b7b7b7; border-bottom:1px solid #b7b7b7; width:220px;  padding-bottom:50px;}
+.quick-links h2{font-size:17px; color:#464646; font-weight:normal; padding:0; margin:16px 8px;}
+.quick-links h3{font-size:13px; color:#fff; font-weight:normal; padding:4px 8px; margin:0 0 8px;}
+.quick-links p{font-size:12px; color:#464646; font-weight:normal; padding:4px 8px; margin:0 0 16px; line-height:20px;}
+.quick-links a{color:#464646; text-decoration:none;}
+.quick-links a:hover{color:#fff; text-decoration:none;}
+.quick-links .search{width:125px;}
+.quick-links label{font-size:11px; color:#464646;}
+
+/*--quick-links- colours--*/
+.quick-links h3.sales{background:#6e9bba;}
+.quick-links h3.lettings{background:#78c09b;}
+.quick-links h3.landlord{background:#818dc3;}
+.quick-links h3.applicant{background:#e4585e;}
+.quick-links h3.tenant{background:#a1c97c;}
+.quick-links h3.property{background:#65b2ce;}
+.quick-links h3.directory{background:#e68652;}
+.quick-links h3.accounts{background:#817fb4;}
+.quick-links h3.valuations{background:#da7f5d;}
+.quick-links h3.diary{background:#ebc364;}
+.quick-links h3.config{background:#8cd26a;}
+.quick-links h3.reports{background:#b82937;}
+
+
+
+
+
+
+/*--quick-links-slide--*/
+#show-quick-links{
+	position:fixed;
+	z-index:1;
+	left:0;
+}
+
+
+@media (min-width: 1320px) and (max-width: 4000px) {
+
+/*.hide-quick-links{display:block;}
+*/.show-title{display:none;}
+.right-column-wrap{
+	margin:auto;
+	position: relative;
+
+}
+#dhtmlgoodies_leftPanel{
+		z-index:99999;
+		position:absolute;
+		display:none;
+	}
+}
+
+@media (min-width: 0) and (max-width: 1320px) {
+/*	.hide-quick-links{display:block;}*/
+.show-title{display:none;}
+.right-column-wrap{
+	margin:auto;
+	position: relative;
+}
+#dhtmlgoodies_leftPanel{
+		z-index:99999;
+		position:absolute;
+		display:none;
+	}
+
+}
+
+
+.top-nav-patch {background-image:url(/templates/standard/images/new-layout/top-nav-grad.png); background-position:top 35px right; background-repeat:no-repeat;}

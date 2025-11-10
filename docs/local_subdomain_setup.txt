@@ -1,0 +1,45 @@
+# Local Subdomain Setup for Stancl Tenancy (MAMP, macOS)
+
+1. Edit your hosts file:
+   sudo nano /etc/hosts
+   Add:
+   127.0.0.1   savirix.localhost
+   127.0.0.1   aktonz.savirix.localhost
+
+2. Edit Apache config:
+   - Open /Applications/MAMP/conf/apache/httpd.conf
+   - Uncomment:
+     Include /Applications/MAMP/conf/apache/extra/httpd-vhosts.conf
+
+3. Edit /Applications/MAMP/conf/apache/extra/httpd-vhosts.conf:
+   Add:
+   <VirtualHost *:8888>
+       ServerName savirix.localhost
+       DocumentRoot "/Applications/MAMP/htdocs/savirix/public"
+       <Directory "/Applications/MAMP/htdocs/savirix/public">
+           AllowOverride All
+           Require all granted
+       </Directory>
+   </VirtualHost>
+   <VirtualHost *:8888>
+       ServerName aktonz.savirix.localhost
+       DocumentRoot "/Applications/MAMP/htdocs/savirix/public"
+       <Directory "/Applications/MAMP/htdocs/savirix/public">
+           AllowOverride All
+           Require all granted
+       </Directory>
+   </VirtualHost>
+
+4. Restart MAMP servers.
+
+5. Update .env:
+   APP_URL=http://savirix.localhost:8888
+
+6. Update your `.env` file so the tenancy central domains include your local hosts:
+   TENANCY_CENTRAL_DOMAINS="savirix.localhost"
+
+7. Access:
+   - Central: http://savirix.localhost:8888/
+   - Aktonz:  http://aktonz.savirix.localhost:8888/
+
+This will enable Stancl Tenancy subdomain routing for local development.
