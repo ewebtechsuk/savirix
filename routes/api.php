@@ -9,12 +9,14 @@ use App\Http\Controllers\Api\PartnerIntegrationController;
 use App\Http\Controllers\Api\PaymentApiController;
 use App\Http\Controllers\Api\WebhookApiController;
 use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\Api\ContactApiController;
 use App\Http\Controllers\Api\MarketingLeadController;
 use App\Http\Controllers\Api\MarketingAnalyticsController;
 
 Route::post('login', [AuthApiController::class, 'login']);
+Route::post('/auth/login', [AuthController::class, 'login']);
 
 Route::post('marketing/leads', [MarketingLeadController::class, 'store'])
     ->name('api.marketing.leads.store');
