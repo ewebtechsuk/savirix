@@ -1,0 +1,98 @@
+#!/usr/bin/env php
+<?php
+$binDir = __DIR__;
+$projectRoot = dirname($binDir, 2);
+$polyfills = $projectRoot.'/bootstrap/polyfills.php';
+$composerFramework = $projectRoot.'/vendor/laravel/framework';
+
+if (is_file($polyfills) && ! is_dir($composerFramework)) {
+    require_once $polyfills;
+}
+
+// Mirror the environment variables from phpunit.xml so the application boots in
+// the expected testing context even without parsing the XML configuration.
+$environment = [
+    'APP_ENV'        => 'testing',
+    'CACHE_DRIVER'   => 'array',
+    'SESSION_DRIVER' => 'array',
+    'QUEUE_DRIVER'   => 'sync',
+];
+
+foreach ($environment as $name => $value) {
+    putenv($name.'='.$value);
+    $_ENV[$name] = $value;
+    $_SERVER[$name] = $value;
+}
+
+$runnerScript = $projectRoot.'/scripts/phpunit-runner.php';
+
+if (is_file($runnerScript)) {
+    require $runnerScript;
+    return;
+}
+
+$composerVendorDir = $projectRoot.'/vendor';
+$cachedVendorDir = $projectRoot.'/deps/vendor';
+
+if (is_file($composerVendorDir.'/autoload.php') && is_file($composerVendorDir.'/phpunit/phpunit/phpunit')) {
+    $autoloadPath = $composerVendorDir.'/autoload.php';
+    $phpunitBinary = $composerVendorDir.'/phpunit/phpunit/phpunit';
+} else {
+    $autoloadPath = $cachedVendorDir.'/autoload.php';
+    $phpunitBinary = $cachedVendorDir.'/phpunit/phpunit/phpunit';
+}
+
+if (!is_file($autoloadPath) || !is_file($phpunitBinary)) {
+    fwrite(STDERR, "Composer dependencies are missing. Run 'composer install' or ensure deps/vendor is available.\n");
+    exit(1);
+}
+
+// Ensure PHPUnit runs without relying on the legacy XML configuration that is
+// incompatible with modern PHP versions. We mirror the essential bootstrap and
+// environment setup so CI environments can continue invoking the classic
+// `./vendor/bin/phpunit` entrypoint.
+$argv = $_SERVER['argv'] ?? [];
+$argc = $_SERVER['argc'] ?? count($argv);
+
+$hasConfigurationOption = false;
+$hasExplicitTestTarget = false;
+
+for ($i = 1; $i < $argc; $i++) {
+    $argument = $argv[$i];
+
+    if ($argument === '--') {
+        $hasExplicitTestTarget = true;
+        break;
+    }
+
+    if ($argument === '--configuration' || $argument === '-c' || $argument === '--no-configuration') {
+        $hasConfigurationOption = true;
+    }
+
+    if ($argument === '--bootstrap') {
+        $hasConfigurationOption = true;
+        $i++;
+        continue;
+    }
+
+    if ($argument !== '' && $argument[0] !== '-') {
+        $hasExplicitTestTarget = true;
+    }
+}
+
+if (! $hasConfigurationOption) {
+    $argv[] = '--no-configuration';
+    $argv[] = '--bootstrap';
+    $argv[] = $projectRoot.'/bootstrap/autoload.php';
+
+    if (! $hasExplicitTestTarget) {
+        $argv[] = $projectRoot.'/tests';
+    }
+}
+
+$_SERVER['argv'] = $argv;
+$_SERVER['argc'] = count($argv);
+$GLOBALS['argv'] = $argv;
+$GLOBALS['argc'] = count($argv);
+
+require $phpunitBinary;

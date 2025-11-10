@@ -24,11 +24,21 @@ class AppKeyManager
      */
     public static function resolveFromEnvironment(): string
     {
+<<<<<<< HEAD
         $key = static::valueFromEnvironment()
             ?? static::readStoredKey();
 
         if ($key === null) {
             $key = static::generateKey(static::resolveCipher());
+=======
+        $cipher = static::resolveCipher();
+
+        $key = static::valueFromEnvironment($cipher)
+            ?? static::readStoredKey($cipher);
+
+        if ($key === null) {
+            $key = static::generateKey($cipher);
+>>>>>>> fb26402d0c5ab29406a97c02a62d89a691073565
             static::storeKey($key);
         } else {
             static::storeKeyIfMissing($key);
@@ -56,20 +66,32 @@ class AppKeyManager
     /**
      * Retrieve an APP_KEY value from the environment.
      */
+<<<<<<< HEAD
     protected static function valueFromEnvironment(): ?string
+=======
+    protected static function valueFromEnvironment(string $cipher): ?string
+>>>>>>> fb26402d0c5ab29406a97c02a62d89a691073565
     {
         $value = $_ENV['APP_KEY']
             ?? $_SERVER['APP_KEY']
             ?? getenv('APP_KEY')
             ?: null;
 
+<<<<<<< HEAD
         return static::normalise($value);
+=======
+        return static::prepareKey($value, $cipher);
+>>>>>>> fb26402d0c5ab29406a97c02a62d89a691073565
     }
 
     /**
      * Read a stored key from disk.
      */
+<<<<<<< HEAD
     protected static function readStoredKey(): ?string
+=======
+    protected static function readStoredKey(string $cipher): ?string
+>>>>>>> fb26402d0c5ab29406a97c02a62d89a691073565
     {
         $path = static::keyStoragePath();
 
@@ -77,7 +99,13 @@ class AppKeyManager
             return null;
         }
 
+<<<<<<< HEAD
         return static::normalise(@file_get_contents($path) ?: null);
+=======
+        $value = @file_get_contents($path) ?: null;
+
+        return static::prepareKey($value, $cipher);
+>>>>>>> fb26402d0c5ab29406a97c02a62d89a691073565
     }
 
     /**
@@ -157,6 +185,49 @@ class AppKeyManager
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Prepare a potential key value ensuring it is valid for the cipher.
+     */
+    protected static function prepareKey(?string $value, string $cipher): ?string
+    {
+        $value = static::normalise($value);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return static::isValidForCipher($value, $cipher) ? $value : null;
+    }
+
+    /**
+     * Determine if the provided key is compatible with the cipher.
+     */
+    protected static function isValidForCipher(string $key, string $cipher): bool
+    {
+        if (str_starts_with($key, 'base64:')) {
+            $decoded = base64_decode(substr($key, 7), true);
+
+            if ($decoded === false) {
+                return false;
+            }
+
+            $keyLength = strlen($decoded);
+        } else {
+            $keyLength = strlen($key);
+        }
+
+        $cipher = strtolower($cipher);
+
+        return match ($cipher) {
+            'aes-128-cbc', 'aes-128-gcm' => $keyLength === 16,
+            'aes-256-cbc', 'aes-256-gcm' => $keyLength === 32,
+            default => in_array($keyLength, [16, 32], true),
+        };
+    }
+
+    /**
+>>>>>>> fb26402d0c5ab29406a97c02a62d89a691073565
      * Determine if the configuration repository is available.
      */
     protected static function configAvailable(): bool
