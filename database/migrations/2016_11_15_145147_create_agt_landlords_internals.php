@@ -13,8 +13,14 @@ class CreateAgtLandlordsInternals extends Migration
      */
     public function up()
     {
+        // Keep replays safe when the legacy landlords_internals table is
+        // already present in the imported database.
+        if (Schema::hasTable('landlords_internals')) {
+            return;
+        }
+
         Schema::create('landlords_internals', function(Blueprint $table)
-        {        
+        {
             $table->integer('landlords_id')->nullable()->default(null);
             $table->string('internal_other_label', 50)->nullable()->default(null);
             $table->string('internal_other_status', 50)->nullable()->default(null);
@@ -35,6 +41,6 @@ class CreateAgtLandlordsInternals extends Migration
      */
     public function down()
     {
-        Schema::drop('landlords_internals');
+        Schema::dropIfExists('landlords_internals');
     }
 }

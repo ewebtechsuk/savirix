@@ -17,5 +17,11 @@ class DatabaseSeeder extends Seeder
             TenantPortalUserSeeder::class,
             AgentKnowledgeSeeder::class,
         ]);
+
+        if (app()->environment(['local', 'staging'])) {
+            // Seed a working Aktonz tenant locally so developers can reproduce
+            // the Hostinger configuration without touching production data.
+            $this->call(AktonzTenantSeeder::class);
+        }
     }
 }

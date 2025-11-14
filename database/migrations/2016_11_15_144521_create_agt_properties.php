@@ -13,6 +13,12 @@ class CreateAgtProperties extends Migration
      */
     public function up()
     {
+        // Legacy exports already created agt_properties in production, so skip
+        // the schema change when the table is present to keep deploys repeatable.
+        if (Schema::hasTable('agt_properties')) {
+            return;
+        }
+
         // Rename table to avoid conflict with new properties table
         Schema::create('agt_properties', function(Blueprint $table)
         {
@@ -83,6 +89,6 @@ class CreateAgtProperties extends Migration
      */
     public function down()
     {
-        Schema::drop('agt_properties');
+        Schema::dropIfExists('agt_properties');
     }
 }

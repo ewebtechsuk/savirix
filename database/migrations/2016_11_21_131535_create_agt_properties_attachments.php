@@ -13,8 +13,14 @@ class CreateAgtPropertiesAttachments extends Migration
      */
     public function up()
     {
+        // Guard this table because the production schema already includes it
+        // from the pre-Laravel deployment.
+        if (Schema::hasTable('properties_attachments')) {
+            return;
+        }
+
         Schema::create('properties_attachments', function(Blueprint $table)
-        {        
+        {
             $table->increments('id');
             $table->integer('property')->nullable()->default(null);
             $table->string('section')->nullable()->default("");
@@ -31,6 +37,6 @@ class CreateAgtPropertiesAttachments extends Migration
      */
     public function down()
     {
-        Schema::drop('properties_attachments');
+        Schema::dropIfExists('properties_attachments');
     }
 }

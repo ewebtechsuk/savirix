@@ -9,6 +9,8 @@ class ListTenants extends Command
 {
     protected $signature = 'tenant:list {--json : Output tenant details as JSON}';
 
+    protected $aliases = ['tenants:list'];
+
     protected $description = 'Display all registered tenants and their domains.';
 
     public function handle(): int
@@ -28,6 +30,7 @@ class ListTenants extends Command
                     'company_name' => $tenant->data['company_name'] ?? null,
                     'company_email' => $tenant->data['email'] ?? null,
                     'domains' => $tenant->domains->pluck('domain')->values()->all(),
+                    'created_at' => optional($tenant->created_at)->toDateTimeString(),
                 ];
             })->values();
 
@@ -44,11 +47,12 @@ class ListTenants extends Command
                 'Company' => $tenant->data['company_name'] ?? '—',
                 'Primary Domain' => $domains->first() ?? '—',
                 'All Domains' => $domains->implode(PHP_EOL) ?: '—',
+                'Created' => optional($tenant->created_at)?->toDateTimeString() ?? '—',
             ];
         })->values()->all();
 
         $this->table(
-            ['Tenant ID', 'Company', 'Primary Domain', 'All Domains'],
+            ['Tenant ID', 'Company', 'Primary Domain', 'All Domains', 'Created'],
             array_map(fn ($row) => array_values($row), $rows)
         );
 

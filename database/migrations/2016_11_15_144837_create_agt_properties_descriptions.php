@@ -13,8 +13,13 @@ class CreateAgtPropertiesDescriptions extends Migration
      */
     public function up()
     {
+        // Guard because Hostinger already has this table from the imported DB.
+        if (Schema::hasTable('properties_descriptions')) {
+            return;
+        }
+
         Schema::create('properties_descriptions', function(Blueprint $table)
-        {        
+        {
             $table->increments('id');
             $table->integer('property')->nullable()->default(null);
             $table->text('tinymceModel')->nullable()->default(null);
@@ -30,6 +35,6 @@ class CreateAgtPropertiesDescriptions extends Migration
      */
     public function down()
     {
-        Schema::drop('properties_descriptions');
+        Schema::dropIfExists('properties_descriptions');
     }
 }

@@ -2,113 +2,166 @@
 # Manual Hostinger sync script for Aktonz tenant
 #
 # This helper exists for the aktonz.savarix.com Hostinger shared hosting account.
-# It mirrors /home/$HOST_USER/laravel_app/public into public_html/, rewrites the
-# document root's index.php to reference laravel_app/, and refreshes caches.
-# Run this directly on the Hostinger server via SSH whenever the GitHub Actions
-# deploy job is unavailable and you must refresh the tenant manually.
+# It mirrors /home/$HOST_USER/domains/savarix.com/laravel_app/public into
+# public_html/, rewrites the document root's index.php to reference
+# laravel_app/, and refreshes caches. Run this directly on the Hostinger server
+# via SSH whenever the GitHub Actions deploy job is unavailable and you must
+# refresh the tenant manually.
 
-set -euo pipefail
+set -uo pipefail
 
-HOST_USER="u753768407.savarix.com"
-APP_DIR="/home/$HOST_USER/laravel_app"
-OLD_APP_DIR="/home/$HOST_USER/laravel_app_core"
-DOCUMENT_ROOT="/home/$HOST_USER/public_html"
-DOMAIN="aktonz.savarix.com"
+HOST_USER="${HOST_USER:-u753768407}"
+HOME_DIR="/home/$HOST_USER"
+APP_DIR="${APP_DIR:-$HOME_DIR/domains/savarix.com/laravel_app}"
+OLD_APP_DIR="${OLD_APP_DIR:-$HOME_DIR/domains/savarix.com/laravel_app_core}"
+DOCUMENT_ROOT="${DOCUMENT_ROOT:-$HOME_DIR/domains/savarix.com/public_html}"
+DOMAIN="${DOMAIN:-aktonz.savarix.com}"
+GIT_REMOTE="${GIT_REMOTE:-origin}"
+DEPLOY_BRANCH="${DEPLOY_BRANCH:-master}"
+PHP_BIN="${PHP_BIN:-/opt/alt/php84/usr/bin/php}"
+COMPOSER_BIN="${COMPOSER_BIN:-/usr/local/bin/composer}"
 
-log() { printf '\n[hostinger-manual] %s\n' "$*"; }
+log() {
+    printf '\n[hostinger-manual] %s\n' "$*"
+}
+
+warn() {
+    log "WARN: $*"
+}
+
+run_or_warn() {
+    if ! "$@"; then
+        warn "Command failed (continuing): $*"
+        return 1
+    fi
+
+    return 0
+}
+
+update_env_value() {
+    local key="$1"
+    local value="$2"
+    local file="$3"
+
+    if grep -q "^${key}=" "$file" 2>/dev/null; then
+        sed -i "s|^${key}=.*|${key}=${value}|" "$file"
+    else
+        printf '\n%s=%s\n' "$key" "$value" >>"$file"
+    fi
+}
+
+clean_document_root() {
+    log "Removing existing files in $DOCUMENT_ROOT (preserving aktonz/, .well-known, and .ftpquota)"
+
+    shopt -s dotglob nullglob
+    for entry in "$DOCUMENT_ROOT"/* "$DOCUMENT_ROOT"/.[!.]* "$DOCUMENT_ROOT"/..?*; do
+        [ -e "$entry" ] || continue
+        base=$(basename "$entry")
+        case "$base" in
+            .|..|aktonz|.well-known|.ftpquota)
+                continue
+                ;;
+        esac
+        rm -rf "$entry"
+    done
+    shopt -u dotglob nullglob
+}
 
 log "== Step 1: Sanity checks =="
-ls -lah "/home/$HOST_USER"
 if [ ! -d "$APP_DIR" ]; then
-  echo "ERROR: $APP_DIR does not exist. Abort." >&2
-  exit 1
+    echo "ERROR: $APP_DIR does not exist. Abort." >&2
+    exit 1
 fi
 if [ ! -d "$DOCUMENT_ROOT" ]; then
-  echo "ERROR: $DOCUMENT_ROOT does not exist. Abort." >&2
-  exit 1
+    echo "ERROR: $DOCUMENT_ROOT does not exist. Abort." >&2
+    exit 1
 fi
+
+log "Using PHP binary: $PHP_BIN"
+log "Using Composer binary: $COMPOSER_BIN"
 
 log "== Step 2: Back up laravel_app_core (if present) =="
 if [ -d "$OLD_APP_DIR" ]; then
-  BACKUP_NAME="${OLD_APP_DIR}_backup_$(date +%Y%m%d_%H%M)"
-  echo "Backing up $OLD_APP_DIR -> $BACKUP_NAME"
-  mv "$OLD_APP_DIR" "$BACKUP_NAME"
+    BACKUP_NAME="${OLD_APP_DIR}_backup_$(date +%Y%m%d_%H%M)"
+    log "Backing up $OLD_APP_DIR -> $BACKUP_NAME"
+    mv "$OLD_APP_DIR" "$BACKUP_NAME"
 else
-  echo "No $OLD_APP_DIR directory found, skipping backup."
+    log "No $OLD_APP_DIR directory found, skipping backup."
 fi
 
-log "== Step 3: Sync Git repo (laravel_app is canonical) =="
-cd "$APP_DIR"
-
-echo "-- Current git remote(s) --"
-git remote -v || echo "WARN: git remote not set (check manually)."
-
-echo "-- Pull latest from remote (if set) --"
-git pull --rebase || echo "WARN: git pull failed (maybe no remote)."
-
-echo "-- Commit any local changes (if present) --"
-git status
-if git diff --quiet && git diff --cached --quiet; then
-  echo "No local changes to commit."
-else
-  git add . || echo "WARN: git add failed (check permissions)."
-  git commit -m "server sync: $(date +%Y-%m-%d_%H:%M)" || echo "No local changes to commit."
+log "== Step 3: Sync Git repo =="
+cd "$APP_DIR" || exit 1
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    echo "ERROR: $APP_DIR is not a Git repository." >&2
+    exit 1
 fi
 
-echo "-- Push back to remote (if set) --"
-git push || echo "WARN: git push failed (maybe no remote / auth)."
+remote_url=$(git remote get-url "$GIT_REMOTE" 2>/dev/null || true)
+if [ -z "$remote_url" ]; then
+    warn "No git remote named $GIT_REMOTE configured. Add git@github.com:ewebtechsuk/savarix.git before the next run."
+elif [ "$remote_url" != "git@github.com:ewebtechsuk/savarix.git" ]; then
+    warn "Git remote $GIT_REMOTE points to $remote_url (expected git@github.com:ewebtechsuk/savarix.git)."
+fi
 
-log "== Step 4: Reset document root contents =="
-cd "$DOCUMENT_ROOT"
+run_or_warn git fetch "$GIT_REMOTE" "$DEPLOY_BRANCH" --prune
+run_or_warn git checkout "$DEPLOY_BRANCH"
+run_or_warn git pull --ff-only "$GIT_REMOTE" "$DEPLOY_BRANCH"
 
-echo "Removing existing files in $DOCUMENT_ROOT (keep dir)..."
-rm -rf ./*
+log "== Step 4: Install Composer dependencies =="
+if [ ! -x "$PHP_BIN" ]; then
+    warn "Configured PHP binary $PHP_BIN is not executable."
+fi
 
-echo "Copying public assets from $APP_DIR/public to $DOCUMENT_ROOT..."
-cp -R "$APP_DIR/public/"* "$DOCUMENT_ROOT/"
+if [ ! -x "$COMPOSER_BIN" ]; then
+    warn "Configured Composer binary $COMPOSER_BIN is not executable."
+fi
 
-log "== Step 5: Update index.php include paths =="
+if [ -f scripts/composer-token.php ]; then
+    run_or_warn "$PHP_BIN" scripts/composer-token.php
+fi
+run_or_warn "$PHP_BIN" "$COMPOSER_BIN" install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+log "== Step 5: Update environment values =="
+if [ ! -f .env ]; then
+    cp .env.example .env
+    warn "Created .env from example file. Update secrets if this is the first deploy."
+fi
+
+update_env_value APP_ENV production .env
+update_env_value APP_URL "https://$DOMAIN" .env
+update_env_value TENANT_DOMAIN "$DOMAIN" .env
+
+log "== Step 6: Run artisan tasks =="
+run_or_warn "$PHP_BIN" artisan key:generate --force
+run_or_warn "$PHP_BIN" artisan migrate --force --no-interaction
+run_or_warn "$PHP_BIN" artisan config:cache
+run_or_warn "$PHP_BIN" artisan route:cache
+run_or_warn "$PHP_BIN" artisan view:cache
+run_or_warn "$PHP_BIN" artisan optimize
+
+log "== Step 7: Refresh document root =="
+clean_document_root
+
+log "Copying public assets from $APP_DIR/public to $DOCUMENT_ROOT"
+run_or_warn cp -a "$APP_DIR/public/." "$DOCUMENT_ROOT/"
+
 INDEX_PHP="$DOCUMENT_ROOT/index.php"
 if [ ! -f "$INDEX_PHP" ]; then
-  echo "ERROR: $INDEX_PHP not found. Something is wrong with public copy." >&2
-  exit 1
+    warn "index.php not found in $DOCUMENT_ROOT."
+else
+    sed -i "s|require __DIR__.'/../vendor/autoload.php';|require __DIR__.'/../laravel_app/vendor/autoload.php';|" "$INDEX_PHP"
+    sed -i "s|\$app = require_once __DIR__.'/../bootstrap/app.php';|\$app = require_once __DIR__.'/../laravel_app/bootstrap/app.php';|" "$INDEX_PHP"
 fi
 
-sed -i "s|require __DIR__.'/../vendor/autoload.php';|require __DIR__.'/../laravel_app/vendor/autoload.php';|" "$INDEX_PHP"
-sed -i "s|\$app = require_once __DIR__.'/../bootstrap/app.php';|\$app = require_once __DIR__.'/../laravel_app/bootstrap/app.php';|" "$INDEX_PHP"
+log "== Step 8: Permissions =="
+run_or_warn chown -R "$HOST_USER":"$HOST_USER" "$APP_DIR" "$DOCUMENT_ROOT"
+run_or_warn chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+run_or_warn chmod -R 755 "$DOCUMENT_ROOT"
 
-log "== Step 6: Permissions =="
-chown -R "$HOST_USER":"$HOST_USER" "$APP_DIR" "$DOCUMENT_ROOT" || echo "WARN: chown failed (shared hosting restrictions?)."
-chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache" || echo "WARN: chmod on storage/bootstrap/cache failed."
-chmod -R 755 "$DOCUMENT_ROOT" || echo "WARN: chmod on DOCUMENT_ROOT failed."
+log "== Step 9: Post-deploy reminders =="
+log "Document root: $DOCUMENT_ROOT"
+log "Laravel app: $APP_DIR"
+log "Subdomain should point to $DOCUMENT_ROOT (update in hPanel if needed)."
+log "Run \"php artisan tenants:list\" and \"php artisan users:list --tenant=aktonz\" to verify tenants."
 
-log "== Step 7: Composer install & artisan optimize =="
-cd "$APP_DIR"
-
-composer install --no-dev --optimize-autoloader || echo 'WARN: composer install failed. Check composer path and memory.'
-
-if [ -f ".env" ]; then
-  echo "Updating APP_URL in .env to https://$DOMAIN (if key exists)..."
-  if grep -q "^APP_URL=" .env; then
-    sed -i "s|^APP_URL=.*|APP_URL=https://$DOMAIN|" .env
-  fi
-
-  echo "Updating TENANT_DOMAIN in .env to $DOMAIN (if key exists)..."
-  if grep -q "^TENANT_DOMAIN=" .env; then
-    sed -i "s|^TENANT_DOMAIN=.*|TENANT_DOMAIN=$DOMAIN|" .env
-  fi
-fi
-
-php artisan key:generate --force || echo "WARN: key:generate failed (may already exist)."
-php artisan config:cache || echo "WARN: config:cache failed."
-php artisan route:cache || echo "WARN: route:cache failed."
-php artisan view:cache || echo "WARN: view:cache failed."
-
-log "== Step 8: Reminder – confirm Hostinger document root =="
-echo "Ensure the Document Root for $DOMAIN is set to $DOCUMENT_ROOT in hPanel."
-
-echo "== Step 9: Optional cleanup =="
-echo "After verifying the site, you can remove any ${OLD_APP_DIR}_backup_* directories manually."
-
-echo
 log "Manual Hostinger sync complete."

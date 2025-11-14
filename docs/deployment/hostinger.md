@@ -181,21 +181,31 @@ Most production updates are handled automatically through GitHub Actions or by r
 those options is unavailable you can fall back to the **Aktonz manual sync script** that mirrors the on-server repository into
 `public_html/`, rewrites `index.php` to reference `laravel_app/`, and refreshes all caches.
 
-1. SSH into the Aktonz Hostinger account (`ssh u753768407.savarix.com@<host>`), then run the script from the repository root:
+1. SSH into the Aktonz Hostinger account (`ssh u753768407@<host>`) and switch to the Laravel application directory:
+
+   ```bash
+   alias php='/opt/alt/php84/usr/bin/php'
+   cd /home/u753768407/domains/savarix.com/laravel_app
+   git fetch origin master
+   git checkout master
+   git pull --ff-only origin master
+   ```
+
+2. Run the refreshed manual sync script:
 
    ```bash
    bash scripts/hostinger_manual_sync.sh
    ```
 
-2. The helper performs the full checklist the team previously executed by hand:
+3. The helper performs the full checklist the team previously executed by hand:
    - Creates a timestamped backup of `laravel_app_core/` if it still exists.
-   - Syncs the Git repository in `/home/u753768407.savarix.com/laravel_app` and pushes any unsaved changes upstream.
+   - Syncs the Git repository in `/home/u753768407/domains/savarix.com/laravel_app` from the `master` branch.
    - Resets `public_html/`, copies `public/` assets, and rewrites the document root `index.php` to load `../laravel_app/`.
-   - Runs `composer install --no-dev --optimize-autoloader`, refreshes caches, and enforces permissions.
+   - Runs `/opt/alt/php84/usr/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader`, applies `php artisan migrate --force`, refreshes caches, and enforces permissions.
    - Reminds you to double-check the hPanel document root and optionally prune the backup once the site is verified.
 
-3. Visit `https://aktonz.savarix.com/login` when the script finishes to confirm the tenant portal loads correctly. Keep the
-backup directory until the site has been stable for a while (`rm -rf /home/u753768407.savarix.com/laravel_app_core_backup_*`).
+4. Visit `https://aktonz.savarix.com/login` when the script finishes to confirm the tenant portal loads correctly. Keep the
+backup directory until the site has been stable for a while (`rm -rf /home/u753768407/domains/savarix.com/laravel_app_core_backup_*`).
 
 The script lives at [`scripts/hostinger_manual_sync.sh`](../../scripts/hostinger_manual_sync.sh) so it is versioned alongside
 the rest of the deployment tooling.

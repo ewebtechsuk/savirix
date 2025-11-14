@@ -13,8 +13,14 @@ class CreateAgtLandlordsAttachments extends Migration
      */
     public function up()
     {
+        // Guard to keep the legacy landlords_attachments table from breaking
+        // repeated migration attempts on the production snapshot.
+        if (Schema::hasTable('landlords_attachments')) {
+            return;
+        }
+
         Schema::create('landlords_attachments', function(Blueprint $table)
-        {        
+        {
             $table->integer('landlords_id')->nullable()->default(null);
             $table->string('file_format', 10)->nullable()->default(null);
             $table->string('file_name')->nullable()->default(null);
@@ -30,6 +36,6 @@ class CreateAgtLandlordsAttachments extends Migration
      */
     public function down()
     {
-        Schema::drop('landlords_attachments');
+        Schema::dropIfExists('landlords_attachments');
     }
 }

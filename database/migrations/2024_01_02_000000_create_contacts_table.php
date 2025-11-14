@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // The imported production database already has a contacts table with
+        // historical data, so exit early to keep the migration idempotent.
+        if (Schema::hasTable('contacts')) {
+            return;
+        }
+
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

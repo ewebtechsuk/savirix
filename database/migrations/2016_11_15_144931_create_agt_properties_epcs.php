@@ -13,8 +13,14 @@ class CreateAgtPropertiesEpcs extends Migration
      */
     public function up()
     {
+        // This table exists in the restored Hostinger database, so exit early
+        // to keep `php artisan migrate` idempotent across environments.
+        if (Schema::hasTable('properties_epcs')) {
+            return;
+        }
+
         Schema::create('properties_epcs', function(Blueprint $table)
-        {        
+        {
             $table->increments('id');
             $table->integer('property')->nullable()->default(null);
             $table->string('what_rep', 10)->nullable()->default(null);
@@ -34,6 +40,6 @@ class CreateAgtPropertiesEpcs extends Migration
      */
     public function down()
     {
-        Schema::drop('properties_epcs');
+        Schema::dropIfExists('properties_epcs');
     }
 }

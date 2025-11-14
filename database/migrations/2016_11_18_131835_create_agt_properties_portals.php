@@ -13,8 +13,14 @@ class CreateAgtPropertiesPortals extends Migration
      */
     public function up()
     {
+        // Production snapshots bundle the properties_portals table already; the
+        // guard below keeps `artisan migrate` from erroring when re-run.
+        if (Schema::hasTable('properties_portals')) {
+            return;
+        }
+
         Schema::create('properties_portals', function(Blueprint $table)
-        {        
+        {
             $table->increments('id');
             $table->integer('property')->nullable()->default(null);
             $table->tinyInteger('find_a_property')->nullable()->default(false);
@@ -46,6 +52,6 @@ class CreateAgtPropertiesPortals extends Migration
      */
     public function down()
     {
-        Schema::drop('properties_portals');
+        Schema::dropIfExists('properties_portals');
     }
 }

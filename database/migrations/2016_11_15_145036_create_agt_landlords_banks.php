@@ -13,8 +13,14 @@ class CreateAgtLandlordsBanks extends Migration
      */
     public function up()
     {
+        // The landlords_banks helper table predates the Laravel migration
+        // history in production, so skip creation when it already exists.
+        if (Schema::hasTable('landlords_banks')) {
+            return;
+        }
+
         Schema::create('landlords_banks', function(Blueprint $table)
-        {        
+        {
             $table->integer('landlords_id')->nullable()->default(null);
             $table->string('bank_body')->nullable()->default(null);
             $table->string('bank_account_no')->nullable()->default(null);
@@ -38,6 +44,6 @@ class CreateAgtLandlordsBanks extends Migration
      */
     public function down()
     {
-        Schema::drop('landlords_banks');
+        Schema::dropIfExists('landlords_banks');
     }
 }
