@@ -13,6 +13,12 @@ class CreateAgtLandlords extends Migration
      */
     public function up()
     {
+        // Landlord records already live in the imported production database.
+        // Skip creation when present so migrations can run safely on Hostinger.
+        if (Schema::hasTable('landlords')) {
+            return;
+        }
+
         Schema::create('landlords', function(Blueprint $table)
         {
             $table->increments('id');
@@ -47,6 +53,6 @@ class CreateAgtLandlords extends Migration
      */
     public function down()
     {
-        Schema::drop('landlords');
+        Schema::dropIfExists('landlords');
     }
 }

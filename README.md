@@ -4,12 +4,28 @@ This repository contains a Laravel application.
 
 ## Branching model
 
-The canonical integration branch is `main`. The historic `master` branch is no
-longer used in this repository, so you will not see it locally after cloning.
-When the hosting instructions or older automation scripts mention `master`,
-substitute `main` instead (for example, `git checkout main` or `git pull origin
-main`). Keeping your local clone on the `main` branch ensures you receive the
-latest code that powers production deployments.
+The canonical integration branch is `main`. Every push to `main` triggers the
+`.github/workflows/sync-master.yml` workflow, which fast-forwards the `master`
+branch to the same commit so Hostinger always has a clean production branch to
+track. The expectation is:
+
+1. Land features on `main` via pull requests.
+2. Allow the workflow to update `master` automatically.
+3. Deploy (either through GitHub Actions or manually over SSH) from `master`.
+
+Keeping your local clone on `main` ensures you receive the latest reviewed code,
+while checking out `master` locally mirrors exactly what the Aktonz tenant runs
+in production. If the Hostinger working copy ever drifts, run:
+
+```bash
+cd /home/u753768407/domains/savarix.com/laravel_app
+git fetch origin master
+git checkout master
+git pull --ff-only origin master
+```
+
+and then rerun the manual sync script described in the Hostinger deployment
+section below.
 
 ## Running Artisan Commands
 
@@ -136,6 +152,69 @@ syncing only changed files. Clean up any old log files or caches in `storage/` d
 omits them from uploads.
 
 > **Hostinger tip:** If your shared plan does not expose a global `composer` command, SSH into the server and run `./deploy_hostinger.sh` from the project root after each pull. The script now bootstraps a local `composer.phar`, installs dependencies, and clears the caches so the public site won't fall back to a generic HTTP 500 error.
+
+### Production deployment workflow (Hostinger)
+
+When GitHub Actions is unavailable you can deploy the Aktonz tenant directly from SSH by following this checklist:
+
+1. SSH into Hostinger as `u753768407` and alias PHP if desired (for example `alias php='/opt/alt/php84/usr/bin/php'`).
+2. Move to the application directory and sync the production branch:
+
+   ```bash
+   cd /home/u753768407/domains/savarix.com/laravel_app
+   git fetch origin master
+   git checkout master
+   git pull --ff-only origin master
+   ```
+
+3. Run the scripted refresh:
+
+   ```bash
+   bash scripts/hostinger_manual_sync.sh
+   ```
+
+   The helper backs up any remaining `laravel_app_core` directory, installs Composer dependencies with `/opt/alt/php84/usr/bin/php`, runs `php artisan migrate --force`, rewrites `public_html/index.php`, and keeps `.env` values such as `APP_URL=https://aktonz.savarix.com` in sync. The script accepts overrides via environment variables (`APP_DIR`, `DOCUMENT_ROOT`, `PHP_BIN`, etc.) if Hostinger changes their layout.
+
+4. Once the script finishes, verify the site by tailing `storage/logs/laravel.log` and hitting https://aktonz.savarix.com/login in a browser.
+
+### Tenant and user inspection commands
+
+The following Artisan commands make it easy to confirm that tenancy is configured correctly on Hostinger:
+
+```bash
+php artisan tenant:list             # or php artisan tenants:list
+php artisan tenant:list --json      # machine-readable tenant summary
+php artisan users:list --tenant=aktonz
+php artisan users:list --tenant=aktonz --json
+```
+
+`users:list` automatically uses the `tenant_id`/`company_id` columns if they exist on the server schema and falls back to a full dump when the columns are missing.
+
+### Aktonz tenant seeding and verification
+
+The `Database\Seeders\AktonzTenantSeeder` class provisions the tenant, domain, company metadata, and an administrator account (`info@aktonz.com` / `AktonzTempPass123!`). Run it locally (or in staging) with:
+
+```bash
+php artisan db:seed --class=AktonzTenantSeeder
+```
+
+Because production already contains live data, run the seeder there only when you need to recreate the tenant from scratch, and immediately change the temporary password via the UI.
+
+After every deploy, run the following Hostinger checks before handing over to QA:
+
+```bash
+alias php='/opt/alt/php84/usr/bin/php'
+cd /home/u753768407/domains/savarix.com/laravel_app
+php artisan migrate:status
+php artisan tenants:list
+php artisan users:list --tenant=aktonz
+```
+
+Then visit https://aktonz.savarix.com/login, sign in as `info@aktonz.com` with the seeded password, and confirm https://aktonz.savarix.com/dashboard loads without a 500. The feature test `tests/Feature/AktonzTenantLoginTest.php` replicates the same flow locally:
+
+```bash
+php artisan test --filter=AktonzTenantLoginTest
+```
 
 ## Setting up in the Codex environment
 

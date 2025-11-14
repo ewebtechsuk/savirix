@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // The production backup already contains a properties table. Bail out
+        // quietly so we can re-run the migration without dropping live data.
+        if (Schema::hasTable('properties')) {
+            return;
+        }
+
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->string('title');

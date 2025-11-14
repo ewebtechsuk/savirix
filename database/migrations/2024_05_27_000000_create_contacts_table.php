@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Keep this migration repeatable when the contacts table arrives via
+        // a database import from the previous PHP stack.
         if (Schema::hasTable('contacts')) {
             return;
         }

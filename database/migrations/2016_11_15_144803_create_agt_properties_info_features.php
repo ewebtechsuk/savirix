@@ -13,8 +13,14 @@ class CreateAgtPropertiesInfoFeatures extends Migration
      */
     public function up()
     {
+        // The imported Aktonz schema already includes properties_info_features,
+        // so guard the create statement to avoid fatal "table exists" errors.
+        if (Schema::hasTable('properties_info_features')) {
+            return;
+        }
+
         Schema::create('properties_info_features', function(Blueprint $table)
-        {        
+        {
             $table->increments('id');
             $table->integer('property')->nullable()->default(null);
             $table->tinyInteger('fully_furnished')->nullable()->default(false);
@@ -55,6 +61,6 @@ class CreateAgtPropertiesInfoFeatures extends Migration
      */
     public function down()
     {
-        Schema::drop('properties_info_features');
+        Schema::dropIfExists('properties_info_features');
     }
 }

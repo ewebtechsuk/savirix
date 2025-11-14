@@ -13,8 +13,14 @@ class CreateAgtPropertiesInternals extends Migration
      */
     public function up()
     {
+        // Prevent duplicate creation because the imported production DB already
+        // carries a properties_internals table from the legacy stack.
+        if (Schema::hasTable('properties_internals')) {
+            return;
+        }
+
         Schema::create('properties_internals', function(Blueprint $table)
-        {       
+        {
             $table->increments('id'); 
             $table->integer('property')->nullable()->default(null);
             $table->tinyInteger('publish')->nullable()->default(false);
@@ -44,6 +50,6 @@ class CreateAgtPropertiesInternals extends Migration
      */
     public function down()
     {
-        Schema::drop('properties_internals');
+        Schema::dropIfExists('properties_internals');
     }
 }

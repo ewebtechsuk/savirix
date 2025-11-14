@@ -13,8 +13,14 @@ class CreateAgtPropertiesMoreinfos extends Migration
      */
     public function up()
     {
+        // Guard this migration so the legacy properties_moreinfos table from
+        // the production dump does not cause duplicate-table failures.
+        if (Schema::hasTable('properties_moreinfos')) {
+            return;
+        }
+
         Schema::create('properties_moreinfos', function(Blueprint $table)
-        {        
+        {
             $table->increments('id');
             $table->integer('property')->nullable()->default(null);
             $table->integer('branch')->nullable()->default(null);
@@ -53,6 +59,6 @@ class CreateAgtPropertiesMoreinfos extends Migration
      */
     public function down()
     {
-        Schema::drop('properties_moreinfos');
+        Schema::dropIfExists('properties_moreinfos');
     }
 }
