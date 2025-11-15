@@ -17,8 +17,12 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
+        if ($this->isAktonzDomain($request)) {
+            return view('tenants.aktonz.auth.register');
+        }
+
         return view('auth.register');
     }
 
@@ -46,5 +50,10 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard', [], false));
+    }
+
+    protected function isAktonzDomain(Request $request): bool
+    {
+        return str_contains($request->getHost(), 'aktonz');
     }
 }
