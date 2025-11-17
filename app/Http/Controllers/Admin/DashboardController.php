@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Agency;
+use Illuminate\Contracts\View\View;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        // Only allow admin
-        if (!Auth::check() || !Auth::user()->is_admin) {
-            abort(403);
-        }
-        return view('admin.dashboard');
+        return view('admin.dashboard.index', [
+            'agencyCount' => Agency::count(),
+            'activeAgencies' => Agency::where('status', 'active')->count(),
+        ]);
     }
 }
