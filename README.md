@@ -213,8 +213,13 @@ To initialize the project when working in Codex or any fresh development contain
    ./setup.sh
    ```
 
-The script installs Composer and Node dependencies, copies `.env.example` to `.env` if necessary, generates an application key, runs database migrations and clears caches.
-After it finishes you can run tests or start the application with `php artisan serve`.
+The script installs Composer and Node dependencies, copies `.env.example` to `.env` if necessary (defaulting to a local SQLite database), creates the SQLite file when required, generates an application key, runs database migrations and clears caches.
+After it finishes you can run tests or start the application with `php artisan serve`. To seed local tenant data for the Aktonz checks, run `./setup.sh --seed` and then `php artisan tenants:list` / `php artisan users:list --tenant=aktonz`.
+If your shell exports `DB_*` variables (for example in shared CI containers), unset them so Artisan respects the SQLite settings from `.env`:
+
+```bash
+unset DB_CONNECTION DB_DATABASE DB_USERNAME DB_PASSWORD DB_HOST DB_PORT
+```
 
 ## Apex27 Import Helper
 

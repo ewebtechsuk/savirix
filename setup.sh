@@ -41,6 +41,37 @@ composer_warn() { warn "$@"; }
 
 source "${SCRIPT_DIR}/scripts/lib/composer.sh"
 
+ensure_sqlite_database() {
+  local connection db_path
+  connection=$(grep -E '^DB_CONNECTION=' .env | tail -n1 | cut -d= -f2-)
+  if [[ "$connection" != "sqlite" ]]; then
+    return
+  fi
+
+  db_path=$(grep -E '^DB_DATABASE=' .env | tail -n1 | cut -d= -f2-)
+  if [[ -z "$db_path" ]]; then
+    db_path="database/database.sqlite"
+  fi
+
+  if [[ "$db_path" != /* ]]; then
+    db_path="${SCRIPT_DIR}/${db_path}"
+  fi
+
+  mkdir -p "$(dirname "$db_path")"
+  if [[ ! -f "$db_path" ]]; then
+    log "Creating sqlite database at $db_path"
+    : >"$db_path"
+  fi
+}
+
+export_dotenv_var() {
+  local key="$1" value
+  value=$(grep -E "^${key}=" .env | tail -n1 | cut -d= -f2-)
+  if [[ -n "$value" ]]; then
+    export "${key}=${value}"
+  fi
+}
+
 enable_offline_mode() {
   OFFLINE_MODE=true
   warn "Composer install failed; enabling offline artisan stubs"
@@ -75,6 +106,17 @@ if [[ ! -f .env ]]; then
   log "Creating .env from example"
   cp .env.example .env
 fi
+
+# Ensure sqlite database file exists when using sqlite locally
+ensure_sqlite_database
+
+# Override container-level DB environment variables with the values from .env
+export_dotenv_var DB_CONNECTION
+export_dotenv_var DB_DATABASE
+export_dotenv_var DB_USERNAME
+export_dotenv_var DB_PASSWORD
+export_dotenv_var DB_HOST
+export_dotenv_var DB_PORT
 
 # 2. Composer install
 if [[ -f composer.json ]]; then
@@ -158,6 +200,13 @@ if [[ "$DB_WAIT" == "true" ]]; then
     warn "mysql client missing; cannot --db-wait"
   fi
 fi
+
+# 5.5 Clear caches early so DB config reflects the current .env
+log "Clearing Laravel caches"
+php artisan config:clear || true
+php artisan cache:clear || true
+php artisan view:clear || true
+php artisan route:clear || true
 
 # 6. Database migrations / refresh
 if [[ "$REFRESH_DB" == "true" ]]; then

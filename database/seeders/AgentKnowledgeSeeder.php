@@ -4,11 +4,17 @@ namespace Database\Seeders;
 
 use App\Models\AgentKnowledge;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class AgentKnowledgeSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! Schema::hasTable('agent_knowledge')) {
+            $this->command?->warn('Skipping AgentKnowledgeSeeder because agent_knowledge table is missing.');
+            return;
+        }
+
         AgentKnowledge::create([
             'role' => 'lettings_negotiator',
             'type' => 'workflow_rule',
