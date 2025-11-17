@@ -33,7 +33,10 @@ Route::group(['middleware' => 'guest'], function () {
         ->name('onboarding.register.store');
 });
 
-Route::prefix('savarix-admin')->group(function () {
+// Secret Savarix admin path (set in .env as SAVARIX_ADMIN_PATH)
+$secretAdminPath = env('SAVARIX_ADMIN_PATH', 'savarix-admin');
+
+Route::prefix($secretAdminPath)->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
 
