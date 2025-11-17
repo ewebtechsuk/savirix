@@ -157,6 +157,7 @@ Route::group([
 
 require __DIR__.'/auth.php';
 
+// Temporary route to verify Hostinger mail configuration.
 Route::get('/mail-test', function () {
     Mail::raw('Test email from Savarix', function ($message) {
         $message->to('savarix.dev@gmail.com')
