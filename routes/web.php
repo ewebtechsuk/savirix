@@ -1,18 +1,22 @@
 <?php
 
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin\AgencyController as AdminAgencyController;
+use App\Http\Controllers\Admin\AgencyUserController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Auth\MagicLoginController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DiaryController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\Landing\HomeController;
+use App\Http\Controllers\MaintenanceRequestController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\TenantPortalController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PropertyController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\DiaryController;
-use App\Http\Controllers\AccountController;
-use App\Http\Controllers\InspectionController;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\MaintenanceRequestController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OnboardingController;
@@ -27,6 +31,25 @@ Route::group(['middleware' => 'guest'], function () {
         ->name('onboarding.register');
     Route::post('/onboarding/register', [OnboardingController::class, 'register'])
         ->name('onboarding.register.store');
+});
+
+Route::prefix('savarix-admin')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
+
+    Route::middleware(['auth', 'owner'])->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
+        Route::get('/agencies', [AdminAgencyController::class, 'index'])->name('admin.agencies.index');
+        Route::post('/agencies', [AdminAgencyController::class, 'store'])->name('admin.agencies.store');
+        Route::get('/agencies/{agency}', [AdminAgencyController::class, 'show'])->name('admin.agencies.show');
+        Route::put('/agencies/{agency}', [AdminAgencyController::class, 'update'])->name('admin.agencies.update');
+        Route::delete('/agencies/{agency}', [AdminAgencyController::class, 'destroy'])->name('admin.agencies.destroy');
+
+        Route::get('/agencies/{agency}/users', [AgencyUserController::class, 'index'])->name('admin.agencies.users.index');
+        Route::post('/agencies/{agency}/users', [AgencyUserController::class, 'store'])->name('admin.agencies.users.store');
+        Route::delete('/agencies/{agency}/users/{user}', [AgencyUserController::class, 'destroy'])->name('admin.agencies.users.destroy');
+    });
 });
 
 // Single dashboard route for route('dashboard')
