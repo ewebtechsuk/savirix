@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Force Hostinger CLI to use PHP 8.3 for Composer + Laravel
+export PATH=/opt/alt/php83/usr/bin:"$PATH"
 PHP_BIN=${PHP_BIN:-/opt/alt/php83/usr/bin/php}
 set -e
 
