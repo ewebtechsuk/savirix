@@ -212,6 +212,18 @@ Then visit https://aktonz.savarix.com/login, sign in as `info@aktonz.com` with t
 php artisan test --filter=AktonzTenantLoginTest
 ```
 
+### Aktonz tenant deployment script
+
+Operations staff managing the `aktonz.savarix.com` tenant can execute `./deploy_hostinger_full.sh` after connecting to Hostinger over SSH. The script codifies the manual steps that previously had to be repeated by hand:
+
+1. Backs up any legacy `~/laravel_app` directory before touching the live app in `~/laravel_app_core`.
+2. Resets the git working tree to `origin/main` so the server mirrors the `ewebtechsuk/savarix` repository.
+3. Clears `~/public_html`, copies the Laravel `public/` assets into the document root, and rewrites the generated `index.php` paths to reference `../laravel_app_core/...`.
+4. Applies the expected `www-data` group ownership, runs `composer install --no-dev --optimize-autoloader`, and executes the usual `php artisan` cache optimizations.
+5. Writes the tenant-specific `APP_URL` and `TENANT_DOMAIN` values before committing any untracked server changes back to GitHub for auditing.
+
+All default paths and identifiers are defined at the top of the script and may be overridden via environment variables such as `HOST_USER`, `APP_ROOT`, or `DOMAIN` when another tenant requires the same workflow. Review the echoed summary at the end to confirm Hostinger’s document root and the login URL tested by the script.
+
 ## Setting up in the Codex environment
 
 To initialize the project when working in Codex or any fresh development container:
