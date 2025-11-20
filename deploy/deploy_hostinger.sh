@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
+# Force Hostinger CLI to use PHP 8.3 for Composer + Laravel
+PHP_BIN=${PHP_BIN:-/opt/alt/php83/usr/bin/php}
 set -e
 
 cd /home/u753768407/domains/savarix.com/laravel_app
 
 # Ensure composer.phar is available
 if [ ! -f composer.phar ]; then
-  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  php composer-setup.php --quiet
+  $PHP_BIN -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  $PHP_BIN composer-setup.php --quiet
   rm composer-setup.php
 fi
 
 # Install/update dependencies
-php composer.phar install --no-dev --optimize-autoloader
+$PHP_BIN composer.phar install --no-dev --optimize-autoloader
 
 # OPTIONAL: run DB migrations on production (uncomment when comfortable)
-# php artisan migrate --force
+# $PHP_BIN artisan migrate --force
 
 # Clear caches
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
+$PHP_BIN artisan config:clear
+$PHP_BIN artisan route:clear
+$PHP_BIN artisan view:clear
 
 # Rebuild caches
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+$PHP_BIN artisan config:cache
+$PHP_BIN artisan route:cache
+$PHP_BIN artisan view:cache
 
 # Sanity check admin login route & URL
-php artisan savarix:check-admin-login
+$PHP_BIN artisan savarix:check-admin-login
