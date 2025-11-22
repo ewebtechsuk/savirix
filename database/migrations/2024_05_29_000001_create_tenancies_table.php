@@ -9,13 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         if (Schema::hasTable('tenancies')) {
+            // Table already exists (e.g. production), skip creating it again.
             return;
         }
 
         Schema::create('tenancies', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('property_id');
-            $table->unsignedBigInteger('contact_id');
+            $table->id();
+
+            // Keep proper foreign keys + indexes
+            $table->foreignId('property_id')->constrained('properties');
+            $table->foreignId('contact_id')->constrained('contacts');
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->decimal('rent', 12, 2);
