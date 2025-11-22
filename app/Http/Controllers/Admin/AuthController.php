@@ -15,8 +15,20 @@ use Throwable;
 
 class AuthController extends Controller
 {
-    public function showLoginForm(): View
+    public function showLoginForm(Request $request): View|RedirectResponse
     {
+        $guard = Auth::guard('web');
+
+        if ($guard->check()) {
+            if ($guard->user()?->isOwner()) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            $guard->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         return view('admin.auth.login');
     }
 
@@ -33,6 +45,8 @@ class AuthController extends Controller
 
         try {
             if ($adminGuard->attempt($credentials)) {
+                $request->session()->regenerate();
+
                 if ($adminGuard->user()->isOwner()) {
                     return redirect()->route('admin.dashboard');
                 }
