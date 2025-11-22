@@ -52,4 +52,16 @@
       "php scripts/offline-optimize.php"
     ],
     "pre-install-cmd": [
-      "php
+      "php scripts/composer-token.php"
+    ],
+    "pre-update-cmd": [
+      "php scripts/composer-token.php"
+    ]
+  },
+  "config": {
+    "preferred-install": "dist",
+    "allow-plugins": {
+      "kylekatarnls/update-helper": true
+    }
+  }
+}
