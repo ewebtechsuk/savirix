@@ -42,8 +42,10 @@ Route::get('/test-admin-path', function () {
 $secretAdminPath = env('SAVARIX_ADMIN_PATH', 'savarix-admin'); // DO NOT expose this publicly
 
 Route::prefix($secretAdminPath)->group(function () {
-    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+        Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
+    });
 
     Route::middleware(['auth', 'owner'])->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');

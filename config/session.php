@@ -160,7 +160,16 @@ return [
             return null;
         }
 
-        return str_starts_with($sessionDomain, '.') ? $sessionDomain : '.' . $sessionDomain;
+        $sessionDomain = ltrim($sessionDomain, '.');
+
+        $isHostOnly = $sessionDomain === 'localhost'
+            || filter_var($sessionDomain, FILTER_VALIDATE_IP);
+
+        if ($isHostOnly) {
+            return $sessionDomain;
+        }
+
+        return '.' . $sessionDomain;
     })(),
 
     /*
