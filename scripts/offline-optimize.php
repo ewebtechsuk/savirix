@@ -6,7 +6,7 @@ use Illuminate\Contracts\Console\Kernel;
 
 chdir(__DIR__ . '/..');
 
-// Skip if dependencies or .env are missing (Codex/CI safe)
+// If vendor or .env is missing, just skip (Codex/CI safe).
 if (! file_exists(__DIR__ . '/../vendor/autoload.php')) {
     fwrite(STDOUT, "offline-optimize: vendor/autoload.php missing, skipping.\n");
     exit(0);
