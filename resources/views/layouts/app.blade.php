@@ -11,8 +11,20 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @php
+            // Tenancy serves dashboards from tenant domains; use Vite when the manifest is
+            // available and fall back to the built assets to guarantee styling in production.
+            $viteManifestExists = file_exists(public_path('build/manifest.json'));
+        @endphp
+
+        <!-- Shared tenant/main assets -->
+        @if ($viteManifestExists)
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @else
+            <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+            <script src="{{ asset('js/app.js') }}" defer></script>
+        @endif
+        {{-- Run `npm run build` after changing CSS/JS so the assets are up to date. --}}
 
         @stack('styles')
     </head>
