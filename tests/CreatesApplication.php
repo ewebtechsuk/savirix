@@ -59,6 +59,7 @@ trait CreatesApplication
             'database/migrations/2014_10_12_000000_create_users_table.php',
             'database/migrations/2019_09_15_000010_create_tenants_table.php',
             'database/migrations/2019_09_15_000020_create_domains_table.php',
+            'database/migrations/2024_01_01_000000_create_permission_tables.php',
             'database/migrations/2025_07_19_000000_add_email_verified_at_to_users_table.php',
             'database/migrations/2025_07_29_000001_add_is_admin_to_users_table.php',
             'database/migrations/2025_08_01_000001_add_login_token_to_users_table.php',

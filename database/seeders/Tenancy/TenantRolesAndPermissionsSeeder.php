@@ -1,13 +1,14 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Tenancy;
 
+use Database\Seeders\RolePermissionConfig;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
-class RolesSeeder extends Seeder
+class TenantRolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
@@ -16,11 +17,17 @@ class RolesSeeder extends Seeder
         $guard = RolePermissionConfig::guard();
 
         foreach (RolePermissionConfig::permissions() as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => $guard]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => $guard,
+            ]);
         }
 
         foreach (RolePermissionConfig::roles() as $roleName) {
-            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => $guard]);
+            $role = Role::firstOrCreate([
+                'name' => $roleName,
+                'guard_name' => $guard,
+            ]);
 
             $role->syncPermissions(RolePermissionConfig::rolePermissions()[$roleName] ?? []);
         }

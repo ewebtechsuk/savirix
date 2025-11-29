@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Spatie\Permission\Models\Role;
 use Throwable;
 use Stancl\Tenancy\Database\DatabaseManager;
 use Stancl\Tenancy\Exceptions\TenantDatabaseAlreadyExistsException;
@@ -222,14 +223,19 @@ class TenantProvisioner
     {
         $this->runInTenantContext($tenant, function () {
             $connection = config('database.default', 'tenant');
-            $exitCode = Artisan::call('db:seed', [
-                '--class' => TenantPortalUserSeeder::class,
-                '--database' => $connection,
-                '--force' => true,
-            ]);
+            foreach ([
+                \Database\Seeders\Tenancy\TenantRolesAndPermissionsSeeder::class,
+                TenantPortalUserSeeder::class,
+            ] as $seederClass) {
+                $exitCode = Artisan::call('db:seed', [
+                    '--class' => $seederClass,
+                    '--database' => $connection,
+                    '--force' => true,
+                ]);
 
-            if ($exitCode !== 0) {
-                throw new RuntimeException('Tenant seeder command failed with exit code ' . $exitCode);
+                if ($exitCode !== 0) {
+                    throw new RuntimeException('Tenant seeder command failed with exit code ' . $exitCode);
+                }
             }
         });
     }
@@ -257,6 +263,7 @@ class TenantProvisioner
             database_path('migrations/2014_10_12_000000_create_users_table.php'),
             database_path('migrations/2019_09_15_000010_create_tenants_table.php'),
             database_path('migrations/2019_09_15_000020_create_domains_table.php'),
+            database_path('migrations/2024_01_01_000000_create_permission_tables.php'),
             database_path('migrations/2025_07_19_000000_add_email_verified_at_to_users_table.php'),
             database_path('migrations/2025_07_29_000001_add_is_admin_to_users_table.php'),
             database_path('migrations/2025_08_01_000001_add_login_token_to_users_table.php'),
@@ -306,11 +313,23 @@ class TenantProvisioner
                 throw new RuntimeException('User model is not configured.');
             }
 
-            $userModel::create([
+            $user = $userModel::create([
                 'name' => $userPayload['name'],
                 'email' => $userPayload['email'],
                 'password' => Hash::make($userPayload['password']),
             ]);
+
+            $guard = config('permission.defaults.guard', 'web');
+            $assignableRoles = collect(['Admin', 'Tenant'])
+                ->filter(function (string $role) use ($guard) {
+                    return Role::query()->where('name', $role)->where('guard_name', $guard)->exists();
+                })
+                ->values()
+                ->all();
+
+            if ($assignableRoles !== []) {
+                $user->assignRole($assignableRoles);
+            }
         });
     }
 
