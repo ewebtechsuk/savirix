@@ -13,6 +13,9 @@
     "laravel/ui": "^4.6",
     "stancl/tenancy": "^3.9",
     "stripe/stripe-php": "^17.4",
+    "sentry/sentry": "^4.19",
+    "sentry/sentry-laravel": "^4.19",
+    "symfony/psr-http-message-bridge": "^7.0",
     "laravel/tinker": "^2.10",
     "spatie/laravel-permission": "^6.0",
     "laravel/sanctum": "^4.0"
@@ -60,6 +63,9 @@
   },
   "config": {
     "preferred-install": "dist",
+    "platform": {
+      "php": "8.3"
+    },
     "allow-plugins": {
       "kylekatarnls/update-helper": true
     }
