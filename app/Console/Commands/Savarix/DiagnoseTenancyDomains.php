@@ -7,11 +7,12 @@ use App\Models\Tenant;
 use App\Services\TenantDomainSynchronizer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 use Stancl\Tenancy\Database\Models\Domain;
 
 class DiagnoseTenancyDomains extends Command
 {
-    protected $signature = 'savarix:diagnose-tenancy-domains {--sync : Ensure Tenant and Domain records exist for agencies with domains}';
+    protected $signature = 'savarix:diagnose-tenancy-domains {--sync : Ensure Tenant and Domain records exist for agencies with domains} {--seed-roles : Seed tenant roles and permissions for all tenants}';
 
     protected $description = 'Inspect tenancy domain configuration and optionally sync agency domains to tenants.';
 
@@ -51,6 +52,10 @@ class DiagnoseTenancyDomains extends Command
             $this->syncAgencies($synchronizer);
         }
 
+        if ($this->option('seed-roles')) {
+            $this->seedRolesAndPermissions();
+        }
+
         return self::SUCCESS;
     }
 
@@ -80,6 +85,28 @@ class DiagnoseTenancyDomains extends Command
 
             $this->info($message);
             Log::info($message);
+        }
+    }
+
+    protected function seedRolesAndPermissions(): void
+    {
+        foreach (Tenant::query()->orderBy('id')->get() as $tenant) {
+            $this->line(sprintf('Seeding roles for tenant %s...', $tenant->getKey()));
+
+            tenancy()->initialize($tenant);
+
+            try {
+                $exitCode = Artisan::call('db:seed', [
+                    '--class' => \Database\Seeders\Tenancy\TenantRolesAndPermissionsSeeder::class,
+                    '--force' => true,
+                ]);
+
+                if ($exitCode !== 0) {
+                    $this->warn(sprintf('Seeder exited with code %d for tenant %s', $exitCode, $tenant->getKey()));
+                }
+            } finally {
+                tenancy()->end();
+            }
         }
     }
 }
