@@ -181,16 +181,36 @@ class PropertyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Property $property)
+    public function show(int $id)
     {
+        $candidateRelations = [
+            'landlord',
+            'features',
+            'media',
+            'tenancy',
+            'viewings',
+            'inspections',
+            'documents',
+            'timeline',
+        ];
+
+        $relations = collect($candidateRelations)
+            ->filter(fn (string $relation) => method_exists(Property::class, $relation))
+            ->values()
+            ->all();
+
+        $property = Property::with($relations)->findOrFail($id);
+
         $this->authorize('view', $property);
 
         $tenant = tenant(); // Stancl Tenancy v3+ helper
         if (!$tenant || $property->tenant_id !== $tenant->id) {
             abort(404, 'Property not found for this tenant.');
         }
-        $property->load(['media', 'features', 'landlord', 'documents']);
-        $features = $property->features()->pluck('name')->toArray();
+
+        $features = method_exists($property, 'features')
+            ? $property->features()->pluck('name')->toArray()
+            : [];
 
         $marketingEvents = MarketingEvent::query()
             ->where('metadata->property_id', $property->id)
@@ -198,9 +218,12 @@ class PropertyController extends Controller
             ->limit(5)
             ->get();
 
+        $media = method_exists($property, 'media') ? $property->media : collect();
+        $documents = method_exists($property, 'documents') ? $property->documents : collect();
+
         $marketingStats = [
-            'media_count' => $property->media->count(),
-            'document_count' => $property->documents->count(),
+            'media_count' => $media->count(),
+            'document_count' => $documents->count(),
             'feature_count' => count($features),
             'portal_status' => $property->publish_to_portal ? 'Live' : 'Offline',
             'campaign_status' => $property->send_marketing_campaign ? 'Enabled' : 'Disabled',
@@ -225,11 +248,27 @@ class PropertyController extends Controller
             ->orderBy('date')
             ->get();
 
-        $offers = $property->offers()->with('contact')->orderByDesc('offered_at')->get();
-        $tenancies = $property->tenancies()->with('contact')->orderByDesc('start_date')->get();
+        $offers = method_exists($property, 'offers')
+            ? $property->offers()->with('contact')->orderByDesc('offered_at')->get()
+            : collect();
+
+        $tenancies = method_exists($property, 'tenancies')
+            ? $property->tenancies()->with('contact')->orderByDesc('start_date')->get()
+            : collect();
+
         $matches = $this->applicantMatcher->match($property);
 
-        return view('properties.show', compact('property', 'features', 'marketingEvents', 'marketingStats', 'viewings', 'offers', 'tenancies', 'matches'));
+        return view('properties.show', [
+            'property' => $property,
+            'features' => $features,
+            'marketingEvents' => $marketingEvents,
+            'marketingStats' => $marketingStats,
+            'viewings' => $viewings,
+            'offers' => $offers,
+            'tenancies' => $tenancies,
+            'matches' => $matches,
+            'relations' => $relations,
+        ]);
     }
 
     /**
