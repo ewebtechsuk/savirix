@@ -26,6 +26,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\LandlordDashboardController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\VerificationController;
+use App\Support\AgencyRoles;
 use Stancl\Tenancy\Database\Models\Domain;
 
 Route::get('/', HomeController::class)->name('marketing.home');
@@ -165,7 +166,7 @@ Route::group([
         'tenancy',
         'preventAccessFromCentralDomains',
         'setTenantRouteDefaults',
-        'role:Admin|PropertyManager',
+        'role:' . AgencyRoles::propertyManagersPipe(),
     ],
 ], function () {
     Route::resource('properties', PropertyController::class);
