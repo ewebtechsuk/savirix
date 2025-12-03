@@ -118,9 +118,7 @@
                             <form action="{{ route('properties.assignLandlord', $property) }}" method="POST" class="mb-3">
                                 @csrf
                                 <label for="landlord-select" class="form-label">Select Landlord:</label>
-                                <select id="landlord-select" name="landlord_id" class="form-select" style="width:100%">
-                                    <option value="">-- Search and select landlord --</option>
-                                </select>
+                                <select id="landlord-select" name="landlord_id" class="form-select" style="width:100%"></select>
                                 <button type="submit" class="btn btn-primary mt-2">Assign</button>
                             </form>
                             @if($property->landlord)
@@ -371,12 +369,13 @@ document.addEventListener('DOMContentLoaded', function() {
             dataType: 'json',
             delay: 250,
             data: function(params) {
-                return { q: params.term, type: 'landlord' };
+                return { q: params.term };
             },
             processResults: data => ({ results: data }),
             cache: true
         },
-        minimumInputLength: 1
+        minimumInputLength: 1,
+        width: '100%'
     });
 });
 </script>

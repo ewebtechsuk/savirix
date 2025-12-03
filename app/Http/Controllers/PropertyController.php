@@ -384,12 +384,22 @@ class PropertyController extends Controller
      */
     public function assignLandlord(Request $request, Property $property)
     {
-        $request->validate([
-            'landlord_id' => 'required|exists:contacts,id',
+        $validated = $request->validate([
+            'landlord_id' => ['required', 'integer', 'exists:contacts,id'],
         ]);
-        $property->landlord_id = $request->landlord_id;
+
+        $landlord = Contact::where('type', 'landlord')->findOrFail($validated['landlord_id']);
+
+        if (method_exists($property, 'landlord')) {
+            $property->landlord()->associate($landlord);
+        }
+
+        $property->landlord_id = $landlord->id;
         $property->save();
-        return redirect()->route('properties.show', $property)->with('success', 'Landlord assigned successfully.');
+
+        return redirect()
+            ->route('properties.show', $property)
+            ->with('success', 'Landlord assigned successfully.');
     }
 
     /**
