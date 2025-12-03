@@ -1,15 +1,15 @@
 @extends('layouts.agency')
 
 @php
-    $as = fn($v) => $v instanceof \Illuminate\Support\Collection ? $v : collect($v ?? []);
-    $groups = $as($contact->getRelation('groups'));
-    $tags = $as($contact->getRelation('tags'));
-    $notes = $as($contact->getRelation('notes'));
+    $as = fn ($v) => $v instanceof \Illuminate\Support\Collection ? $v : collect($v ?? []);
+    $groups         = $as($contact->getRelation('groups'));
+    $tags           = $as($contact->getRelation('tags'));
+    $notes          = $as($contact->getRelation('notes'));
     $communications = $as($contact->getRelation('communications'));
-    $viewings = $as($contact->getRelation('viewings'));
-    $offers = $as($contact->getRelation('offers'));
-    $tenancies = $as($contact->getRelation('tenancies'));
-    $properties = $as($contact->getRelation('properties'));
+    $viewings       = $as($contact->getRelation('viewings'));
+    $offers         = $as($contact->getRelation('offers'));
+    $tenancies      = $as($contact->getRelation('tenancies'));
+    $properties     = $as($contact->getRelation('properties'));
 @endphp
 
 {{-- Ensure jQuery is loaded before Select2 and custom scripts --}}
@@ -163,7 +163,7 @@
                                     <select id="property-select" name="property_id" class="form-select" style="width:100%" data-placeholder="Search properties"></select>
                                     <button type="submit" class="btn btn-primary mt-2">Assign</button>
                                 </form>
-                                @if($properties->count())
+                                @if($properties->isNotEmpty())
                                     <ul class="list-group">
                                         @foreach($properties as $property)
                                             <li class="list-group-item d-flex justify-content-between align-items-center">

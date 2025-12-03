@@ -215,14 +215,26 @@ class ContactController extends Controller
      */
     public function search(Request $request)
     {
-        return Contact::where('type', 'landlord')
-            ->when($q = $request->q, fn ($query) => $query->where('name', 'like', "%$q%"))
+        $q = trim((string) $request->input('q', ''));
+
+        $landlords = Contact::query()
+            ->where('type', 'landlord')
+            ->when($q !== '', fn ($query) =>
+                $query->where('name', 'like', "%{$q}%")
+            )
+            ->orderBy('name')
             ->limit(10)
-            ->get()
-            ->map(fn ($contact) => [
-                'id' => $contact->id,
-                'text' => trim($contact->name . ' — ' . $contact->phone),
-            ]);
+            ->get(['id', 'name', 'phone']);
+
+        $results = $landlords->map(function (Contact $contact) {
+            $parts = array_filter([$contact->name, $contact->phone]);
+            return [
+                'id'   => $contact->id,
+                'text' => implode(' — ', $parts),
+            ];
+        });
+
+        return response()->json($results);
     }
 
     public function searchProperties(Request $request)
