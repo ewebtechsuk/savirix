@@ -9,5 +9,7 @@ return [
         'Admin',
         'Tenant',
         'Agent',
+        'PropertyManager',
+        'Owner',
     ],
 ];

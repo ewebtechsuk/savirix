@@ -9,7 +9,7 @@ class RolePermissionConfig
      */
     public static function roles(): array
     {
-        return ['Admin', 'Landlord', 'Agent', 'Tenant'];
+        return ['Admin', 'Landlord', 'Agent', 'Tenant', 'PropertyManager', 'Owner'];
     }
 
     /**
