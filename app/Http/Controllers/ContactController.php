@@ -210,7 +210,7 @@ class ContactController extends Controller
         $q = $request->get('q', '');
         $results = Contact::query()
             ->where('type', $type)
-            ->where('name', 'like', "%$q%")
+            ->where('name', 'like', "%{$q}%")
             ->orderBy('name')
             ->limit(10)
             ->get(['id', 'name']);
