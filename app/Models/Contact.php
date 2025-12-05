@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Contact extends Model
 {
+    use BelongsToTenant;
     use HasFactory;
 
     public const TYPES = [
@@ -29,6 +31,7 @@ class Contact extends Model
         'phone',
         'address',
         'notes',
+        'tenant_id',
     ];
 
     protected function normaliseRelation(string $relation): void

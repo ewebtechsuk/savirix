@@ -127,6 +127,11 @@ class ContactController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        if ($tenant = tenant()) {
+            // Ensure the contact is explicitly bound to the active tenant context.
+            $validated['tenant_id'] = $tenant->id;
+        }
+
         $contact = Contact::create($validated);
         $contact->groups()->sync($request->input('groups', []));
         $contact->tags()->sync($request->input('tags', []));
