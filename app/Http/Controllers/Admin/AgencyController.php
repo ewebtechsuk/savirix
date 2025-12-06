@@ -6,6 +6,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Agency;
+use App\Models\Tenant;
+use App\Services\AgencyTenantRoleProvisioner;
+use App\Services\TenantDomainSynchronizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -195,6 +198,18 @@ class AgencyController extends Controller
 
         // Regenerate the session ID so the impersonation token is bound to a fresh cookie
         $session->regenerate();
+
+        $tenantId = app(TenantDomainSynchronizer::class)->findTenantIdForAgency($agency);
+        $tenant = $tenantId ? Tenant::find($tenantId) : null;
+
+        if ($tenant) {
+            app(AgencyTenantRoleProvisioner::class)->ensureTenantAdminRoles($tenant, $agencyAdmin);
+        } else {
+            Log::warning('Tenant not found while preparing impersonation roles', [
+                'agency_id' => $agency->id,
+                'agency_domain' => $agency->domain,
+            ]);
+        }
 
         Log::info('Impersonation login redirecting to tenant', [
             'agency_id' => $agency->id,
