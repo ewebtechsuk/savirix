@@ -16,6 +16,7 @@ use App\Http\Controllers\Landing\HomeController;
 use App\Http\Controllers\MaintenanceRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\PropertyMediaController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\TenantPortalController;
 use App\Services\TenancyHealthReporter;
@@ -170,7 +171,7 @@ Route::group([
     ],
 ], function () {
     Route::resource('properties', PropertyController::class);
-    Route::delete('/properties/{property}/media/{media}', [PropertyController::class, 'destroyMedia'])
+    Route::delete('/properties/{property}/media/{media}', [PropertyMediaController::class, 'destroy'])
         ->name('properties.media.destroy');
     Route::get('contacts/search', [ContactController::class, 'search'])->name('contacts.search');
     Route::get('contacts/properties/search', [ContactController::class, 'searchProperties'])->name('contacts.properties.search');

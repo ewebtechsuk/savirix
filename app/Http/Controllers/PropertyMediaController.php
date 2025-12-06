@@ -4,39 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use App\Models\PropertyMedia;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 
 class PropertyMediaController extends Controller
 {
-    public function store(Request $request, Property $property)
-    {
-        $request->validate([
-            'media.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096',
-        ]);
-        if ($request->hasFile('media')) {
-            $order = $property->media()->max('order') ?? 0;
-            foreach ($request->file('media') as $file) {
-                $order++; 
-                $path = Storage::disk('public')->putFile('property_media', $file);
-                $property->media()->create([
-                    'file_path' => $path,
-                    'type' => $file->getClientMimeType() ?? 'image/png',
-                    'media_type' => 'photo',
-                    'order' => $order,
-                ]);
-            }
-        }
-        return back()->with('success', 'Images uploaded.');
-    }
-
-    public function destroy(Property $property, PropertyMedia $media)
+    /**
+     * Remove a media item from a property.
+     */
+    public function destroy(Property $property, PropertyMedia $media): RedirectResponse
     {
         if ($media->property_id !== $property->id) {
-            abort(403);
+            abort(404);
         }
-        Storage::disk('public')->delete($media->file_path);
+
+        $this->authorize('update', $property);
+
+        if ($media->file_path && Storage::disk('public')->exists($media->file_path)) {
+            Storage::disk('public')->delete($media->file_path);
+        }
+
         $media->delete();
-        return back()->with('success', 'Image deleted.');
+
+        $property->media()
+            ->orderBy('order')
+            ->get()
+            ->values()
+            ->each(function (PropertyMedia $item, int $index): void {
+                $item->update(['order' => $index + 1]);
+            });
+
+        return back()->with('success', 'Media item removed.');
     }
 }
