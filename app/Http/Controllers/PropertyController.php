@@ -373,31 +373,6 @@ class PropertyController extends Controller
         return redirect()->route('properties.index')->with('success', 'Property deleted successfully.');
     }
 
-    public function destroyMedia(Property $property, PropertyMedia $media): RedirectResponse
-    {
-        $this->authorize('update', $property);
-
-        if ($media->property_id !== $property->id) {
-            abort(404);
-        }
-
-        if ($media->file_path && Storage::disk('public')->exists($media->file_path)) {
-            Storage::disk('public')->delete($media->file_path);
-        }
-
-        $media->delete();
-
-        $property->media()
-            ->orderBy('order')
-            ->get()
-            ->values()
-            ->each(function (PropertyMedia $item, int $index) {
-                $item->update(['order' => $index + 1]);
-            });
-
-        return back()->with('success', 'Media item removed.');
-    }
-
     /**
      * Assign a landlord to a property.
      */
