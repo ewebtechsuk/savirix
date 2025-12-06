@@ -146,16 +146,17 @@ class PropertyController extends Controller
 
         $featuredMediaCreated = false;
         if ($request->hasFile('media')) {
-            $order = $property->media()->max('order') ?? 0;
+            $order = ($property->media()->max('order') ?? 0) + 1;
             foreach ($request->file('media') as $file) {
-                $order++; 
-                $path = Storage::disk('public')->putFile('property_media', $file);
+                $path = $file->store('property_media', 'public');
                 $media = $property->media()->create([
+                    'media_type' => 'photo',
+                    'media_url' => Storage::disk('public')->url($path),
                     'file_path' => $path,
                     'type' => $file->getClientMimeType() ?? 'image/png',
-                    'media_type' => 'photo',
                     'order' => $order,
                 ]);
+                $order++;
 
                 if (! $featuredMediaCreated) {
                     $media->update(['is_featured' => true]);
@@ -322,16 +323,17 @@ class PropertyController extends Controller
         $property->update($validated);
 
         if ($request->hasFile('media')) {
-            $order = $property->media()->max('order') ?? 0;
+            $order = ($property->media()->max('order') ?? 0) + 1;
             foreach ($request->file('media') as $file) {
-                $order++; 
-                $path = Storage::disk('public')->putFile('property_media', $file);
+                $path = $file->store('property_media', 'public');
                 $media = $property->media()->create([
+                    'media_type' => 'photo',
+                    'media_url' => Storage::disk('public')->url($path),
                     'file_path' => $path,
                     'type' => $file->getClientMimeType() ?? 'image/png',
-                    'media_type' => 'photo',
                     'order' => $order,
                 ]);
+                $order++;
 
                 if (! $property->media()->where('is_featured', true)->exists()) {
                     $media->update(['is_featured' => true]);

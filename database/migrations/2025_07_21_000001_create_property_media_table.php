@@ -16,6 +16,8 @@ class CreatePropertyMediaTable extends Migration
         Schema::create('property_media', function (Blueprint $table) {
             $table->id();
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
+            $table->string('media_type')->default('photo');
+            $table->string('media_url')->nullable();
             $table->string('file_path');
             $table->string('type');
             $table->unsignedInteger('order')->default(0);
