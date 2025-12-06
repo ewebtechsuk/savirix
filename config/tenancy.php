@@ -26,7 +26,7 @@ if (! is_array($centralDomainsFromEnv)) {
 
 // Tenancy central domains should list only the hosts that serve the central app (e.g. savarix.com, localhost).
 // Tenant subdomains such as aktonz.savarix.com must not appear here, otherwise tenancy will treat them as central and abort.
-$defaultCentralDomains = ['127.0.0.1', 'localhost', 'savirix.localhost'];
+$defaultCentralDomains = ['127.0.0.1', 'localhost', 'savarix.localhost', 'savarix.com', 'www.savarix.com'];
 $appUrlHost = parse_url(env('APP_URL', ''), PHP_URL_HOST);
 
 if (is_string($appUrlHost) && $appUrlHost !== '') {

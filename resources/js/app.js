@@ -7,6 +7,15 @@ import 'leaflet/dist/leaflet.css';
 window.Alpine = Alpine;
 window.L = L;
 
+// Serve Leaflet default marker assets from the public/images directory so requests
+// resolve correctly under tenant routes (e.g. /properties/... should not capture them).
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: '/images/marker-icon-2x.png',
+    iconUrl: '/images/marker-icon.png',
+    shadowUrl: '/images/marker-shadow.png',
+});
+
 Alpine.start();
 
 import './portal/statements';
