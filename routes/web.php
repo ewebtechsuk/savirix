@@ -32,6 +32,15 @@ use Stancl\Tenancy\Database\Models\Domain;
 
 Route::get('/', HomeController::class)->name('marketing.home');
 
+// Tenant-aware middleware stack applied to all tenant UI routes (subdomains such as *.savarix.com).
+// These must run through tenancy initialisation before auth/role checks to avoid leaking central context.
+$tenantDomainMiddleware = [
+    'web',
+    'tenancy',
+    'preventAccessFromCentralDomains',
+    'setTenantRouteDefaults',
+];
+
 Route::get('/__health/tenancy', function (Request $request, TenancyHealthReporter $reporter) {
     $summary = $reporter->summary();
     $response = [
@@ -122,20 +131,6 @@ Route::prefix($secretAdminPath)->group(function () {
     });
 });
 
-// Single dashboard route for route('dashboard')
-Route::group(['middleware' => ['auth', 'verified']], function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-});
-
-
-// Central app routes (localhost:8888/)
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
 // Central dashboard routes (should NOT use tenancy middleware)
 Route::group(['middleware' => ['auth', 'verified', 'role:Admin|Landlord']], function () {
     // Remove duplicate dashboard route
@@ -160,15 +155,22 @@ Route::group(['middleware' => ['auth', 'verified', 'role:Admin|Landlord']], func
     Route::put('/maintenance/{maintenanceRequest}', [MaintenanceRequestController::class, 'update'])->name('maintenance.update');
 });
 
-// Tenant routes (aktonz.savirix.com, etc.)
+// Tenant routes (aktonz.savirix.com, etc.) — always executed within tenancy middleware.
+Route::middleware(array_merge($tenantDomainMiddleware, ['auth:web,tenant', 'verified']))->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
 Route::group([
-    'middleware' => [
+    'middleware' => array_merge($tenantDomainMiddleware, [
         'auth:web,tenant',
-        'tenancy',
-        'preventAccessFromCentralDomains',
-        'setTenantRouteDefaults',
         'role:' . AgencyRoles::propertyManagersPipe() . '|agency_admin',
-    ],
+    ]),
 ], function () {
     Route::resource('properties', PropertyController::class);
     Route::delete('/properties/{property}/media/{media}', [PropertyMediaController::class, 'destroy'])
